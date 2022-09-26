@@ -1,18 +1,19 @@
-import type { NextPage } from "next";
-import Head from "next/head";
+import type { NextPage } from 'next'
+import Head from 'next/head'
+import Layout from '~/components/Layout'
 
 const Home: NextPage = () => {
-  return (
-    <div>
-      <Head>
-        <title>LlamaLend</title>
-      </Head>
+	return (
+		<div>
+			<Head>
+				<title>LlamaLend</title>
+			</Head>
 
-      <main>
-        <h1 className="text-3xl font-bold underline">LlamaLend</h1>
-      </main>
-    </div>
-  );
-};
+			<Layout>
+				<h1 className="text-3xl font-bold underline">LlamaLend</h1>
+			</Layout>
+		</div>
+	)
+}
 
-export default Home;
+export default Home
