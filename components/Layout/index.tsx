@@ -5,6 +5,8 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { cx } from 'cva'
 import AppLink from './AppLink'
 import Menu from './Menu'
+import TxSubmittedDialog from '../TxSubmittedDialog'
+import { useDialogState } from 'ariakit'
 
 interface ILayoutProps {
 	children?: React.ReactNode
@@ -15,6 +17,8 @@ interface ILayoutProps {
 export default function Layout({ children, className, ...props }: ILayoutProps) {
 	const { isConnected } = useAccount()
 	const { chain } = useNetwork()
+	const dialog = useDialogState()
+	const txHash = React.useRef<string | null>(null)
 
 	return (
 		<>
@@ -41,6 +45,8 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 				>
 					{isConnected && !chain?.unsupported ? children : <></>}
 				</main>
+
+				<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
 			</React.Suspense>
 		</>
 	)

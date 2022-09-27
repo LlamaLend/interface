@@ -15,4 +15,56 @@
 	#__next {
 		@apply isolate flex min-h-full flex-col slashed-zero bg-primary text-white;
 	}
+
+	@keyframes slideUp {
+		0% {
+			transform: translateY(100%);
+		}
+
+		100% {
+			transform: translateY(0%);
+		}
+	}
+
+	@keyframes fadeIn {
+		0% {
+			opacity: 0;
+		}
+
+		100% {
+			opacity: 1;
+		}
+	}
+
+	.dialog {
+		@apply max-w-full min-h-[40vh] max-h-[70vh] opacity-100 fixed top-0 left-0 bottom-0 right-0 m-auto z-50 flex flex-col w-full gap-6 p-4 overflow-auto rounded-t-xl text-white border border-white border-opacity-[0.08];
+
+		background-color: #24262a;
+		box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.32);
+		animation: slideUp 350ms cubic-bezier(0.15, 1.15, 0.6, 1);
+	}
+
+	.dialog > * {
+		animation: fadeIn 150ms ease;
+	}
+
+	.dialog hr {
+		border-color: hsla(204, 5%, 24%, 50%);
+	}
+
+	.toastWithLink {
+		@apply flex flex-col gap-1 text-sm font-medium min-w-[160px];
+	}
+
+	.toastWithLink a {
+		@apply underline text-xs font-normal cursor-pointer;
+	}
+
+	@media (min-width: 40rem) {
+		.dialog {
+			@apply top-0 rounded-xl p-6 h-fit min-h-[initial];
+			max-width: min(calc(100% - 32px), 560px);
+			max-height: calc(100% - 32px);
+		}
+	}
 }
