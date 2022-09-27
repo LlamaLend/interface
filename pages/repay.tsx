@@ -2,11 +2,11 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '~/components/Layout'
 
-const Home: NextPage = () => {
+const Repay: NextPage = () => {
 	return (
 		<div>
 			<Head>
-				<title>Borrow - LlamaLend</title>
+				<title>Repay - LlamaLend</title>
 			</Head>
 
 			<Layout></Layout>
@@ -14,4 +14,4 @@ const Home: NextPage = () => {
 	)
 }
 
-export default Home
+export default Repay
