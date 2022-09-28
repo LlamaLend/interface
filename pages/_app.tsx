@@ -8,6 +8,9 @@ import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, wallet, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { Toaster } from 'react-hot-toast'
 import { chainConfig } from '~/lib/constants'
+import { TransactionsContext } from '~/contexts'
+import { useDialogState } from 'ariakit'
+import TxSubmittedDialog from '~/components/TxSubmittedDialog'
 
 const { chains, provider } = configureChains(
 	[chain.mainnet, chain.goerli],
@@ -46,6 +49,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 	const [isMounted, setIsMounted] = React.useState(false)
 	React.useEffect(() => setIsMounted(true), [])
 
+	const dialog = useDialogState()
+	const txHash = React.useRef<string | null>(null)
+
 	return (
 		<>
 			<WagmiConfig client={wagmiClient}>
@@ -55,7 +61,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 					showRecentTransactions={true}
 					modalSize="compact"
 				>
-					{isMounted && <Component {...pageProps} />}
+					<TransactionsContext.Provider value={{ dialog: dialog, hash: txHash }}>
+						{isMounted && <Component {...pageProps} />}
+					</TransactionsContext.Provider>
+					<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
 					<Toaster position="top-right" reverseOrder={true} />
 				</RainbowKitProvider>
 			</WagmiConfig>
