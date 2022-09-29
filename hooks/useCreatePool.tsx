@@ -1,10 +1,10 @@
-import { ethers, Signer, ContractInterface } from 'ethers'
+import { ethers } from 'ethers'
 import { useMutation } from '@tanstack/react-query'
 import { useSigner } from 'wagmi'
 import { useTxContext } from '~/contexts'
 import useConfig from './useConfig'
 import toast from 'react-hot-toast'
-import { ITransactionError, ITransactionSuccess } from '~/types'
+import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
 import { formatMsgInToast, txError, txSuccess } from '~/components/utils/toast'
 
 export enum FormNames {
@@ -23,11 +23,7 @@ type PoolArgs = {
 
 interface ICreatePoolArgs extends PoolArgs {
 	oracleAddress: string
-	contractArgs: {
-		address: string
-		abi: ContractInterface
-		signer: Signer | null
-	}
+	contractArgs: IContractWriteConfig
 }
 
 const createPool = async (args: ICreatePoolArgs) => {
@@ -72,7 +68,7 @@ export function useCreatePool() {
 	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = useConfig()
 	const { data: signer } = useSigner()
 
-	const contractArgs: ICreatePoolArgs['contractArgs'] = {
+	const contractArgs: IContractWriteConfig = {
 		address: factoryAddress,
 		abi: factoryABI,
 		signer: signer || null

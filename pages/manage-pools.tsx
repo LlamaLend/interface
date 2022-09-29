@@ -4,7 +4,7 @@ import Head from 'next/head'
 import BigNumber from 'bignumber.js'
 import { InputNumber, InputText } from '~/components/Form'
 import Layout from '~/components/Layout'
-import { FormNames, useCreatePool } from '~/hooks/usePool'
+import { FormNames, useCreatePool } from '~/hooks/useCreatePool'
 import BeatLoader from '~/components/BeatLoader'
 
 type IFormElements = HTMLFormElement & {

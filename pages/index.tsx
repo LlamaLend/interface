@@ -1,8 +1,11 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '~/components/Layout'
+import { useGetAllPools } from '~/hooks/useGetAllPools'
 
 const Home: NextPage = () => {
+	const { data } = useGetAllPools()
+
 	return (
 		<div>
 			<Head>
