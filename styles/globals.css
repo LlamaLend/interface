@@ -60,6 +60,52 @@
 		@apply underline text-xs font-normal cursor-pointer;
 	}
 
+	.label {
+		@apply flex flex-col gap-1 text-base;
+	}
+
+	.input-field {
+		@apply rounded p-2 border-none bg-neutral-700 text-white placeholder:slashed-zero placeholder:font-mono;
+	}
+
+	[data-backdrop] {
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+
+	.beat-circle {
+		display: inline-block;
+		background-color: var(--circle-color);
+		width: var(--circle-size);
+		height: var(--circle-size);
+		margin: 0px 2px;
+		border-radius: 100%;
+		-webkit-animation: beat 0.7s 0s infinite linear;
+		animation: beat 0.7s 0s infinite linear;
+		-webkit-animation-fill-mode: both;
+		animation-fill-mode: both;
+	}
+
+	.beat-circle.center {
+		-webkit-animation: beat 0.7s 0.35s infinite linear !important;
+		animation: beat 0.7s 0.35s infinite linear !important;
+	}
+
+	@keyframes beat {
+		50% {
+			-webkit-transform: scale(0.75);
+			-ms-transform: scale(0.75);
+			transform: scale(0.75);
+			opacity: 0.2;
+		}
+
+		100% {
+			-webkit-transform: scale(1);
+			-ms-transform: scale(1);
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+
 	@media (min-width: 40rem) {
 		.dialog {
 			@apply top-0 rounded-xl p-6 h-fit min-h-[initial];

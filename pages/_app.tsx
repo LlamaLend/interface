@@ -2,6 +2,8 @@ import '../styles/globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
 import type { AppProps } from 'next/app'
 import * as React from 'react'
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { DehydratedState } from '@tanstack/react-query'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { publicProvider } from 'wagmi/providers/public'
@@ -45,8 +47,10 @@ const wagmiClient = createClient({
 	provider
 })
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedState }>) {
+	const [queryClient] = React.useState(() => new QueryClient())
 	const [isMounted, setIsMounted] = React.useState(false)
+
 	React.useEffect(() => setIsMounted(true), [])
 
 	const dialog = useDialogState()
@@ -54,20 +58,24 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	return (
 		<>
-			<WagmiConfig client={wagmiClient}>
-				<RainbowKitProvider
-					chains={chains}
-					initialChain={chain.mainnet}
-					showRecentTransactions={true}
-					modalSize="compact"
-				>
-					<TransactionsContext.Provider value={{ dialog: dialog, hash: txHash }}>
-						{isMounted && <Component {...pageProps} />}
-					</TransactionsContext.Provider>
-					<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
-					<Toaster position="top-right" reverseOrder={true} />
-				</RainbowKitProvider>
-			</WagmiConfig>
+			<QueryClientProvider client={queryClient}>
+				<Hydrate state={pageProps.dehydratedState}>
+					<WagmiConfig client={wagmiClient}>
+						<RainbowKitProvider
+							chains={chains}
+							initialChain={chain.mainnet}
+							showRecentTransactions={true}
+							modalSize="compact"
+						>
+							<TransactionsContext.Provider value={{ dialog: dialog, hash: txHash }}>
+								{isMounted && <Component {...pageProps} />}
+							</TransactionsContext.Provider>
+							<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
+							<Toaster position="top-right" reverseOrder={true} />
+						</RainbowKitProvider>
+					</WagmiConfig>
+				</Hydrate>
+			</QueryClientProvider>
 		</>
 	)
 }

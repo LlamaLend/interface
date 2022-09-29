@@ -1,3 +1,4 @@
+import { ContractInterface } from 'ethers'
 import { FACTORY_ABI } from './factory.abi'
 
 const FACTORY_MAINNET = '0x4da4d56B1fe6716A055A7D3a8AD323DC321f9C75'
@@ -39,7 +40,7 @@ export interface IChainConfig {
 		alchemyNftUrl: string
 		infuraUrl: string
 		factoryAddress: string
-		factoryABI: any
+		factoryABI: ContractInterface
 		ankrShortName: string
 		quoteApi: string
 		oracleAddress: string

@@ -1,29 +1,40 @@
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { ethers, Signer, ContractInterface } from 'ethers'
+import { useMutation } from '@tanstack/react-query'
+import { useSigner } from 'wagmi'
 import { useTxContext } from '~/contexts'
 import useConfig from './useConfig'
+import toast from 'react-hot-toast'
+import { ITransactionError, ITransactionSuccess } from '~/types'
+import { formatMsgInToast, txError, txSuccess } from '~/components/utils/toast'
 
-interface ICreatePoolArgs {
-	maxPrice: number // the max Price people should be able to borrow at, a good baseline is to pick 60% of the current floor of nft
-	nftAddress: string // address of nft to borrow
-	maxDailyBorrows: number // max amount of borrowed ETH each day, using 1 ETH for tubbyloans
-	name: string // name of loan NFTs, eg:"TubbyLoan"
-	symbol: string // symbol of loans NFTs, eg: "TL"
-	maxLength: number // maximum duration of loans in seconds, eg: 2 weeks would be "1209600", better to make this < 1 mo
-	maxInterestPerEthPerSecond: number // max interest that can be paid, to calculate run (percent * 1e18)/(seconds in 1 year) eg: 80% is 0.8e18/1 year = "25367833587", this is what will be charged if pool utilization is at 100%
+export enum FormNames {
+	maxPrice = 'maxPrice',
+	nftAddress = 'nftAddress',
+	maxDailyBorrows = 'maxDailyBorrows',
+	name = 'name',
+	symbol = 'symbol',
+	maxLength = 'maxLength',
+	maxInterestPerEthPerSecond = 'maxInterestPerEthPerSecond'
 }
 
-export function useCreatePool(args: ICreatePoolArgs) {
-	const { maxPrice, nftAddress, maxDailyBorrows, name, symbol, maxLength, maxInterestPerEthPerSecond } = args
-	const txContext = useTxContext()
+type PoolArgs = {
+	[key in FormNames]: string
+}
 
-	const { data: chainConfig } = useConfig()
+interface ICreatePoolArgs extends PoolArgs {
+	oracleAddress: string
+	contractArgs: {
+		address: string
+		abi: ContractInterface
+		signer: Signer | null
+	}
+}
 
-	const { config } = usePrepareContractWrite({
-		addressOrName: chainConfig!.factoryAddress,
-		contractInterface: chainConfig!.factoryABI,
-		functionName: 'borrow',
-		args: [
-			chainConfig!.oracleAddress,
+const createPool = async (args: ICreatePoolArgs) => {
+	try {
+		const {
+			contractArgs,
+			oracleAddress,
 			maxPrice,
 			nftAddress,
 			maxDailyBorrows,
@@ -31,31 +42,63 @@ export function useCreatePool(args: ICreatePoolArgs) {
 			symbol,
 			maxLength,
 			maxInterestPerEthPerSecond
-		]
-	})
+		} = args
 
-	const contractWrite = useContractWrite({
-		...config,
-		onSuccess: (data) => {
-			txContext.hash!.current = data.hash
-			txContext.dialog?.toggle()
+		if (Object.values(args).filter((x) => !x).length > 0 || !contractArgs.signer) {
+			throw new Error('Invalid arguments')
 		}
-	})
 
-	const waitForTransaction = useWaitForTransaction({
-		hash: contractWrite.data?.hash,
-		onSuccess: () => {},
-		onSettled: (data) => {
-			if (data?.status === 1) {
-				// txSuccess()
-			} else {
-				// txError()
+		const { address, abi, signer } = contractArgs
+
+		const contract = new ethers.Contract(address, abi, signer)
+
+		return await contract.createPool(
+			oracleAddress,
+			maxPrice,
+			nftAddress,
+			maxDailyBorrows,
+			name,
+			symbol,
+			maxLength,
+			maxInterestPerEthPerSecond
+		)
+	} catch (error: any) {
+		throw new Error(error.message || (error?.reason ?? "Couldn't create a pool"))
+	}
+}
+
+export function useCreatePool() {
+	const txContext = useTxContext()
+	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = useConfig()
+	const { data: signer } = useSigner()
+
+	const contractArgs: ICreatePoolArgs['contractArgs'] = {
+		address: factoryAddress,
+		abi: factoryABI,
+		signer: signer || null
+	}
+
+	return useMutation<ITransactionSuccess, ITransactionError, PoolArgs, unknown>(
+		(args: PoolArgs) => createPool({ ...args, contractArgs, oracleAddress }),
+		{
+			onError: (error) => {
+				toast.error(formatMsgInToast(error.message))
+			},
+			onSuccess: (data) => {
+				txContext.hash!.current = data.hash
+				txContext.dialog?.toggle()
+
+				const toastid = toast.loading('Confirming...')
+
+				data.wait().then((res) => {
+					toast.dismiss(toastid)
+					if (res.status === 1) {
+						txSuccess({ txHash: data.hash, blockExplorer, content: 'Transaction Success' })
+					} else {
+						txError({ txHash: data.hash, blockExplorer })
+					}
+				})
 			}
 		}
-	})
-
-	return {
-		...contractWrite,
-		waitForTransaction
-	}
+	)
 }

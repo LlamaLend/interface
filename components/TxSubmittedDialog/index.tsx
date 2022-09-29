@@ -17,8 +17,8 @@ export default function TxSubmittedDialog({ dialog, transactionHash }: FormDialo
 		<Dialog state={dialog} className="dialog">
 			<header className="flex items-center justify-end">
 				<button className="buttonDismiss" onClick={dialog.toggle}>
-					<span className="visually-hidden">Close</span>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width={24} height={24}>
+					<span className="sr-only">Close</span>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width={18} height={18}>
 						<path
 							fillRule="evenodd"
 							d="M3.97 3.97a.75.75 0 011.06 0L12 10.94l6.97-6.97a.75.75 0 111.06 1.06L13.06 12l6.97 6.97a.75.75 0 11-1.06 1.06L12 13.06l-6.97 6.97a.75.75 0 01-1.06-1.06L10.94 12 3.97 5.03a.75.75 0 010-1.06z"
@@ -53,7 +53,7 @@ export default function TxSubmittedDialog({ dialog, transactionHash }: FormDialo
 			>
 				{`View on ${blockExplorer?.name ?? 'Etherscan'}`}
 			</a>
-			<button onClick={dialog.toggle} className="p-1.5 rounded mt-5 bg-blue-500 shadow">
+			<button onClick={dialog.toggle} className="p-2 rounded-lg mt-5 bg-blue-500 shadow">
 				Close
 			</button>
 		</Dialog>

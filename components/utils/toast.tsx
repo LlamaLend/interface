@@ -53,3 +53,11 @@ export const txError = ({ txHash, blockExplorer }: ITxError) => {
 		}
 	)
 }
+
+export function formatMsgInToast(message: string) {
+	if (message.startsWith('user rejected')) {
+		return 'User rejected request'
+	}
+
+	return message.length > 50 ? message.slice(0, 50) + '...' : message
+}
