@@ -9,6 +9,7 @@ export const POOL_ABI = [
 			{ internalType: 'string', name: '_symbol', type: 'string' },
 			{ internalType: 'uint256', name: '_maxLoanLength', type: 'uint256' },
 			{ internalType: 'uint256', name: '_maxInterestPerEthPerSecond', type: 'uint256' },
+			{ internalType: 'uint256', name: '_minimumInterest', type: 'uint256' },
 			{ internalType: 'address', name: '_owner', type: 'address' }
 		],
 		stateMutability: 'nonpayable',
@@ -125,6 +126,7 @@ export const POOL_ABI = [
 			{ internalType: 'uint256[]', name: 'nftId', type: 'uint256[]' },
 			{ internalType: 'uint216', name: 'price', type: 'uint216' },
 			{ internalType: 'uint256', name: 'deadline', type: 'uint256' },
+			{ internalType: 'uint256', name: 'maxInterest', type: 'uint256' },
 			{ internalType: 'uint8', name: 'v', type: 'uint8' },
 			{ internalType: 'bytes32', name: 'r', type: 'bytes32' },
 			{ internalType: 'bytes32', name: 's', type: 'bytes32' }
@@ -161,13 +163,6 @@ export const POOL_ABI = [
 		inputs: [{ internalType: 'uint256', name: 'priceOfNextItem', type: 'uint256' }],
 		name: 'currentAnnualInterest',
 		outputs: [{ internalType: 'uint256', name: 'interest', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [],
-		name: 'currentSumInterestPerEth',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
 		stateMutability: 'view',
 		type: 'function'
 	},
@@ -221,13 +216,6 @@ export const POOL_ABI = [
 		type: 'function'
 	},
 	{
-		inputs: [],
-		name: 'lastUpdate',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
 		inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
 		name: 'liquidators',
 		outputs: [{ internalType: 'address', name: '', type: 'address' }],
@@ -246,7 +234,7 @@ export const POOL_ABI = [
 		name: 'loans',
 		outputs: [
 			{ internalType: 'uint256', name: 'nft', type: 'uint256' },
-			{ internalType: 'uint256', name: 'startInterestSum', type: 'uint256' },
+			{ internalType: 'uint256', name: 'interest', type: 'uint256' },
 			{ internalType: 'uint40', name: 'startTime', type: 'uint40' },
 			{ internalType: 'uint216', name: 'borrowed', type: 'uint216' }
 		],
@@ -270,6 +258,13 @@ export const POOL_ABI = [
 	{
 		inputs: [],
 		name: 'maxPrice',
+		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'minimumInterest',
 		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
 		stateMutability: 'view',
 		type: 'function'
@@ -383,13 +378,6 @@ export const POOL_ABI = [
 		name: 'setOracle',
 		outputs: [],
 		stateMutability: 'nonpayable',
-		type: 'function'
-	},
-	{
-		inputs: [],
-		name: 'sumInterestPerEth',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
 		type: 'function'
 	},
 	{

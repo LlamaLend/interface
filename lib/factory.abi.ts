@@ -42,7 +42,8 @@ export const FACTORY_ABI = [
 			{ internalType: 'string', name: '_name', type: 'string' },
 			{ internalType: 'string', name: '_symbol', type: 'string' },
 			{ internalType: 'uint256', name: '_maxLoanLength', type: 'uint256' },
-			{ internalType: 'uint256', name: '_maxInterestPerEthPerSecond', type: 'uint256' }
+			{ internalType: 'uint256', name: '_maxInterestPerEthPerSecond', type: 'uint256' },
+			{ internalType: 'uint256', name: '_minimumInterest', type: 'uint256' }
 		],
 		name: 'createPool',
 		outputs: [{ internalType: 'address', name: 'pool', type: 'address' }],
