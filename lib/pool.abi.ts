@@ -138,6 +138,16 @@ export const POOL_ABI = [
 	},
 	{
 		inputs: [
+			{ internalType: 'uint256', name: '_maxInterestPerEthPerSecond', type: 'uint256' },
+			{ internalType: 'uint256', name: '_minimumInterest', type: 'uint256' }
+		],
+		name: 'changeInterest',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function'
+	},
+	{
+		inputs: [
 			{ internalType: 'uint216', name: 'price', type: 'uint216' },
 			{ internalType: 'uint256', name: 'deadline', type: 'uint256' },
 			{ internalType: 'uint8', name: 'v', type: 'uint8' },
@@ -186,6 +196,7 @@ export const POOL_ABI = [
 		inputs: [],
 		name: 'getDailyBorrows',
 		outputs: [
+			{ internalType: 'uint256', name: 'maxInstantBorrow', type: 'uint256' },
 			{ internalType: 'uint256', name: 'dailyBorrows', type: 'uint256' },
 			{ internalType: 'uint256', name: 'maxDailyBorrowsLimit', type: 'uint256' }
 		],

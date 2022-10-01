@@ -12,7 +12,7 @@ type IFormElements = HTMLFormElement & {
 }
 
 const ManagePools: NextPage = () => {
-	const { mutate, isLoading } = useCreatePool()
+	const { mutate, isLoading, error } = useCreatePool()
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		try {
@@ -24,12 +24,14 @@ const ManagePools: NextPage = () => {
 			const maxPrice = Number(form.maxPrice.value)
 			const maxDailyBorrows = Number(form.maxDailyBorrows.value)
 			const maxInterestPerEthPerSecond = Number(form.maxInterestPerEthPerSecond.value)
+			const minimumInterest = Number(form.minimumInterest.value)
 
 			if (
 				Number.isNaN(maxLength) ||
 				Number.isNaN(maxPrice) ||
 				Number.isNaN(maxDailyBorrows) ||
-				Number.isNaN(maxInterestPerEthPerSecond)
+				Number.isNaN(maxInterestPerEthPerSecond) ||
+				Number.isNaN(minimumInterest)
 			) {
 				throw new Error('Invalid arguments')
 			}
@@ -41,7 +43,8 @@ const ManagePools: NextPage = () => {
 				name: form.name.value,
 				symbol: form.symbol.value,
 				maxLength: maxLength.toFixed(0),
-				maxInterestPerEthPerSecond: new BigNumber(maxInterestPerEthPerSecond).times(1e18).toFixed(0)
+				maxInterestPerEthPerSecond: new BigNumber(maxInterestPerEthPerSecond).times(1e18).toFixed(0),
+				minimumInterest: new BigNumber(minimumInterest).times(1e18).toFixed(0)
 			})
 
 			form.reset()
@@ -81,6 +84,13 @@ const ManagePools: NextPage = () => {
 						placeholder="25000"
 						label={'Maximum interest per ETH that can be paid per second'}
 					/>
+
+					<InputNumber
+						name="minimumInterest"
+						placeholder="25000"
+						label={'Minimum interest per ETH that can be paid per second'}
+					/>
+					{error && <small className="text-center text-red-500">{error.message}</small>}
 
 					<button className="p-2 rounded bg-blue-200 text-black disabled:cursor-not-allowed" disabled={isLoading}>
 						{isLoading ? <BeatLoader color="black" /> : 'Create'}

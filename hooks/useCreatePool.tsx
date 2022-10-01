@@ -5,7 +5,7 @@ import { useTxContext } from '~/contexts'
 import useConfig from './useConfig'
 import toast from 'react-hot-toast'
 import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
-import { formatMsgInToast, txError, txSuccess } from '~/components/utils/toast'
+import { txConfirming, txError, txSuccess } from '~/components/TxToast'
 
 export enum FormNames {
 	maxPrice = 'maxPrice',
@@ -14,7 +14,8 @@ export enum FormNames {
 	name = 'name',
 	symbol = 'symbol',
 	maxLength = 'maxLength',
-	maxInterestPerEthPerSecond = 'maxInterestPerEthPerSecond'
+	maxInterestPerEthPerSecond = 'maxInterestPerEthPerSecond',
+	minimumInterest = 'minimumInterest'
 }
 
 type PoolArgs = {
@@ -37,7 +38,8 @@ const createPool = async (args: ICreatePoolArgs) => {
 			name,
 			symbol,
 			maxLength,
-			maxInterestPerEthPerSecond
+			maxInterestPerEthPerSecond,
+			minimumInterest
 		} = args
 
 		if (Object.values(args).filter((x) => !x).length > 0 || !contractArgs.signer) {
@@ -56,7 +58,8 @@ const createPool = async (args: ICreatePoolArgs) => {
 			name,
 			symbol,
 			maxLength,
-			maxInterestPerEthPerSecond
+			maxInterestPerEthPerSecond,
+			minimumInterest
 		)
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't create a pool"))
@@ -77,14 +80,11 @@ export function useCreatePool() {
 	return useMutation<ITransactionSuccess, ITransactionError, PoolArgs, unknown>(
 		(args: PoolArgs) => createPool({ ...args, contractArgs, oracleAddress }),
 		{
-			onError: (error) => {
-				toast.error(formatMsgInToast(error.message))
-			},
 			onSuccess: (data) => {
 				txContext.hash!.current = data.hash
 				txContext.dialog?.toggle()
 
-				const toastid = toast.loading('Confirming...')
+				const toastid = txConfirming()
 
 				data.wait().then((res) => {
 					toast.dismiss(toastid)

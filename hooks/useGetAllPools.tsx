@@ -35,11 +35,14 @@ async function getAllpools({ contractArgs }: IGetAllPoolsArgs) {
 		})
 
 		const allPoolNames = await Promise.all(allPoolContracts.map((contract) => contract.name()))
+
 		const allPoolSymbols = await Promise.all(allPoolContracts.map((contract) => contract.symbol()))
+
 		const allPoolMaxLoanLengths = await Promise.all(allPoolContracts.map((contract) => contract.maxLoanLength()))
-		const allPoolCurrentAnnualInterests = await Promise.all(
-			allPoolContracts.map((contract) => contract.currentAnnualInterest(0))
-		)
+
+		const allPoolCurrentAnnualInterests = (
+			await Promise.allSettled(allPoolContracts.map((contract) => contract.currentAnnualInterest(0)))
+		).map((x) => (x.status === 'rejected' ? 0 : x.value))
 
 		return allPoolNames.map((name, index) => ({
 			name,
