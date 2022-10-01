@@ -84,7 +84,7 @@ export function useCreatePool() {
 				txContext.hash!.current = data.hash
 				txContext.dialog?.toggle()
 
-				const toastid = txConfirming()
+				const toastid = txConfirming({ txHash: data.hash, blockExplorer })
 
 				data.wait().then((res) => {
 					toast.dismiss(toastid)
