@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import '~/styles/globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
 import type { AppProps } from 'next/app'
 import * as React from 'react'
@@ -8,6 +8,7 @@ import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, wallet, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import { Toaster } from 'react-hot-toast'
 import { chainConfig } from '~/lib/constants'
 import { TransactionsContext } from '~/contexts'
@@ -33,7 +34,20 @@ const { chains, provider } = configureChains(
 const connectors = connectorsForWallets([
 	{
 		groupName: 'Popular',
-		wallets: [wallet.rainbow({ chains }), wallet.metaMask({ chains }), wallet.walletConnect({ chains })]
+		wallets: [
+			wallet.rainbow({ chains }),
+			wallet.metaMask({ chains }),
+			wallet.walletConnect({ chains }),
+			{
+				id: 'safe',
+				name: 'Gnosis Safe',
+				iconUrl: '/assets/gnosis.png',
+				iconBackground: '#fff',
+				createConnector: () => {
+					return { connector: new SafeConnector({ chains }) }
+				}
+			}
+		]
 	},
 	{
 		groupName: 'More',
@@ -42,7 +56,7 @@ const connectors = connectorsForWallets([
 ])
 
 const wagmiClient = createClient({
-	autoConnect: true,
+	autoConnect: process.env.NEXT_PUBLIC_SAFE === 'true' ? false : true,
 	connectors,
 	provider
 })

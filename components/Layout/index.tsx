@@ -20,7 +20,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 		<>
 			<header className="flex flex-col gap-4 flex-wrap p-3 w-full max-w-8xl mx-auto sm:flex-row sm:justify-between sm:items-center">
 				<nav className="flex items-center gap-3 text-base font-semibold bg-white text-black mr-auto p-1 rounded-xl w-full sm:w-auto">
-					<Image src="/gib.png" alt="llamalend" height={24} width={24} priority />
+					<Image src="/assets/gib.png" alt="llamalend" height={24} width={24} priority />
 					<AppLink name="Borrow" path="/" />
 					<AppLink name="Repay" path="/repay" />
 				</nav>

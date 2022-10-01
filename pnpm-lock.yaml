@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@gnosis.pm/safe-apps-wagmi': ^1.0.3
   '@rainbow-me/rainbowkit': ^0.6.2
   '@tailwindcss/forms': ^0.5.3
   '@tanstack/react-query': ^4.7.2
@@ -26,6 +27,7 @@ specifiers:
   wagmi: ^0.6.7
 
 dependencies:
+  '@gnosis.pm/safe-apps-wagmi': 1.0.3
   '@rainbow-me/rainbowkit': 0.6.2_dz2k46tyc2wf7kgp3ew5zaoaua
   '@tanstack/react-query': 4.7.2_biqbaboplfbrettd7655fr4n2y
   ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
@@ -526,6 +528,49 @@ packages:
     resolution: {integrity: sha512-5X9WSvZ8/fjy3gDu8yx9HAA4KG1lazUN2P4/VnaXLxTO9Dz53HI1oYoh1OlhqFNlHgGDiwFX5WhFCc2ljbW3yA==}
     dependencies:
       '@floating-ui/core': 1.0.1
+    dev: false
+
+  /@gnosis.pm/safe-apps-provider/0.13.2:
+    resolution: {integrity: sha512-n/sd6Nq7Kg1ZRSB4zMy7lFV+5R5ZXFKd2ZtvIq0cBvkTM9K2sDNhqTE1Em2uy0hM5wKdWlTfJtwh6YkWVhoXDg==}
+    dependencies:
+      '@gnosis.pm/safe-apps-sdk': 7.8.0
+      events: 3.3.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /@gnosis.pm/safe-apps-sdk/7.8.0:
+    resolution: {integrity: sha512-kO8fJi1ebiKN9qH1NdDToVBuDQQ0U9NkL467U+84LtNTx5PzUJIu6O7tb4nZD24e/OItinf5W8GDWhhfZeiqOA==}
+    dependencies:
+      '@gnosis.pm/safe-react-gateway-sdk': 3.4.1
+      ethers: 5.7.1
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /@gnosis.pm/safe-apps-wagmi/1.0.3:
+    resolution: {integrity: sha512-UKzO/+7hRitjAr5uHqPXNzY1s5JV0y5aheLEpGQQlDEg42EMflo2nm+K4NV+S0mrgnTPW+/kk00sv8FuQqaFjA==}
+    peerDependencies:
+      '@wagmi/core': ^0.3.8
+    dependencies:
+      '@gnosis.pm/safe-apps-provider': 0.13.2
+      '@gnosis.pm/safe-apps-sdk': 7.8.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
+  /@gnosis.pm/safe-react-gateway-sdk/3.4.1:
+    resolution: {integrity: sha512-b8i0BLEP9CC7S2N7hYDX3OXRYIb9asOMVW0QWh4jzsgT5xitUOPy4jrZL9kAmx8QgcMPYbD+Jjsq/R9ltzSmew==}
+    dependencies:
+      cross-fetch: 3.1.5
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@humanwhocodes/config-array/0.10.5:
