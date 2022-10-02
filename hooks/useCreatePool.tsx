@@ -68,7 +68,9 @@ const createPool = async (args: ICreatePoolArgs) => {
 
 export function useCreatePool() {
 	const txContext = useTxContext()
+
 	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = useConfig()
+
 	const { data: signer } = useSigner()
 
 	const contractArgs: IContractWriteConfig = {

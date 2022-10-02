@@ -11,6 +11,7 @@ type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
 }
 
+// TODO: handle unsupported networks and no wallet connections before creating a pool
 const ManagePools: NextPage = () => {
 	const { mutate, isLoading, error } = useCreatePool()
 

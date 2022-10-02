@@ -1,20 +1,12 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Layout from '~/components/Layout'
-import { useGetAllPools } from '~/hooks/useGetAllPools'
+import { useNetwork } from 'wagmi'
+import PoolsContainer from '~/containers/PoolsContainer'
 
 const Home: NextPage = () => {
-	const { data } = useGetAllPools()
+	const { chain } = useNetwork()
 
-	return (
-		<div>
-			<Head>
-				<title>Borrow - LlamaLend</title>
-			</Head>
-
-			<Layout></Layout>
-		</div>
-	)
+	// by default if wallet is not connected, show pools on ethereum
+	return <PoolsContainer chainId={chain?.id ?? 1} chainName={chain?.name ?? 'Ethereum'} />
 }
 
 export default Home

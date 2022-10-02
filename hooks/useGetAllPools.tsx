@@ -1,9 +1,8 @@
 import { ContractInterface, ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
 import { useProvider } from 'wagmi'
-import { IContractReadConfig } from '~/types'
+import { IContractReadConfig, ITransactionError } from '~/types'
 import useConfig from './useConfig'
-import { useNetwork } from 'wagmi'
 
 interface IContractArgs extends IContractReadConfig {
 	poolAbi: ContractInterface
@@ -11,10 +10,24 @@ interface IContractArgs extends IContractReadConfig {
 
 interface IGetAllPoolsArgs {
 	contractArgs: IContractArgs
+	chainId?: number | null
 }
 
-async function getAllpools({ contractArgs }: IGetAllPoolsArgs) {
+export interface IPool {
+	name: string
+	symbol: string
+	maxLoanLength: number
+	currentAnnualInterest: number
+	address: string
+}
+
+async function getAllpools({ contractArgs, chainId }: IGetAllPoolsArgs) {
 	try {
+		// return empty array when no chainId, as there is no chainId returned on /pool/[chainName] when chainName is not supported/invalid
+		if (!chainId) {
+			return []
+		}
+
 		const { address, abi, provider, poolAbi } = contractArgs
 
 		if (!address || !abi || !provider || !poolAbi) {
@@ -48,16 +61,16 @@ async function getAllpools({ contractArgs }: IGetAllPoolsArgs) {
 			name,
 			symbol: allPoolSymbols[index],
 			maxLoanLength: Number(allPoolMaxLoanLengths[index]),
-			currentAnnualInterest: Number(allPoolCurrentAnnualInterests[index])
+			currentAnnualInterest: Number(allPoolCurrentAnnualInterests[index]),
+			address: poolAddresses[index]
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pools"))
 	}
 }
 
-export function useGetAllPools() {
-	const config = useConfig()
-	const { chain } = useNetwork()
+export function useGetAllPools({ chainId }: { chainId?: number | null }) {
+	const config = useConfig(chainId)
 
 	const provider = useProvider()
 
@@ -68,7 +81,11 @@ export function useGetAllPools() {
 		provider
 	}
 
-	return useQuery(['allPools', chain?.id], () => getAllpools({ contractArgs }), {
-		refetchInterval: 30_000
-	})
+	return useQuery<Array<IPool>, ITransactionError>(
+		['allPools', chainId],
+		() => getAllpools({ contractArgs, chainId }),
+		{
+			refetchInterval: 30_000
+		}
+	)
 }

@@ -1,11 +1,12 @@
-import { useNetwork } from 'wagmi'
+import { allChains } from 'wagmi'
 import { chainConfig } from '~/lib/constants'
 
-export default function useConfig() {
-	const { chain } = useNetwork()
+export default function useConfig(chainId?: number | null) {
+	const chain = allChains.find((c) => c.id === chainId)
 
+	// default to config of ethereum when no chain name is provided
 	return {
-		...(chain?.id && !chain?.unsupported ? chainConfig[chain.id] : chainConfig[1]),
+		...chainConfig[chainId || 1],
 		blockExplorer: chain?.blockExplorers?.default ?? { url: 'https://etherscan.io', name: 'Etherscan' }
 	}
 }

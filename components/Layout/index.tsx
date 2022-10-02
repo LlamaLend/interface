@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Image from 'next/future/image'
-import { useAccount, useNetwork } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { cx } from 'cva'
 import AppLink from './AppLink'
@@ -13,9 +12,6 @@ interface ILayoutProps {
 }
 
 export default function Layout({ children, className, ...props }: ILayoutProps) {
-	const { isConnected } = useAccount()
-	const { chain } = useNetwork()
-
 	return (
 		<>
 			<header className="flex flex-col gap-4 flex-wrap p-3 w-full max-w-8xl mx-auto sm:flex-row sm:justify-between sm:items-center">
@@ -39,7 +35,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 					)}
 					{...props}
 				>
-					{isConnected && !chain?.unsupported ? children : <></>}
+					{children}
 				</main>
 			</React.Suspense>
 		</>

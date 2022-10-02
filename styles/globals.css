@@ -16,6 +16,18 @@
 		@apply isolate flex min-h-full flex-col slashed-zero bg-primary text-white;
 	}
 
+	#__next > * {
+		@apply flex-1 flex flex-col min-h-full;
+	}
+
+	.fallback-text {
+		@apply py-6 px-2 mx-auto mb-auto mt-[20vh] text-center rounded-xl;
+	}
+
+	.fallback-text button {
+		@apply underline p-0;
+	}
+
 	@keyframes slideUp {
 		0% {
 			transform: translateY(100%);
