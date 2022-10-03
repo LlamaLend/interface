@@ -17,8 +17,8 @@ const PoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 	// only show pools of network user is connected to if they are on /pools, as /pools is similare index route i.e., '/'
 	return (
 		<PoolsContainer
-			chainId={chainId || (isDefaultRoute ? chain?.id : null)}
-			chainName={chainName || (isDefaultRoute ? chain?.name : null)}
+			chainId={chainId || (isDefaultRoute ? chain?.id ?? 1 : null)}
+			chainName={chainName || (isDefaultRoute ? chain?.name ?? 'Ethereum' : null)}
 		/>
 	)
 }

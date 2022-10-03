@@ -2,10 +2,12 @@ import type { NextPage } from 'next'
 import { FormEvent } from 'react'
 import Head from 'next/head'
 import BigNumber from 'bignumber.js'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { InputNumber, InputText } from '~/components/Form'
 import Layout from '~/components/Layout'
 import { FormNames, useCreatePool } from '~/hooks/useCreatePool'
 import BeatLoader from '~/components/BeatLoader'
+import { useAccount, useNetwork } from 'wagmi'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -13,6 +15,10 @@ type IFormElements = HTMLFormElement & {
 
 // TODO: handle unsupported networks and no wallet connections before creating a pool
 const ManagePools: NextPage = () => {
+	const { isConnected } = useAccount()
+	const { chain } = useNetwork()
+	const { openConnectModal } = useConnectModal()
+	const { openChainModal } = useChainModal()
 	const { mutate, isLoading, error } = useCreatePool()
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -93,9 +99,22 @@ const ManagePools: NextPage = () => {
 					/>
 					{error && <small className="text-center text-red-500">{error.message}</small>}
 
-					<button className="p-2 rounded bg-blue-200 text-black disabled:cursor-not-allowed" disabled={isLoading}>
-						{isLoading ? <BeatLoader color="black" /> : 'Create'}
-					</button>
+					{!isConnected ? (
+						<button type="button" className="p-2 rounded bg-blue-200 text-black" onClick={openConnectModal}>
+							Connect Wallet
+						</button>
+					) : chain?.unsupported ? (
+						<button type="button" className="p-2 rounded bg-blue-200 text-black" onClick={openChainModal}>
+							Switch Network
+						</button>
+					) : (
+						<button
+							className="p-2 rounded bg-blue-200 text-black disabled:cursor-not-allowed"
+							disabled={isLoading || !isConnected || chain?.unsupported}
+						>
+							{isLoading ? <BeatLoader color="black" /> : 'Create'}
+						</button>
+					)}
 				</form>
 			</Layout>
 		</div>
