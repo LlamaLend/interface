@@ -1,7 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { allChains } from 'wagmi'
-import { PlaceHolderItem } from '~/components/GridItem/Pool'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import { useGetPoolData } from '~/hooks/useGetPoolData'
@@ -25,9 +24,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, address }) => {
 				<p className="fallback-text">Something went wrong, couldn't find data of this pool.</p>
 			) : isLoading ? (
 				<GridWrapper>
-					{new Array(10).fill(1).map((_, index) => (
-						<PlaceHolderItem key={'plitem' + index} />
-					))}
+					<></>
 				</GridWrapper>
 			) : !data ? (
 				<p className="fallback-text">

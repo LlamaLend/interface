@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { PoolItem } from '~/components/GridItem'
-import { PlaceHolderItem } from '~/components/GridItem/Pool'
+import { PlaceHolderPoolItem } from '~/components/GridItem/Pool'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import { useGetAllPools } from '~/hooks/useGetAllPools'
@@ -28,7 +28,7 @@ const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 				) : isLoading ? (
 					<GridWrapper>
 						{new Array(10).fill(1).map((_, index) => (
-							<PlaceHolderItem key={'plitem' + index} />
+							<PlaceHolderPoolItem key={'plitem' + index} />
 						))}
 					</GridWrapper>
 				) : data.length === 0 ? (

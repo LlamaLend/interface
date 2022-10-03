@@ -37,7 +37,7 @@ export function PoolItem({ data, chainName }: IGridItemProps) {
 	)
 }
 
-export function PlaceHolderItem() {
+export function PlaceHolderPoolItem() {
 	return (
 		<ItemWrapper>
 			<div className="h-20 bg-[#202020] placeholder-box rounded-t-xl relative -mx-4 -mt-4 mb-4">
@@ -57,7 +57,7 @@ export function PlaceHolderItem() {
 			</p>
 
 			<div className="text-sm text-center rounded-xl p-2 bg-[#243b55] cursor-not-allowed text-white text-opacity-40">
-				View Pool
+				<div className="h-5"></div>
 			</div>
 		</ItemWrapper>
 	)
