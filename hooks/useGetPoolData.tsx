@@ -1,13 +1,11 @@
 import { ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
-import { useProvider } from 'wagmi'
 import { IContractReadConfig, ITransactionError } from '~/types'
-import useConfig from './useConfig'
+import { chainConfig } from '~/lib/constants'
 
-interface IGetAllPoolsArgs {
-	contractArgs: IContractReadConfig
+interface IGetPoolDataArgs {
+	contractArgs: IContractReadConfig | null
 	chainId?: number | null
-	address: string
 }
 
 export interface IPoolData {
@@ -15,53 +13,60 @@ export interface IPoolData {
 	symbol: string
 	maxLoanLength: number
 	currentAnnualInterest: number
+	nftContract: string
 }
 
-async function getPool({ contractArgs, chainId }: IGetAllPoolsArgs) {
+export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 	try {
-		// return empty array when no chainId, as there is no chainId returned on /pool/[chainName] when chainName is not supported/invalid
-		if (!chainId) {
+		if (!chainId || !contractArgs) {
 			return null
 		}
 
 		const { address, abi, provider } = contractArgs
 
-		if (!address || !abi || !provider) {
+		if (!provider) {
 			throw new Error('Invalid arguments')
 		}
 
 		const contract = new ethers.Contract(address, abi, provider)
 
-		const [name, symbol, maxLoanLength, currentAnnualInterest]: Array<string> = await Promise.all([
+		const [name, symbol, maxLoanLength, nftContract]: Array<string> = await Promise.all([
 			contract.name(),
 			contract.symbol(),
 			contract.maxLoanLength(),
-			contract.currentAnnualInterest(0)
+			contract.nftContract()
 		])
+
+		const [currentAnnualInterest] = (await Promise.allSettled([contract.currentAnnualInterest(0)])).map((x) =>
+			x.status === 'rejected' ? 0 : x.value
+		)
 
 		return {
 			name,
 			symbol,
 			maxLoanLength: Number(maxLoanLength),
-			currentAnnualInterest: Number(currentAnnualInterest)
+			currentAnnualInterest: Number(currentAnnualInterest),
+			nftContract
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
 	}
 }
 
-export function useGetAllPools({ chainId, address }: { chainId?: number | null; address: string }) {
-	const config = useConfig(chainId)
+export function useGetPoolData({ chainId, address }: { chainId?: number | null; address?: string }) {
+	const config = chainConfig(chainId)
 
-	const contractArgs: IContractReadConfig = {
-		address: address,
-		abi: config.poolABI,
-		provider: config.chainProvider
-	}
+	const contractArgs = address
+		? {
+				address,
+				abi: config.poolABI,
+				provider: config.chainProvider
+		  }
+		: null
 
 	return useQuery<IPoolData | null, ITransactionError>(
 		['pool', chainId, address],
-		() => getPool({ contractArgs, chainId, address }),
+		() => getPool({ contractArgs, chainId }),
 		{
 			refetchInterval: 30_000
 		}

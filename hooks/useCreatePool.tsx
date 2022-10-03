@@ -2,10 +2,10 @@ import { ethers } from 'ethers'
 import { useMutation } from '@tanstack/react-query'
 import { useSigner } from 'wagmi'
 import { useTxContext } from '~/contexts'
-import useConfig from './useConfig'
 import toast from 'react-hot-toast'
 import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
 import { txConfirming, txError, txSuccess } from '~/components/TxToast'
+import { chainConfig } from '~/lib/constants'
 
 export enum FormNames {
 	maxPrice = 'maxPrice',
@@ -69,7 +69,7 @@ const createPool = async (args: ICreatePoolArgs) => {
 export function useCreatePool() {
 	const txContext = useTxContext()
 
-	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = useConfig()
+	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = chainConfig()
 
 	const { data: signer } = useSigner()
 

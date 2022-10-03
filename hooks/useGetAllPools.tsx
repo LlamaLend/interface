@@ -1,8 +1,7 @@
 import { ContractInterface, ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
-import { useProvider } from 'wagmi'
 import { IContractReadConfig, ITransactionError } from '~/types'
-import useConfig from './useConfig'
+import { chainConfig } from '~/lib/constants'
 
 interface IContractArgs extends IContractReadConfig {
 	poolAbi: ContractInterface
@@ -21,7 +20,7 @@ export interface IPool {
 	address: string
 }
 
-async function getAllpools({ contractArgs, chainId }: IGetAllPoolsArgs) {
+export async function getAllpools({ contractArgs, chainId }: IGetAllPoolsArgs) {
 	try {
 		// return empty array when no chainId, as there is no chainId returned on /pool/[chainName] when chainName is not supported/invalid
 		if (!chainId) {
@@ -70,7 +69,7 @@ async function getAllpools({ contractArgs, chainId }: IGetAllPoolsArgs) {
 }
 
 export function useGetAllPools({ chainId }: { chainId?: number | null }) {
-	const config = useConfig(chainId)
+	const config = chainConfig(chainId)
 
 	const contractArgs: IContractArgs = {
 		address: config.factoryAddress,

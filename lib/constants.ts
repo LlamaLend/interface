@@ -1,4 +1,5 @@
 import { ContractInterface, providers } from 'ethers'
+import { allChains } from 'wagmi'
 import { FACTORY_ABI } from './factory.abi'
 import { POOL_ABI } from './pool.abi'
 
@@ -9,7 +10,7 @@ const ORACLE_ADDRESS = '0x4096b3f0e89c06e98d1095da7aefdd4b38eeb1e0'
 
 const QUOTE_SERVER_API = 'https://oracle.llamalend.com/quote'
 
-export const chainConfig: IChainConfig = {
+export const CHAINS_CONFIGURATION: IChainConfig = {
 	1: {
 		ankrUrl: 'https://rpc.ankr.com/eth',
 		alchemyUrl: 'https://eth-mainnet.g.alchemy.com/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_',
@@ -55,3 +56,13 @@ export interface IChainConfig {
 }
 
 export const LOCAL_STORAGE_KEY = 'llamalend'
+
+export const chainConfig = (chainId?: number | null) => {
+	const chain = allChains.find((c) => c.id === chainId)
+
+	// default to config of ethereum when no chain name is provided
+	return {
+		...CHAINS_CONFIGURATION[chainId || 1],
+		blockExplorer: chain?.blockExplorers?.default ?? { url: 'https://etherscan.io', name: 'Etherscan' }
+	}
+}

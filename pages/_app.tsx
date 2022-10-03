@@ -10,7 +10,7 @@ import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, wallet, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import { Toaster } from 'react-hot-toast'
-import { chainConfig } from '~/lib/constants'
+import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { TransactionsContext } from '~/contexts'
 import { useDialogState } from 'ariakit'
 import TxSubmittedDialog from '~/components/TxSubmittedDialog'
@@ -21,9 +21,9 @@ const { chains, provider } = configureChains(
 		jsonRpcProvider({
 			rpc: (chain) => {
 				if (chain.id === 1) {
-					return { http: chainConfig[1].ankrUrl }
+					return { http: CHAINS_CONFIGURATION[1].ankrUrl }
 				} else if (chain.id === 5) {
-					return { http: chainConfig[5].ankrUrl }
+					return { http: CHAINS_CONFIGURATION[5].ankrUrl }
 				} else return { http: chain.rpcUrls.default }
 			}
 		}),

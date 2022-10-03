@@ -40,5 +40,21 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 		}
 	}
 
+	// const config = chainConfig(chainDetails.id)
+
+	// const queryClient = new QueryClient()
+
+	// await queryClient.prefetchQuery(['allPools', chainDetails.id], () =>
+	// 	getAllpools({
+	// 		chainId: chainDetails.id,
+	// 		contractArgs: {
+	// 			address: config.factoryAddress,
+	// 			abi: config.factoryABI,
+	// 			poolAbi: config.poolABI,
+	// 			provider: config.chainProvider
+	// 		}
+	// 	})
+	// )
+
 	return { props: { chainId: chainDetails.id, chainName: chainDetails.name } }
 }
