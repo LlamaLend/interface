@@ -1,6 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { allChains } from 'wagmi'
 import GridWrapper from '~/components/GridWrapper'
+import Layout from '~/components/Layout'
 
 interface IPageProps {
 	chainId?: number
@@ -10,9 +11,11 @@ interface IPageProps {
 
 const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, address }) => {
 	return (
-		<GridWrapper>
-			<></>
-		</GridWrapper>
+		<Layout>
+			<GridWrapper>
+				<></>
+			</GridWrapper>
+		</Layout>
 	)
 }
 

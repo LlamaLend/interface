@@ -72,13 +72,11 @@ async function getAllpools({ contractArgs, chainId }: IGetAllPoolsArgs) {
 export function useGetAllPools({ chainId }: { chainId?: number | null }) {
 	const config = useConfig(chainId)
 
-	const provider = useProvider()
-
 	const contractArgs: IContractArgs = {
 		address: config.factoryAddress,
 		abi: config.factoryABI,
 		poolAbi: config.poolABI,
-		provider
+		provider: config.chainProvider
 	}
 
 	return useQuery<Array<IPool>, ITransactionError>(

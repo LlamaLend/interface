@@ -1,4 +1,4 @@
-import { ContractInterface } from 'ethers'
+import { ContractInterface, providers } from 'ethers'
 import { FACTORY_ABI } from './factory.abi'
 import { POOL_ABI } from './pool.abi'
 
@@ -20,7 +20,8 @@ export const chainConfig: IChainConfig = {
 		poolABI: POOL_ABI,
 		ankrShortName: 'eth',
 		quoteApi: `${QUOTE_SERVER_API}/1`,
-		oracleAddress: ORACLE_ADDRESS
+		oracleAddress: ORACLE_ADDRESS,
+		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth')
 	},
 	5: {
 		ankrUrl: 'https://rpc.ankr.com/eth_goerli',
@@ -32,7 +33,8 @@ export const chainConfig: IChainConfig = {
 		poolABI: POOL_ABI,
 		ankrShortName: 'eth_goerli',
 		quoteApi: `${QUOTE_SERVER_API}/5`,
-		oracleAddress: ORACLE_ADDRESS
+		oracleAddress: ORACLE_ADDRESS,
+		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth_goerli')
 	}
 }
 
@@ -48,6 +50,7 @@ export interface IChainConfig {
 		ankrShortName: string
 		quoteApi: string
 		oracleAddress: string
+		chainProvider: providers.BaseProvider
 	}
 }
 
