@@ -15,19 +15,6 @@ export const POOL_ABI = [
 		stateMutability: 'nonpayable',
 		type: 'constructor'
 	},
-	{ inputs: [], name: 'ApprovalCallerNotOwnerNorApproved', type: 'error' },
-	{ inputs: [], name: 'ApprovalQueryForNonexistentToken', type: 'error' },
-	{ inputs: [], name: 'BalanceQueryForZeroAddress', type: 'error' },
-	{ inputs: [], name: 'MintERC2309QuantityExceedsLimit', type: 'error' },
-	{ inputs: [], name: 'MintToZeroAddress', type: 'error' },
-	{ inputs: [], name: 'MintZeroQuantity', type: 'error' },
-	{ inputs: [], name: 'OwnerQueryForNonexistentToken', type: 'error' },
-	{ inputs: [], name: 'OwnershipNotInitializedForExtraData', type: 'error' },
-	{ inputs: [], name: 'TransferCallerNotOwnerNorApproved', type: 'error' },
-	{ inputs: [], name: 'TransferFromIncorrectOwner', type: 'error' },
-	{ inputs: [], name: 'TransferToNonERC721ReceiverImplementer', type: 'error' },
-	{ inputs: [], name: 'TransferToZeroAddress', type: 'error' },
-	{ inputs: [], name: 'URIQueryForNonexistentToken', type: 'error' },
 	{
 		anonymous: false,
 		inputs: [
@@ -60,12 +47,13 @@ export const POOL_ABI = [
 	{
 		anonymous: false,
 		inputs: [
-			{ indexed: true, internalType: 'uint256', name: 'fromTokenId', type: 'uint256' },
-			{ indexed: false, internalType: 'uint256', name: 'toTokenId', type: 'uint256' },
-			{ indexed: true, internalType: 'address', name: 'from', type: 'address' },
-			{ indexed: true, internalType: 'address', name: 'to', type: 'address' }
+			{ indexed: true, internalType: 'uint256', name: 'loanId', type: 'uint256' },
+			{ indexed: false, internalType: 'uint256', name: 'nft', type: 'uint256' },
+			{ indexed: false, internalType: 'uint256', name: 'interest', type: 'uint256' },
+			{ indexed: false, internalType: 'uint256', name: 'startTime', type: 'uint256' },
+			{ indexed: false, internalType: 'uint216', name: 'borrowed', type: 'uint216' }
 		],
-		name: 'ConsecutiveTransfer',
+		name: 'LoanCreated',
 		type: 'event'
 	},
 	{
@@ -111,7 +99,7 @@ export const POOL_ABI = [
 		],
 		name: 'approve',
 		outputs: [],
-		stateMutability: 'payable',
+		stateMutability: 'nonpayable',
 		type: 'function'
 	},
 	{
@@ -161,7 +149,17 @@ export const POOL_ABI = [
 	},
 	{
 		inputs: [
-			{ internalType: 'uint256', name: 'loanId', type: 'uint256' },
+			{
+				components: [
+					{ internalType: 'uint256', name: 'nft', type: 'uint256' },
+					{ internalType: 'uint256', name: 'interest', type: 'uint256' },
+					{ internalType: 'uint40', name: 'startTime', type: 'uint40' },
+					{ internalType: 'uint216', name: 'borrowed', type: 'uint216' }
+				],
+				internalType: 'struct LendingPool.Loan',
+				name: 'loan',
+				type: 'tuple'
+			},
 			{ internalType: 'uint256', name: 'liquidatorIndex', type: 'uint256' }
 		],
 		name: 'claw',
@@ -204,7 +202,31 @@ export const POOL_ABI = [
 		type: 'function'
 	},
 	{
-		inputs: [{ internalType: 'uint256', name: 'loanId', type: 'uint256' }],
+		inputs: [
+			{ internalType: 'uint256', name: 'nftId', type: 'uint256' },
+			{ internalType: 'uint256', name: 'interest', type: 'uint256' },
+			{ internalType: 'uint256', name: 'startTime', type: 'uint256' },
+			{ internalType: 'uint216', name: 'price', type: 'uint216' }
+		],
+		name: 'getLoanId',
+		outputs: [{ internalType: 'uint256', name: 'id', type: 'uint256' }],
+		stateMutability: 'pure',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				components: [
+					{ internalType: 'uint256', name: 'nft', type: 'uint256' },
+					{ internalType: 'uint256', name: 'interest', type: 'uint256' },
+					{ internalType: 'uint40', name: 'startTime', type: 'uint40' },
+					{ internalType: 'uint216', name: 'borrowed', type: 'uint216' }
+				],
+				internalType: 'struct LendingPool.Loan',
+				name: 'loan',
+				type: 'tuple'
+			}
+		],
 		name: 'infoToRepayLoan',
 		outputs: [
 			{ internalType: 'uint256', name: 'deadline', type: 'uint256' },
@@ -237,18 +259,6 @@ export const POOL_ABI = [
 		inputs: [],
 		name: 'liquidatorsLength',
 		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		name: 'loans',
-		outputs: [
-			{ internalType: 'uint256', name: 'nft', type: 'uint256' },
-			{ internalType: 'uint256', name: 'interest', type: 'uint256' },
-			{ internalType: 'uint40', name: 'startTime', type: 'uint40' },
-			{ internalType: 'uint216', name: 'borrowed', type: 'uint216' }
-		],
 		stateMutability: 'view',
 		type: 'function'
 	},
@@ -324,7 +334,19 @@ export const POOL_ABI = [
 	},
 	{ inputs: [], name: 'renounceOwnership', outputs: [], stateMutability: 'nonpayable', type: 'function' },
 	{
-		inputs: [{ internalType: 'uint256[]', name: 'loanIds', type: 'uint256[]' }],
+		inputs: [
+			{
+				components: [
+					{ internalType: 'uint256', name: 'nft', type: 'uint256' },
+					{ internalType: 'uint256', name: 'interest', type: 'uint256' },
+					{ internalType: 'uint40', name: 'startTime', type: 'uint40' },
+					{ internalType: 'uint216', name: 'borrowed', type: 'uint216' }
+				],
+				internalType: 'struct LendingPool.Loan[]',
+				name: 'loansToRepay',
+				type: 'tuple[]'
+			}
+		],
 		name: 'repay',
 		outputs: [],
 		stateMutability: 'payable',
@@ -338,7 +360,7 @@ export const POOL_ABI = [
 		],
 		name: 'safeTransferFrom',
 		outputs: [],
-		stateMutability: 'payable',
+		stateMutability: 'nonpayable',
 		type: 'function'
 	},
 	{
@@ -350,7 +372,7 @@ export const POOL_ABI = [
 		],
 		name: 'safeTransferFrom',
 		outputs: [],
-		stateMutability: 'payable',
+		stateMutability: 'nonpayable',
 		type: 'function'
 	},
 	{
@@ -420,13 +442,6 @@ export const POOL_ABI = [
 		type: 'function'
 	},
 	{
-		inputs: [],
-		name: 'totalSupply',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
 		inputs: [
 			{ internalType: 'address', name: 'from', type: 'address' },
 			{ internalType: 'address', name: 'to', type: 'address' },
@@ -434,7 +449,7 @@ export const POOL_ABI = [
 		],
 		name: 'transferFrom',
 		outputs: [],
-		stateMutability: 'payable',
+		stateMutability: 'nonpayable',
 		type: 'function'
 	},
 	{
