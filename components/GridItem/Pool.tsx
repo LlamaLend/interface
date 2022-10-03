@@ -1,10 +1,11 @@
 import * as React from 'react'
 import Link from 'next/link'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import * as dayjs from 'dayjs'
+import * as relativeTime from 'dayjs/plugin/relativeTime'
 import ItemWrapper from './ItemWrapper'
 import type { IPool } from '~/hooks/useGetAllPools'
 
+// @ts-ignore
 dayjs.extend(relativeTime)
 
 interface IGridItemProps {
@@ -21,6 +22,7 @@ export function PoolItem({ data, chainName }: IGridItemProps) {
 			<h1>{data.name}</h1>
 			<p className="flex flex-col gap-1">
 				<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
+				{/* @ts-ignore */}
 				<span>{dayjs(new Date(new Date().getTime() + data.maxLoanLength * 1000)).toNow(true)}</span>
 			</p>
 			<p className="flex flex-col gap-1">

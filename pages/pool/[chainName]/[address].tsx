@@ -8,7 +8,7 @@ interface IPageProps {
 	address?: string
 }
 
-const PoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, address }) => {
+const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, address }) => {
 	return (
 		<GridWrapper>
 			<></>
@@ -16,7 +16,7 @@ const PoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, address }) => 
 	)
 }
 
-export default PoolsByChain
+export default PoolByChain
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const chainParam = typeof query.chainName === 'string' && query.chainName
