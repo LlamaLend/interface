@@ -118,6 +118,23 @@
 		}
 	}
 
+	.placeholder-box {
+		background-color: #202020;
+		animation: shimmer 2s cubic-bezier(0.31, 0.29, 0.62, 0.59) infinite;
+		background: linear-gradient(to right, #202020 5%, #252525 20%, #202020 40%);
+		background-size: 1000px 100%;
+		border-radius: 4px;
+	}
+
+	@keyframes shimmer {
+		0% {
+			background-position: -1000px 0;
+		}
+		100% {
+			background-position: 1000px 0;
+		}
+	}
+
 	@media (min-width: 40rem) {
 		.dialog {
 			@apply top-0 rounded-xl p-6 h-fit min-h-[initial];
