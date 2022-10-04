@@ -57,6 +57,9 @@ export interface IChainConfig {
 
 export const LOCAL_STORAGE_KEY = 'llamalend'
 
+export const SECONDS_IN_A_YEAR = 365 * 24 * 60 * 60
+export const SECONDS_IN_A_DAY = 24 * 60 * 60
+
 export const chainConfig = (chainId?: number | null) => {
 	const chain = allChains.find((c) => c.id === chainId)
 

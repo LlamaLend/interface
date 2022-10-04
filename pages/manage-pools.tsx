@@ -8,6 +8,7 @@ import Layout from '~/components/Layout'
 import { FormNames, useCreatePool } from '~/hooks/useCreatePool'
 import BeatLoader from '~/components/BeatLoader'
 import { useAccount, useNetwork } from 'wagmi'
+import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -50,9 +51,12 @@ const ManagePools: NextPage = () => {
 				maxDailyBorrows: new BigNumber(maxDailyBorrows).times(1e18).toFixed(0),
 				name: form.name.value,
 				symbol: form.symbol.value,
-				maxLength: (maxLengthInDays / (24 * 60 * 60)).toFixed(0),
-				maxInterestPerEthPerSecond: new BigNumber(maxInterestPerEthPerSecond).times(1e18).toFixed(0),
-				minimumInterest: new BigNumber(minimumInterest).times(1e18).toFixed(0)
+				maxLength: (maxLengthInDays / SECONDS_IN_A_DAY).toFixed(0),
+				maxInterestPerEthPerSecond: new BigNumber(maxInterestPerEthPerSecond)
+					.times(1e18)
+					.div(SECONDS_IN_A_YEAR)
+					.toFixed(0),
+				minimumInterest: new BigNumber(minimumInterest).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
 			})
 
 			form.reset()
@@ -73,7 +77,7 @@ const ManagePools: NextPage = () => {
 
 					<InputNumber
 						name="maxPrice"
-						placeholder="0.0"
+						placeholder="0.03"
 						label={'Maximum price per NFT'}
 						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards.`}
 						required
@@ -88,7 +92,7 @@ const ManagePools: NextPage = () => {
 					/>
 					<InputNumber
 						name="maxDailyBorrows"
-						placeholder="0.0"
+						placeholder="1"
 						label={`Maximum amount of borrowed ${chainSymbol} each day`}
 						required
 						helperText={`This can be changed afterwards.`}
@@ -97,22 +101,22 @@ const ManagePools: NextPage = () => {
 					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
 					<InputNumber
 						name="maxLengthInDays"
-						placeholder="100000"
+						placeholder="14"
 						label={'Maximum duration of loans in days'}
 						required
 						helperText={`This can be changed afterwards.`}
 					/>
 					<InputNumber
 						name="maxInterestPerEthPerSecond"
-						placeholder="25000"
-						label={`Maximum interest per ${chainSymbol} that can be paid per second`}
+						placeholder="80"
+						label={`Maximum interest per ${chainSymbol} that can be paid per second (in %)`}
 						helperText={`This can be changed afterwards.`}
 					/>
 
 					<InputNumber
 						name="minimumInterest"
-						placeholder="25000"
-						label={`Minimum interest per ${chainSymbol} that can be paid per second`}
+						placeholder="40"
+						label={`Minimum interest per ${chainSymbol} that can be paid per second (in %)`}
 						helperText={`This can be changed afterwards.`}
 					/>
 					{error && <small className="text-center text-red-500">{error.message}</small>}
