@@ -5,18 +5,22 @@ interface IInputProps {
 	label: ReactNode
 	placeholder: string
 	required?: boolean
+	pattern?: string
+	title?: string
+	helperText?: string
 }
 
-export function InputText({ label, ...props }: IInputProps) {
+export function InputText({ label, helperText, ...props }: IInputProps) {
 	return (
 		<label className="label">
 			<span>{label}</span>
 			<input className="input-field" autoComplete="off" autoCorrect="off" type="text" spellCheck="false" {...props} />
+			{helperText && <small className="text-[#708cbf]">{helperText}</small>}
 		</label>
 	)
 }
 
-export function InputNumber({ label, ...props }: IInputProps) {
+export function InputNumber({ label, helperText, ...props }: IInputProps) {
 	return (
 		<label className="label">
 			<span>{label}</span>
@@ -33,6 +37,7 @@ export function InputNumber({ label, ...props }: IInputProps) {
 				title="Enter numbers only."
 				{...props}
 			/>
+			{helperText && <small className="text-[#708cbf]">{helperText}</small>}
 		</label>
 	)
 }

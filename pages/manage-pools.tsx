@@ -20,6 +20,8 @@ const ManagePools: NextPage = () => {
 	const { openChainModal } = useChainModal()
 	const { mutate, isLoading, error } = useCreatePool()
 
+	const chainSymbol = (!chain?.unsupported && chain?.nativeCurrency?.symbol) ?? 'ETH'
+
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		try {
 			e.preventDefault()
@@ -69,13 +71,27 @@ const ManagePools: NextPage = () => {
 				<form className="max-w-lg mx-auto my-10 mb-20 flex flex-col gap-6" onSubmit={handleSubmit}>
 					<h1 className="mb-2 text-3xl font-semibold text-center">Create a Pool</h1>
 
-					<InputNumber name="maxPrice" placeholder="0.0" label={'Maximum price per nft'} required />
-					<InputText name="nftAddress" placeholder="0x..." label={'Address of NFT to borrow'} required />
+					<InputNumber
+						name="maxPrice"
+						placeholder="0.0"
+						label={'Maximum price per NFT'}
+						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards.`}
+						required
+					/>
+					<InputText
+						name="nftAddress"
+						placeholder="0x..."
+						label={'Address of NFT to borrow'}
+						required
+						pattern="^0x[a-fA-F0-9]{40}$"
+						title="Enter valid address."
+					/>
 					<InputNumber
 						name="maxDailyBorrows"
 						placeholder="0.0"
-						label={'Maximum amount of borrowed ETH each day'}
+						label={`Maximum amount of borrowed ${chainSymbol} each day`}
 						required
+						helperText={`This can be changed afterwards.`}
 					/>
 					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
 					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
@@ -84,31 +100,34 @@ const ManagePools: NextPage = () => {
 						placeholder="100000"
 						label={'Maximum duration of loans in days'}
 						required
+						helperText={`This can be changed afterwards.`}
 					/>
 					<InputNumber
 						name="maxInterestPerEthPerSecond"
 						placeholder="25000"
-						label={'Maximum interest per ETH that can be paid per second'}
+						label={`Maximum interest per ${chainSymbol} that can be paid per second`}
+						helperText={`This can be changed afterwards.`}
 					/>
 
 					<InputNumber
 						name="minimumInterest"
 						placeholder="25000"
-						label={'Minimum interest per ETH that can be paid per second'}
+						label={`Minimum interest per ${chainSymbol} that can be paid per second`}
+						helperText={`This can be changed afterwards.`}
 					/>
 					{error && <small className="text-center text-red-500">{error.message}</small>}
 
 					{!isConnected ? (
-						<button type="button" className="p-2 rounded bg-blue-200 text-black" onClick={openConnectModal}>
+						<button type="button" className="p-2 rounded-lg bg-[#243b55] text-white" onClick={openConnectModal}>
 							Connect Wallet
 						</button>
 					) : chain?.unsupported ? (
-						<button type="button" className="p-2 rounded bg-blue-200 text-black" onClick={openChainModal}>
+						<button type="button" className="p-2 rounded-lg bg-[#243b55] text-white" onClick={openChainModal}>
 							Switch Network
 						</button>
 					) : (
 						<button
-							className="p-2 rounded bg-blue-200 text-black disabled:cursor-not-allowed"
+							className="p-2 rounded-lg bg-[#243b55] text-white disabled:cursor-not-allowed"
 							disabled={isLoading || !isConnected || chain?.unsupported}
 						>
 							{isLoading ? <BeatLoader color="black" /> : 'Create'}

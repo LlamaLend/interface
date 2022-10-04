@@ -77,7 +77,7 @@
 	}
 
 	.input-field {
-		@apply rounded p-2 border-none bg-neutral-700 text-white placeholder:slashed-zero placeholder:font-mono;
+		@apply rounded-lg p-2 border-none bg-[#151515] text-white placeholder:slashed-zero placeholder:font-mono;
 	}
 
 	[data-backdrop] {
