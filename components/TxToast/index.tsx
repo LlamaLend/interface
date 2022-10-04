@@ -55,21 +55,16 @@ export const txError = ({ txHash, blockExplorer }: ITxError) => {
 }
 
 export const txConfirming = ({ txHash, blockExplorer }: ITxError) => {
-	const id = toast.loading(
-		() => {
-			return (
-				<div className="toastWithLink">
-					<span>Confirming...</span>
-					<a href={blockExplorer.url + '/tx/' + txHash} target="_blank" rel="noopener noreferrer">
-						View on Etherscan
-					</a>
-				</div>
-			)
-		},
-		{
-			duration: 5000
-		}
-	)
+	const id = toast.loading(() => {
+		return (
+			<div className="toastWithLink">
+				<span>Confirming...</span>
+				<a href={blockExplorer.url + '/tx/' + txHash} target="_blank" rel="noopener noreferrer">
+					View on Etherscan
+				</a>
+			</div>
+		)
+	})
 
 	return id
 }

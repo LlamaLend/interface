@@ -27,6 +27,7 @@ interface ICreatePoolArgs extends PoolArgs {
 	contractArgs: IContractWriteConfig
 }
 
+// TODO: invalidate queries
 const createPool = async (args: ICreatePoolArgs) => {
 	try {
 		const {

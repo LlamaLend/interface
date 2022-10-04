@@ -56,8 +56,10 @@ const ManagePools: NextPage = () => {
 				throw new Error('Invalid arguments')
 			}
 
-			const maxInt = Number(new BigNumber(maxInterestPerEthPerSecond).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
-			const minInt = Number(new BigNumber(minimumInterest).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+			const maxInt = Number(
+				new BigNumber(maxInterestPerEthPerSecond / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+			)
+			const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
 
 			mutate({
 				maxPrice: new BigNumber(maxPrice).times(1e18).toFixed(0),
@@ -67,7 +69,7 @@ const ManagePools: NextPage = () => {
 				symbol: form.symbol.value,
 				maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
 				maxInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
-				minimumInterest: new BigNumber(minimumInterest).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
 			})
 
 			form.reset()
