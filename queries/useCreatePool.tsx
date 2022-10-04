@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useMutation } from '@tanstack/react-query'
-import { useSigner } from 'wagmi'
+import { useAccount, useNetwork, useSigner } from 'wagmi'
 import { useTxContext } from '~/contexts'
 import toast from 'react-hot-toast'
 import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
@@ -67,9 +67,10 @@ const createPool = async (args: ICreatePoolArgs) => {
 }
 
 export function useCreatePool() {
+	const { chain } = useNetwork()
 	const txContext = useTxContext()
 
-	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = chainConfig()
+	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = chainConfig(chain?.id)
 
 	const { data: signer } = useSigner()
 

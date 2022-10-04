@@ -12,6 +12,7 @@ import { useAccount, useNetwork } from 'wagmi'
 import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
 import { IPoolUtilisationChartProps } from '~/components/Charts/PoolUtilisation'
 import { useDebounce } from '~/hooks'
+import { formatMsgInToast } from '~/components/TxToast'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -165,7 +166,7 @@ const ManagePools: NextPage = () => {
 						maxInterest={isInvalidInterests ? 0 : debouncedMaxInterest}
 					/>
 
-					{error && <small className="text-center text-red-500">{error.message}</small>}
+					{error && <small className="text-center text-red-500">{formatMsgInToast(error.message)}</small>}
 
 					{!isConnected ? (
 						<button type="button" className="p-2 rounded-lg bg-[#243b55] text-white" onClick={openConnectModal}>
