@@ -26,14 +26,14 @@ const ManagePools: NextPage = () => {
 
 			const form = e.target as IFormElements
 
-			const maxLength = Number(form.maxLength.value)
+			const maxLengthInDays = Number(form.maxLengthInDays.value)
 			const maxPrice = Number(form.maxPrice.value)
 			const maxDailyBorrows = Number(form.maxDailyBorrows.value)
 			const maxInterestPerEthPerSecond = Number(form.maxInterestPerEthPerSecond.value)
 			const minimumInterest = Number(form.minimumInterest.value)
 
 			if (
-				Number.isNaN(maxLength) ||
+				Number.isNaN(maxLengthInDays) ||
 				Number.isNaN(maxPrice) ||
 				Number.isNaN(maxDailyBorrows) ||
 				Number.isNaN(maxInterestPerEthPerSecond) ||
@@ -48,7 +48,7 @@ const ManagePools: NextPage = () => {
 				maxDailyBorrows: new BigNumber(maxDailyBorrows).times(1e18).toFixed(0),
 				name: form.name.value,
 				symbol: form.symbol.value,
-				maxLength: maxLength.toFixed(0),
+				maxLength: (maxLengthInDays / (24 * 60 * 60)).toFixed(0),
 				maxInterestPerEthPerSecond: new BigNumber(maxInterestPerEthPerSecond).times(1e18).toFixed(0),
 				minimumInterest: new BigNumber(minimumInterest).times(1e18).toFixed(0)
 			})
@@ -69,12 +69,7 @@ const ManagePools: NextPage = () => {
 				<form className="max-w-lg mx-auto my-10 mb-20 flex flex-col gap-6" onSubmit={handleSubmit}>
 					<h1 className="mb-2 text-3xl font-semibold text-center">Create a Pool</h1>
 
-					<InputNumber
-						name="maxPrice"
-						placeholder="0.0"
-						label={'Maximum ETH people should be able to borrow'}
-						required
-					/>
+					<InputNumber name="maxPrice" placeholder="0.0" label={'Maximum price per nft'} required />
 					<InputText name="nftAddress" placeholder="0x..." label={'Address of NFT to borrow'} required />
 					<InputNumber
 						name="maxDailyBorrows"
@@ -84,7 +79,12 @@ const ManagePools: NextPage = () => {
 					/>
 					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
 					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
-					<InputNumber name="maxLength" placeholder="100000" label={'Maximum duration of loans in seconds'} required />
+					<InputNumber
+						name="maxLengthInDays"
+						placeholder="100000"
+						label={'Maximum duration of loans in days'}
+						required
+					/>
 					<InputNumber
 						name="maxInterestPerEthPerSecond"
 						placeholder="25000"
@@ -127,7 +127,7 @@ export default ManagePools
 // maxDailyBorrows - max amount of borrowed ETH each day, using 1 ETH for tubbyloans
 // name - name of loan NFTs, eg:"TubbyLoan"
 // symbol - symbol of loans NFTs, eg: "TL"
-// maxLength - maximum duration of loans in seconds, eg: 2 weeks would be "1209600", better to make this < 1 mo
+// maxLengthInDays - maximum duration of loans in seconds, eg: 2 weeks would be "1209600", better to make this < 1 mo
 // maxInterestPerEthPerSecond - max interest that can be paid, to calculate run (percent * 1e18)/(seconds in 1 year)
 // eg: 80% is 0.8e18/1 year = "25367833587", this is what will be charged if pool utilization is at 100%
 

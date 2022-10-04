@@ -30,16 +30,13 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 
 		const contract = new ethers.Contract(address, abi, provider)
 
-		const [name, symbol, maxLoanLength, nftContract]: Array<string> = await Promise.all([
+		const [name, symbol, maxLoanLength, currentAnnualInterest, nftContract]: Array<string> = await Promise.all([
 			contract.name(),
 			contract.symbol(),
 			contract.maxLoanLength(),
+			contract.currentAnnualInterest(0),
 			contract.nftContract()
 		])
-
-		const [currentAnnualInterest] = (await Promise.allSettled([contract.currentAnnualInterest(0)])).map((x) =>
-			x.status === 'rejected' ? 0 : x.value
-		)
 
 		return {
 			name,
