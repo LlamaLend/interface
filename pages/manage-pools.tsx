@@ -183,7 +183,7 @@ const ManagePools: NextPage = () => {
 							className="p-2 rounded-lg bg-[#243b55] text-white disabled:cursor-not-allowed"
 							disabled={isLoading || !isConnected || chain?.unsupported || isInvalidInterests}
 						>
-							{isLoading ? <BeatLoader color="black" /> : 'Create'}
+							{isLoading ? <BeatLoader color="white" /> : 'Create'}
 						</button>
 					)}
 				</form>
