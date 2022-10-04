@@ -83,7 +83,7 @@ export default function PoolUtilisationChart({ minInterest, maxInterest }: IPool
 				}
 			},
 			grid: {
-				left: 18,
+				left: 20,
 				containLabel: true,
 				bottom: 26,
 				top: 6,
@@ -107,7 +107,8 @@ export default function PoolUtilisationChart({ minInterest, maxInterest }: IPool
 					}
 				},
 				axisLabel: {
-					formatter: '{value} %'
+					formatter: '{value} %',
+					hideOverlap: true
 				},
 				data: xAxisData
 			},

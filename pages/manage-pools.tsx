@@ -28,8 +28,8 @@ const ManagePools: NextPage = () => {
 	const { openConnectModal } = useConnectModal()
 	const { openChainModal } = useChainModal()
 	const { mutate, isLoading, error } = useCreatePool()
-	const [minInterest, setMinInterest] = useState(0)
-	const [maxInterest, setMaxInterest] = useState(0)
+	const [minInterest, setMinInterest] = useState<number | null>(null)
+	const [maxInterest, setMaxInterest] = useState<number | null>(null)
 
 	const chainSymbol = (!chain?.unsupported && chain?.nativeCurrency?.symbol) ?? 'ETH'
 
@@ -75,8 +75,11 @@ const ManagePools: NextPage = () => {
 		}
 	}
 
-	const debouncedMinInterest = useDebounce(minInterest, 200)
-	const debouncedMaxInterest = useDebounce(maxInterest, 200)
+	const debouncedMinInterest = useDebounce(!Number.isNaN(minInterest) ? Number(minInterest) : 0, 200)
+	const debouncedMaxInterest = useDebounce(!Number.isNaN(maxInterest) ? Number(maxInterest) : 0, 200)
+
+	const isInvalidInterests =
+		minInterest === null || maxInterest === null ? true : debouncedMaxInterest < debouncedMinInterest
 
 	return (
 		<div>
@@ -92,7 +95,7 @@ const ManagePools: NextPage = () => {
 						name="maxPrice"
 						placeholder="0.03"
 						label={'Maximum price per NFT'}
-						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards.`}
+						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards. We recommend setting it to current floor price * 0.66`}
 						required
 					/>
 
@@ -128,13 +131,13 @@ const ManagePools: NextPage = () => {
 					<InputNumber
 						name="minimumInterest"
 						placeholder="40"
-						label={`Minimum interest per ${chainSymbol} that can be paid per second (in %)`}
+						label={`Minimum annual interest`}
 						helperText={`This can be changed afterwards.`}
 						onChange={(e) => {
 							const value = Number(e.target.value)
 
 							if (Number.isNaN(value)) {
-								setMinInterest(0)
+								setMinInterest(null)
 							} else {
 								setMinInterest(value)
 							}
@@ -143,21 +146,27 @@ const ManagePools: NextPage = () => {
 
 					<InputNumber
 						name="maxInterestPerEthPerSecond"
-						placeholder="90"
-						label={`Maximum interest per ${chainSymbol} that can be paid per second (in %)`}
-						helperText={`This can be changed afterwards.`}
+						placeholder="30"
+						label={`Maximum annual interest`}
+						helperText={
+							'Maximum annual interest should be greater than minimum annual interest, can be changed afterwards.'
+						}
 						onChange={(e) => {
 							const value = Number(e.target.value)
 
 							if (Number.isNaN(value)) {
-								setMaxInterest(100)
+								setMaxInterest(null)
 							} else {
 								setMaxInterest(value)
 							}
 						}}
+						isError={isInvalidInterests}
 					/>
 
-					<PoolUtilisationChart minInterest={debouncedMinInterest} maxInterest={debouncedMaxInterest} />
+					<PoolUtilisationChart
+						minInterest={isInvalidInterests ? 0 : debouncedMinInterest}
+						maxInterest={isInvalidInterests ? 0 : debouncedMaxInterest}
+					/>
 
 					{error && <small className="text-center text-red-500">{error.message}</small>}
 
@@ -172,7 +181,7 @@ const ManagePools: NextPage = () => {
 					) : (
 						<button
 							className="p-2 rounded-lg bg-[#243b55] text-white disabled:cursor-not-allowed"
-							disabled={isLoading || !isConnected || chain?.unsupported}
+							disabled={isLoading || !isConnected || chain?.unsupported || isInvalidInterests}
 						>
 							{isLoading ? <BeatLoader color="black" /> : 'Create'}
 						</button>
