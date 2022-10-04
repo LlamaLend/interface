@@ -148,7 +148,7 @@ const ManagePools: NextPage = () => {
 						name="maxInterestPerEthPerSecond"
 						placeholder="70"
 						label={`Maximum annual interest`}
-						helperText={'This can be changed afterwards.'}
+						helperText={'This can be changed afterwards and must be higher than minimum annual interest.'}
 						onChange={(e) => {
 							const value = Number(e.target.value)
 
