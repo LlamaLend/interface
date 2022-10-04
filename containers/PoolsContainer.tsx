@@ -4,7 +4,7 @@ import { PoolItem } from '~/components/GridItem'
 import { PlaceHolderPoolItem } from '~/components/GridItem/Pool'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
-import { useGetAllPools } from '~/hooks/useGetAllPools'
+import { useGetAllPools } from '~/queries/useGetAllPools'
 
 interface IPoolsContainerProps {
 	chainId?: number | null

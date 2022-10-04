@@ -1,18 +1,26 @@
 import type { NextPage } from 'next'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import BigNumber from 'bignumber.js'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { InputNumber, InputText } from '~/components/Form'
 import Layout from '~/components/Layout'
-import { FormNames, useCreatePool } from '~/hooks/useCreatePool'
+import { FormNames, useCreatePool } from '~/queries/useCreatePool'
 import BeatLoader from '~/components/BeatLoader'
 import { useAccount, useNetwork } from 'wagmi'
 import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
+import { IPoolUtilisationChartProps } from '~/components/Charts/PoolUtilisation'
+import { useDebounce } from '~/hooks'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
 }
+
+const PoolUtilisationChart = dynamic<IPoolUtilisationChartProps>(() => import('~/components/Charts/PoolUtilisation'), {
+	ssr: false,
+	loading: () => <div style={{ height: '360px' }}></div>
+})
 
 const ManagePools: NextPage = () => {
 	const { isConnected } = useAccount()
@@ -20,6 +28,8 @@ const ManagePools: NextPage = () => {
 	const { openConnectModal } = useConnectModal()
 	const { openChainModal } = useChainModal()
 	const { mutate, isLoading, error } = useCreatePool()
+	const [minInterest, setMinInterest] = useState(0)
+	const [maxInterest, setMaxInterest] = useState(0)
 
 	const chainSymbol = (!chain?.unsupported && chain?.nativeCurrency?.symbol) ?? 'ETH'
 
@@ -45,6 +55,9 @@ const ManagePools: NextPage = () => {
 				throw new Error('Invalid arguments')
 			}
 
+			const maxInt = Number(new BigNumber(maxInterestPerEthPerSecond).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+			const minInt = Number(new BigNumber(minimumInterest).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+
 			mutate({
 				maxPrice: new BigNumber(maxPrice).times(1e18).toFixed(0),
 				nftAddress: form.nftAddress.value,
@@ -52,10 +65,7 @@ const ManagePools: NextPage = () => {
 				name: form.name.value,
 				symbol: form.symbol.value,
 				maxLength: (maxLengthInDays / SECONDS_IN_A_DAY).toFixed(0),
-				maxInterestPerEthPerSecond: new BigNumber(maxInterestPerEthPerSecond)
-					.times(1e18)
-					.div(SECONDS_IN_A_YEAR)
-					.toFixed(0),
+				maxInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
 				minimumInterest: new BigNumber(minimumInterest).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
 			})
 
@@ -64,6 +74,9 @@ const ManagePools: NextPage = () => {
 			// console.log(error)
 		}
 	}
+
+	const debouncedMinInterest = useDebounce(minInterest, 200)
+	const debouncedMaxInterest = useDebounce(maxInterest, 200)
 
 	return (
 		<div>
@@ -82,6 +95,7 @@ const ManagePools: NextPage = () => {
 						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards.`}
 						required
 					/>
+
 					<InputText
 						name="nftAddress"
 						placeholder="0x..."
@@ -90,6 +104,7 @@ const ManagePools: NextPage = () => {
 						pattern="^0x[a-fA-F0-9]{40}$"
 						title="Enter valid address."
 					/>
+
 					<InputNumber
 						name="maxDailyBorrows"
 						placeholder="1"
@@ -97,19 +112,16 @@ const ManagePools: NextPage = () => {
 						required
 						helperText={`This can be changed afterwards.`}
 					/>
+
 					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
+
 					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
+
 					<InputNumber
 						name="maxLengthInDays"
 						placeholder="14"
 						label={'Maximum duration of loans in days'}
 						required
-						helperText={`This can be changed afterwards.`}
-					/>
-					<InputNumber
-						name="maxInterestPerEthPerSecond"
-						placeholder="80"
-						label={`Maximum interest per ${chainSymbol} that can be paid per second (in %)`}
 						helperText={`This can be changed afterwards.`}
 					/>
 
@@ -118,7 +130,35 @@ const ManagePools: NextPage = () => {
 						placeholder="40"
 						label={`Minimum interest per ${chainSymbol} that can be paid per second (in %)`}
 						helperText={`This can be changed afterwards.`}
+						onChange={(e) => {
+							const value = Number(e.target.value)
+
+							if (Number.isNaN(value)) {
+								setMinInterest(0)
+							} else {
+								setMinInterest(value)
+							}
+						}}
 					/>
+
+					<InputNumber
+						name="maxInterestPerEthPerSecond"
+						placeholder="90"
+						label={`Maximum interest per ${chainSymbol} that can be paid per second (in %)`}
+						helperText={`This can be changed afterwards.`}
+						onChange={(e) => {
+							const value = Number(e.target.value)
+
+							if (Number.isNaN(value)) {
+								setMaxInterest(100)
+							} else {
+								setMaxInterest(value)
+							}
+						}}
+					/>
+
+					<PoolUtilisationChart minInterest={debouncedMinInterest} maxInterest={debouncedMaxInterest} />
+
 					{error && <small className="text-center text-red-500">{error.message}</small>}
 
 					{!isConnected ? (
@@ -152,7 +192,7 @@ export default ManagePools
 // symbol - symbol of loans NFTs, eg: "TL"
 // maxLengthInDays - maximum duration of loans in seconds, eg: 2 weeks would be "1209600", better to make this < 1 mo
 // maxInterestPerEthPerSecond - max interest that can be paid, to calculate run (percent * 1e18)/(seconds in 1 year)
-// eg: 80% is 0.8e18/1 year = "25367833587", this is what will be charged if pool utilization is at 100%
+// eg: 80% is 0.8e18/1 year = "25367833587", this is what will be charged if pool utilisation is at 100%
 
 {
 	/* <span className="flex justify-center items-center">

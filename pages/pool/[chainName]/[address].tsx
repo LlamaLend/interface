@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { allChains } from 'wagmi'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
-import { useGetPoolData } from '~/hooks/useGetPoolData'
+import { useGetPoolData } from '~/queries/useGetPoolData'
 
 interface IPageProps {
 	chainId?: number

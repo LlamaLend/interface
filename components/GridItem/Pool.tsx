@@ -3,7 +3,7 @@ import Link from 'next/link'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import ItemWrapper from './ItemWrapper'
-import type { IPool } from '~/hooks/useGetAllPools'
+import type { IPool } from '~/queries/useGetAllPools'
 
 // @ts-ignore
 dayjs.extend(relativeTime)

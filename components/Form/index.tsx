@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ChangeEvent, ReactNode } from 'react'
 
 interface IInputProps {
 	name: string
@@ -8,6 +8,7 @@ interface IInputProps {
 	pattern?: string
 	title?: string
 	helperText?: string
+	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
 export function InputText({ label, helperText, ...props }: IInputProps) {
