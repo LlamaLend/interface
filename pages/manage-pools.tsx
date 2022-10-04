@@ -146,11 +146,9 @@ const ManagePools: NextPage = () => {
 
 					<InputNumber
 						name="maxInterestPerEthPerSecond"
-						placeholder="30"
+						placeholder="70"
 						label={`Maximum annual interest`}
-						helperText={
-							'Maximum annual interest should be greater than minimum annual interest, can be changed afterwards.'
-						}
+						helperText={'This can be changed afterwards.'}
 						onChange={(e) => {
 							const value = Number(e.target.value)
 
@@ -160,7 +158,6 @@ const ManagePools: NextPage = () => {
 								setMaxInterest(value)
 							}
 						}}
-						isError={isInvalidInterests}
 					/>
 
 					<PoolUtilisationChart
