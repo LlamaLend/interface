@@ -65,7 +65,7 @@ const ManagePools: NextPage = () => {
 				maxDailyBorrows: new BigNumber(maxDailyBorrows).times(1e18).toFixed(0),
 				name: form.name.value,
 				symbol: form.symbol.value,
-				maxLength: (maxLengthInDays / SECONDS_IN_A_DAY).toFixed(0),
+				maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
 				maxInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
 				minimumInterest: new BigNumber(minimumInterest).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
 			})

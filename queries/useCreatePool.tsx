@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useMutation } from '@tanstack/react-query'
-import { useAccount, useNetwork, useSigner } from 'wagmi'
+import { useNetwork, useSigner } from 'wagmi'
 import { useTxContext } from '~/contexts'
 import toast from 'react-hot-toast'
 import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
