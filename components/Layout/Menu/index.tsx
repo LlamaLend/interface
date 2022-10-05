@@ -24,12 +24,40 @@ export default function Menu() {
 			</MenuButton>
 			<AriaMenu
 				state={menu}
-				className="bg-gray-700 rounded-lg shadow-md border z-10 border-gray-600 h-full max-h-96 flex flex-col overflow-auto overscroll-contain"
+				className="bg-[#181818] rounded-lg shadow-xl border z-10 border-[#292929] min-w-[160px] h-full max-h-96 flex flex-col overflow-auto overscroll-contain"
 			>
 				<MenuItem as="span" className="flex">
 					<Link href="/manage-pools" passHref>
-						<a className="px-3 py-2 hover:bg-gray-600">Manage Pools</a>
+						<a className="p-3 hover:bg-[#292929] w-full">Manage Pools</a>
 					</Link>
+				</MenuItem>
+
+				<MenuItem
+					as="a"
+					className="p-3 w-full hover:bg-[#292929]"
+					href="https://twitter.com/llamalend"
+					target="_blank"
+					rel="noreferrer noopener"
+				>
+					<span>Twitter</span>
+				</MenuItem>
+				<MenuItem
+					as="a"
+					className="p-3 w-full hover:bg-[#292929]"
+					href="https://discord.gg/bzH9yZzvMy"
+					target="_blank"
+					rel="noreferrer noopener"
+				>
+					<span>Discord</span>
+				</MenuItem>
+				<MenuItem
+					as="a"
+					className="p-3 w-full hover:bg-[#292929]"
+					href="https://github.com/llamalend"
+					target="_blank"
+					rel="noreferrer noopener"
+				>
+					<span>Github</span>
 				</MenuItem>
 			</AriaMenu>
 		</>
