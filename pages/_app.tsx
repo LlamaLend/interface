@@ -7,13 +7,14 @@ import type { DehydratedState } from '@tanstack/react-query'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { publicProvider } from 'wagmi/providers/public'
-import { connectorsForWallets, wallet, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { connectorsForWallets, darkTheme, lightTheme, midnightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { injectedWallet, rainbowWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
+import { useDialogState } from 'ariakit'
 import { Toaster } from 'react-hot-toast'
+import TxSubmittedDialog from '~/components/TxSubmittedDialog'
 import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { TransactionsContext } from '~/contexts'
-import { useDialogState } from 'ariakit'
-import TxSubmittedDialog from '~/components/TxSubmittedDialog'
 
 const { chains, provider } = configureChains(
 	[chain.mainnet, chain.goerli],
@@ -35,9 +36,10 @@ const connectors = connectorsForWallets([
 	{
 		groupName: 'Popular',
 		wallets: [
-			wallet.rainbow({ chains }),
-			wallet.metaMask({ chains }),
-			wallet.walletConnect({ chains }),
+			injectedWallet({ chains }),
+			metaMaskWallet({ chains }),
+			rainbowWallet({ chains }),
+			walletConnectWallet({ chains }),
 			{
 				id: 'safe',
 				name: 'Gnosis Safe',
@@ -48,10 +50,6 @@ const connectors = connectorsForWallets([
 				}
 			}
 		]
-	},
-	{
-		groupName: 'More',
-		wallets: [wallet.argent({ chains }), wallet.trust({ chains }), wallet.ledger({ chains })]
 	}
 ])
 
@@ -76,6 +74,11 @@ function MyApp({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedS
 				<Hydrate state={pageProps.dehydratedState}>
 					<WagmiConfig client={wagmiClient}>
 						<RainbowKitProvider
+							theme={lightTheme({
+								accentColor: '#3046fb',
+								accentColorForeground: 'white',
+								fontStack: 'system'
+							})}
 							chains={chains}
 							initialChain={chain.mainnet}
 							showRecentTransactions={true}

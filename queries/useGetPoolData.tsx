@@ -13,6 +13,7 @@ export interface IPoolData {
 	symbol: string
 	maxLoanLength: number
 	currentAnnualInterest: number
+	maxInterestPerEthPerSecond: number
 	nftContract: string
 }
 
@@ -30,19 +31,22 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 
 		const contract = new ethers.Contract(address, abi, provider)
 
-		const [name, symbol, maxLoanLength, currentAnnualInterest, nftContract]: Array<string> = await Promise.all([
-			contract.name(),
-			contract.symbol(),
-			contract.maxLoanLength(),
-			contract.currentAnnualInterest(0),
-			contract.nftContract()
-		])
+		const [name, symbol, maxLoanLength, currentAnnualInterest, maxInterestPerEthPerSecond, nftContract]: Array<string> =
+			await Promise.all([
+				contract.name(),
+				contract.symbol(),
+				contract.maxLoanLength(),
+				contract.currentAnnualInterest(0),
+				contract.maxInterestPerEthPerSecond(),
+				contract.nftContract()
+			])
 
 		return {
 			name,
 			symbol,
 			maxLoanLength: Number(maxLoanLength),
 			currentAnnualInterest: Number(currentAnnualInterest),
+			maxInterestPerEthPerSecond: Number(maxInterestPerEthPerSecond),
 			nftContract
 		}
 	} catch (error: any) {

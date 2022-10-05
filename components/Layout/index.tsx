@@ -21,7 +21,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 					<AppLink name="Repay" path="/repay" />
 				</nav>
 
-				<span className="flex gap-4 items-center flex-wrap [&>*:first-child]:!mr-auto">
+				<span className="flex gap-3 items-center flex-wrap [&>*:first-child]:!mr-auto">
 					<ConnectButton />
 					<Menu />
 				</span>
