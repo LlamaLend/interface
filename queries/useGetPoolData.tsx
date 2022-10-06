@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
 import { IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
+import { erc721ABI } from 'wagmi'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
@@ -15,6 +16,7 @@ export interface IPoolData {
 	currentAnnualInterest: number
 	maxInterestPerEthPerSecond: number
 	nftContract: string
+	nftName: string
 }
 
 export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
@@ -41,13 +43,18 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 				contract.nftContract()
 			])
 
+		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
+
+		const nftName = await nftContractInterface.name()
+
 		return {
 			name,
 			symbol,
 			maxLoanLength: Number(maxLoanLength),
 			currentAnnualInterest: Number(currentAnnualInterest),
 			maxInterestPerEthPerSecond: Number(maxInterestPerEthPerSecond),
-			nftContract
+			nftContract,
+			nftName
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))

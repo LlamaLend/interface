@@ -25,3 +25,31 @@ export interface IContractWriteConfig {
 	abi: ContractInterface
 	signer: Signer | null
 }
+
+export interface INftApiResponse {
+	ownedNfts: {
+		id: {
+			tokenId: string
+		}
+		metadata: {
+			image: string
+		}
+		media: { gateway: string }[]
+	}[]
+}
+
+export interface INftItem {
+	tokenId: number
+	imgUrl: string
+}
+
+export interface IQuoteResponse {
+	deadline: number
+	nftContract: string
+	price: number | null
+	signature: {
+		r: string
+		s: string
+		v: number
+	}
+}

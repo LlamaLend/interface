@@ -56,7 +56,7 @@ export function PlaceHolderPoolItem() {
 				<span className="placeholder-box h-6 w-20"></span>
 			</p>
 
-			<div className="text-sm text-center rounded-xl p-2 bg-[#243b55] cursor-not-allowed text-white text-opacity-40">
+			<div className="text-sm text-center rounded-xl p-2 bg-[#243b55] text-white text-opacity-40">
 				<div className="h-5"></div>
 			</div>
 		</ItemWrapper>

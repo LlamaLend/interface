@@ -66,6 +66,7 @@ export const chainConfig = (chainId?: number | null) => {
 	// default to config of ethereum when no chain name is provided
 	return {
 		...CHAINS_CONFIGURATION[chainId || 1],
+		nativeCurrency: chain?.nativeCurrency,
 		blockExplorer: chain?.blockExplorers?.default ?? { url: 'https://etherscan.io', name: 'Etherscan' }
 	}
 }

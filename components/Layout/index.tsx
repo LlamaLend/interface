@@ -28,13 +28,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 			</header>
 
 			<React.Suspense fallback={null}>
-				<main
-					className={cx(
-						'flex-1 min-h-full w-full max-w-8xl mx-auto p-3 sm:flex sm:[&>*:first-child]:!flex-1',
-						className
-					)}
-					{...props}
-				>
+				<main className={cx('flex-1 min-h-full w-full max-w-8xl mx-auto p-3 flex flex-col', className)} {...props}>
 					{children}
 				</main>
 			</React.Suspense>
