@@ -12,7 +12,7 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-wagmi": "^1.0.3",
     "@rainbow-me/rainbowkit": "^0.7.1",
-    "@tanstack/react-query": "^4.7.2",
+    "@tanstack/react-query": "^4.10.1",
     "ariakit": "2.0.0-next.41",
     "bignumber.js": "^9.1.0",
     "cva": "npm:class-variance-authority@^0.2.3",
@@ -23,7 +23,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
-    "wagmi": "^0.6.7"
+    "wagmi": "^0.6.8"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
