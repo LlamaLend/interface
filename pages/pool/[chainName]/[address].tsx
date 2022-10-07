@@ -9,7 +9,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import GridWrapper from '~/components/GridWrapper'
 import { BorrowNftItem, BorrowNftPlaceholder } from '~/components/GridItem/Borrow'
 import Layout from '~/components/Layout'
-import Cart from '~/components/Cart'
+import { BorrowCart } from '~/components/Cart'
 import { useGetPoolData } from '~/queries/useGetPoolData'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { chainConfig, SECONDS_IN_A_YEAR } from '~/lib/constants'
@@ -159,7 +159,12 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 								</GridWrapper>
 							)}
 
-							<Cart />
+							<BorrowCart
+								poolAddress={address}
+								chainId={chainId}
+								nftContractAddress={data?.nftContract}
+								nftCollectionName={data?.nftName}
+							/>
 						</>
 					</React.Suspense>
 				</div>

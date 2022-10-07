@@ -53,7 +53,3 @@ export interface IQuoteResponse {
 		v: number
 	}
 }
-
-export interface ICart {
-	[key: string]: Array<number>
-}

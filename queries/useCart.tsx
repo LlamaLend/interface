@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useAccount, useNetwork } from 'wagmi'
 import { LOCAL_STORAGE_KEY } from '~/lib/constants'
-import { ICart, INftItem, ITransactionError } from '~/types'
+import { ITransactionError } from '~/types'
 
 // save/remove items from local storage
 async function saveItemToCart({
@@ -76,6 +76,7 @@ const useSaveItemToCart = () => {
 	const queryClient = useQueryClient()
 
 	const router = useRouter()
+	const { cart, ...queries } = router.query
 
 	return useMutation(
 		({ contractAddress, tokenId }: { contractAddress: string; tokenId: number }) =>
@@ -86,18 +87,15 @@ const useSaveItemToCart = () => {
 
 				return contractAddress ? cart?.[contractAddress] ?? [] : []
 			},
-			onSuccess: (data: ICart, variables, prevItems) => {
+			onSuccess: (data: Array<number>, variables, prevItems) => {
 				const contractAddress = variables.contractAddress
 
 				// If its the first item added to cart, show cart section
-				if (
-					contractAddress &&
-					data[contractAddress]?.length === 1 &&
-					data[contractAddress]?.length > prevItems.length
-				) {
+				if (contractAddress && data?.length === 1 && data?.length > prevItems.length) {
 					router.push({
 						pathname: router.pathname,
 						query: {
+							...queries,
 							cart: true
 						}
 					})

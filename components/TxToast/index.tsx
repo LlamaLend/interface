@@ -31,7 +31,7 @@ export const txSuccess = ({ txHash, blockExplorer, content }: ITxSuccess) => {
 			)
 		},
 		{
-			duration: 5000
+			duration: 5_000
 		}
 	)
 }
@@ -49,7 +49,7 @@ export const txError = ({ txHash, blockExplorer }: ITxError) => {
 			)
 		},
 		{
-			duration: 5000
+			duration: 5_000
 		}
 	)
 }
