@@ -18,12 +18,18 @@ export default function TxSubmittedDialog({ dialog, transactionHash }: FormDialo
 			<header className="flex items-center justify-end">
 				<button className="buttonDismiss" onClick={dialog.toggle}>
 					<span className="sr-only">Close</span>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width={18} height={18}>
+					<svg
+						aria-hidden="true"
+						fill="none"
+						height="10"
+						viewBox="0 0 10 10"
+						width="10"
+						xmlns="http://www.w3.org/2000/svg"
+					>
 						<path
-							fillRule="evenodd"
-							d="M3.97 3.97a.75.75 0 011.06 0L12 10.94l6.97-6.97a.75.75 0 111.06 1.06L13.06 12l6.97 6.97a.75.75 0 11-1.06 1.06L12 13.06l-6.97 6.97a.75.75 0 01-1.06-1.06L10.94 12 3.97 5.03a.75.75 0 010-1.06z"
-							clipRule="evenodd"
-						/>
+							d="M1.70711 0.292893C1.31658 -0.0976311 0.683417 -0.0976311 0.292893 0.292893C-0.0976311 0.683417 -0.0976311 1.31658 0.292893 1.70711L3.58579 5L0.292893 8.29289C-0.0976311 8.68342 -0.0976311 9.31658 0.292893 9.70711C0.683417 10.0976 1.31658 10.0976 1.70711 9.70711L5 6.41421L8.29289 9.70711C8.68342 10.0976 9.31658 10.0976 9.70711 9.70711C10.0976 9.31658 10.0976 8.68342 9.70711 8.29289L6.41421 5L9.70711 1.70711C10.0976 1.31658 10.0976 0.683417 9.70711 0.292893C9.31658 -0.0976311 8.68342 -0.0976311 8.29289 0.292893L5 3.58579L1.70711 0.292893Z"
+							fill="currentColor"
+						></path>
 					</svg>
 				</button>
 			</header>

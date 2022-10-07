@@ -10,10 +10,11 @@ import { useTxContext } from '~/contexts'
 interface IUseBorrowProps {
 	poolAddress: string
 	cartTokenIds: Array<number>
+	maxInterest?: number
 	enabled: boolean
 }
 
-export function useBorrow({ poolAddress, cartTokenIds, enabled }: IUseBorrowProps) {
+export function useBorrow({ poolAddress, cartTokenIds, maxInterest, enabled }: IUseBorrowProps) {
 	const { data: quote, isLoading: isFetchingQuote, isError: failedFetchQuotation } = useGetQuote(poolAddress)
 	const router = useRouter()
 
@@ -33,10 +34,12 @@ export function useBorrow({ poolAddress, cartTokenIds, enabled }: IUseBorrowProp
 			[...cartTokenIds],
 			new BigNumber(quote?.price ?? 0).times(1e18).toFixed(0),
 			quote?.deadline,
+			maxInterest,
 			quote?.signature?.v,
 			quote?.signature?.r,
 			quote?.signature?.s
 		],
+		overrides: { gasLimit: new BigNumber(0.0005).times(1e9).toFixed(0) },
 		enabled
 	})
 

@@ -45,7 +45,7 @@ export interface INftItem {
 
 export interface IQuoteResponse {
 	deadline: number
-	nftContract: string
+	normalizedNftContract: string
 	price: number | null
 	signature: {
 		r: string

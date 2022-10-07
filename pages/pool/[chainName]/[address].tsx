@@ -164,6 +164,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 								chainId={chainId}
 								nftContractAddress={data?.nftContract}
 								nftCollectionName={data?.nftName}
+								isLoading={isLoading || nftsListLoading || quoteLoading}
 							/>
 						</>
 					</React.Suspense>

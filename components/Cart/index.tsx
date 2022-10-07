@@ -16,9 +16,5 @@ function CartWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export function BorrowCart(props: IBorrowCartProps) {
-	return (
-		<CartWrapper>
-			<BorrowCartItems {...props} />
-		</CartWrapper>
-	)
+	return <CartWrapper>{!props.isLoading && <BorrowCartItems {...props} />}</CartWrapper>
 }

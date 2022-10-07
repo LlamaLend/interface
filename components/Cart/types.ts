@@ -3,6 +3,7 @@ export interface IBorrowCartProps {
 	chainId?: number
 	nftContractAddress?: string
 	nftCollectionName?: string
+	isLoading: boolean
 }
 
 export interface IBorrowItemsProps {

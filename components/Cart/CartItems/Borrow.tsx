@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Image from 'next/image'
+import Image from 'next/future/image'
 import { useBalance } from 'wagmi'
 import BeatLoader from '~/components/BeatLoader'
 import ItemsPlaceholder from './Placeholder'
@@ -71,7 +71,12 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		isLoading: userConfirmingBorrow,
 		error: errorConfirmingBorrow,
 		waitForTransaction: { data: borrowTxOnChain, isLoading: checkingForBorrowTxOnChain, error: txBorrowErrorOnChain }
-	} = useBorrow({ poolAddress, cartTokenIds, enabled: isApproved })
+	} = useBorrow({
+		poolAddress,
+		cartTokenIds,
+		enabled: isApproved && quote && poolData ? true : false,
+		maxInterest: poolData?.maxInterestPerEthPerSecond
+	})
 
 	const {
 		data: contractBalance,
@@ -148,7 +153,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							{cartItemsList?.map(({ tokenId, imgUrl }) => (
 								<li key={tokenId} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
-										className="absolute -top-2 -left-1.5 z-10 rounded-xl bg-white p-1 transition-[1.125s_ease]"
+										className="absolute -top-2 -left-1.5 z-10 h-6 w-6 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
 										onClick={() => saveItemToCart({ tokenId, contractAddress: nftContractAddress })}
 									>
 										<svg
@@ -160,17 +165,30 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 										>
 											<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 										</svg>
-										<span className="visually-hidden">Remove Item from cart</span>
+										<span className="sr-only">Remove Item from cart</span>
 									</button>
 
-									<Image src={imgUrl} width="40px" height="40px" objectFit="cover" alt={`token id ${tokenId}`} />
+									<Image
+										src={imgUrl}
+										width={40}
+										height={40}
+										className="rounded object-cover"
+										alt={`token id ${tokenId}`}
+									/>
+
 									<span className="flex flex-col flex-wrap justify-between gap-1">
 										<span>{`#${tokenId}`}</span>
 										<span className="font-base text-[0.8rem] text-[#989898]">{nftCollectionName}</span>
 									</span>
 
 									<span className="ml-auto flex gap-1.5">
-										<Image src="/ethereum.png" height="16px" width="16px" objectFit="contain" alt="ethereum" />
+										<Image
+											src="/assets/ethereum.png"
+											height={16}
+											width={16}
+											className="object-contain"
+											alt="ethereum"
+										/>
 										<span>{quote?.price?.toFixed(2)}</span>
 									</span>
 								</li>
@@ -178,7 +196,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 						</ul>
 					)}
 
-					<hr />
+					<hr className="border-[rgba(255,255,255,0.08)]" />
 
 					<h2 className="-mt-1.5 -mb-3 text-sm font-medium">Loan Details</h2>
 
@@ -188,7 +206,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">You Receive</span>
 								<span className="ml-auto flex gap-1.5">
-									<Image src="/assets/ethereum.png" height="16px" width="16px" objectFit="contain" alt="ethereum" />
+									<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
 									{/* Show placeholder when fetching quotation */}
 									{fetchingQuote ? (
 										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
@@ -233,13 +251,16 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 					)}
 
 					{isLoading ? (
-						<button className="mt-5 rounded-lg bg-blue-500 p-2 shadow" disabled>
+						<button
+							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
+							disabled
+						>
 							<BeatLoader />
 						</button>
 					) : isApproved ? (
 						canUserBorrowETH ? (
 							<button
-								className="mt-5 rounded-lg bg-blue-500 p-2 shadow"
+								className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
 								onClick={() => borrowETH?.()}
 								disabled={!borrowETH || mutationDisabled}
 							>
@@ -247,7 +268,11 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							</button>
 						) : (
 							<>
-								<button className="mt-5 rounded-lg bg-blue-500 p-2 shadow" data-not-allowed disabled={true}>
+								<button
+									className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
+									data-not-allowed
+									disabled={true}
+								>
 									Borrow limit reached
 								</button>
 								<p style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '-12px' }}>
@@ -257,7 +282,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 						)
 					) : (
 						<button
-							className="mt-5 rounded-lg bg-blue-500 p-2 shadow"
+							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
 							onClick={() => approveContract?.()}
 							disabled={!approveContract || errorMsgOfQueries ? true : false}
 						>
@@ -281,7 +306,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									clipRule="evenodd"
 								/>
 							</svg>
-							<span>{`Max tubby cats to borrow against: ${maxNftsToBorrow}`}</span>
+							<span>{`Max ${nftCollectionName} to borrow against: ${maxNftsToBorrow}`}</span>
 						</p>
 					)}
 				</>
