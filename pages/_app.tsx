@@ -7,11 +7,12 @@ import type { DehydratedState } from '@tanstack/react-query'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { publicProvider } from 'wagmi/providers/public'
-import { connectorsForWallets, darkTheme, lightTheme, midnightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { connectorsForWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { injectedWallet, rainbowWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import { useDialogState } from 'ariakit'
 import { Toaster } from 'react-hot-toast'
+import { LazyMotion, domAnimation } from 'framer-motion'
 import TxSubmittedDialog from '~/components/TxSubmittedDialog'
 import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { TransactionsContext } from '~/contexts'
@@ -69,7 +70,7 @@ function MyApp({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedS
 	const txHash = React.useRef<string | null>(null)
 
 	return (
-		<>
+		<LazyMotion features={domAnimation}>
 			<QueryClientProvider client={queryClient}>
 				<Hydrate state={pageProps.dehydratedState}>
 					<WagmiConfig client={wagmiClient}>
@@ -87,13 +88,14 @@ function MyApp({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedS
 							<TransactionsContext.Provider value={{ dialog: dialog, hash: txHash }}>
 								{isMounted && <Component {...pageProps} />}
 							</TransactionsContext.Provider>
+
 							<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
 							<Toaster position="top-right" reverseOrder={true} />
 						</RainbowKitProvider>
 					</WagmiConfig>
 				</Hydrate>
 			</QueryClientProvider>
-		</>
+		</LazyMotion>
 	)
 }
 

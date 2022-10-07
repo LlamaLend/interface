@@ -12,6 +12,10 @@
 		@apply h-full;
 	}
 
+	body {
+		@apply overflow-x-hidden;
+	}
+
 	#__next {
 		@apply isolate flex min-h-full flex-col slashed-zero bg-primary text-white;
 	}
@@ -49,7 +53,7 @@
 	}
 
 	.dialog {
-		@apply max-w-full min-h-[40vh] max-h-[70vh] opacity-100 fixed top-0 left-0 bottom-0 right-0 m-auto z-50 flex flex-col w-full gap-6 p-4 overflow-auto rounded-t-xl text-white border border-white border-opacity-[0.08];
+		@apply max-w-full min-h-[40vh] max-h-[70vh] opacity-100 fixed top-0 left-0 bottom-0 right-0 m-auto mb-0 z-50 flex flex-col w-full gap-6 p-4 overflow-auto rounded-t-xl text-white border border-white border-opacity-[0.08];
 
 		background-color: #24262a;
 		box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.32);
@@ -135,9 +139,13 @@
 		}
 	}
 
+	.buttonDismiss {
+		@apply flex items-center justify-center h-7 w-7 bg-[rgba(255,255,255,0.08)] text-[#c9c9ca] border border-[rgba(255,255,255,0.08)] rounded-full transition-[0.125s_ease] hover:scale-110 active:scale-90;
+	}
+
 	@media (min-width: 40rem) {
 		.dialog {
-			@apply top-0 rounded-xl p-6 h-fit min-h-[initial];
+			@apply top-0 rounded-xl p-6 h-fit min-h-[initial] mb-auto;
 			max-width: min(calc(100% - 32px), 560px);
 			max-height: calc(100% - 32px);
 		}

@@ -4,6 +4,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { cx } from 'cva'
 import AppLink from './AppLink'
 import Menu from './Menu'
+import { CartLink } from './CartLink'
 
 interface ILayoutProps {
 	children?: React.ReactNode
@@ -23,6 +24,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 
 				<span className="flex gap-3 items-center flex-wrap [&>*:first-child]:!mr-auto">
 					<ConnectButton />
+					<CartLink />
 					<Menu />
 				</span>
 			</header>

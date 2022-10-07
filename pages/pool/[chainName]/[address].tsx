@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next'
+import * as React from 'react'
 import { allChains, useAccount } from 'wagmi'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
@@ -8,6 +9,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import GridWrapper from '~/components/GridWrapper'
 import { BorrowNftItem, BorrowNftPlaceholder } from '~/components/GridItem/Borrow'
 import Layout from '~/components/Layout'
+import Cart from '~/components/Cart'
 import { useGetPoolData } from '~/queries/useGetPoolData'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { chainConfig, SECONDS_IN_A_YEAR } from '~/lib/constants'
@@ -66,7 +68,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 						<span className="bg-[#202020] px-1 py-0.5 rounded">{data?.nftContract ?? ''}</span>
 					</a>
 
-					<div className="flex flex-col justify-center gap-4 xl:flex-row xl:items-center max-w-md lg:max-w-xl  xl:max-w-7xl mx-auto">
+					<div className="flex flex-col justify-center gap-4 md:flex-row flex-wrap xl:items-center max-w-xl  xl:max-w-7xl mx-auto">
 						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
 							<h2 className="text-center font-medium">Pool Name</h2>
 							<p
@@ -80,7 +82,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 						</div>
 
 						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
-							<h2 className="text-center font-medium">Current Annual Interest</h2>
+							<h2 className="text-center font-medium md:whitespace-nowrap">Current Annual Interest</h2>
 							<p
 								className={cx(
 									'text-[#F6F6F6] font-mono min-h-[1.5rem]',
@@ -92,7 +94,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 						</div>
 
 						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
-							<h2 className="text-center font-medium">Maximum Annual Interest</h2>
+							<h2 className="text-center font-medium md:whitespace-nowrap">Maximum Annual Interest</h2>
 
 							<p
 								className={cx(
@@ -122,38 +124,44 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 					</div>
 				</div>
 
-				<div className="flex-1 min-h-[60rem]">
-					{!chainId ? (
-						<p className="fallback-text">Network not supported, Please check URL validity.</p>
-					) : isLoading || nftsListLoading || quoteLoading ? (
-						<GridWrapper>
-							{new Array(10).fill(1).map((_, index) => (
-								<BorrowNftPlaceholder key={'plitem' + index} />
-							))}
-						</GridWrapper>
-					) : !data?.name ? (
-						<p className="fallback-text">Pool not found.</p>
-					) : !isConnected ? (
-						<p className="fallback-text">
-							<button onClick={openConnectModal}>Connect</button> your wallet to view the NFTs you can use to borrow{' '}
-							{chainSymbol}.
-						</p>
-					) : !nftsList ? (
-						<p className="fallback-text">Something went wrong, couldn't fetch your NFTs.</p>
-					) : nftsList.length === 0 ? (
-						<p className="fallback-text">There are no {data.nftName} in this address.</p>
-					) : (
-						<GridWrapper>
-							{nftsList.map((nftData) => (
-								<BorrowNftItem
-									key={nftData.tokenId}
-									data={nftData}
-									quotePrice={quote?.price}
-									contractAddress={data.nftContract}
-								/>
-							))}
-						</GridWrapper>
-					)}
+				<div className="flex-1 min-h-screen py-6 xl:flex xl:gap-5 xl:justify-between">
+					<React.Suspense fallback={null}>
+						<>
+							{!chainId ? (
+								<p className="fallback-text">Network not supported, Please check URL validity.</p>
+							) : isLoading || nftsListLoading || quoteLoading ? (
+								<GridWrapper className="xl:flex-1">
+									{new Array(10).fill(1).map((_, index) => (
+										<BorrowNftPlaceholder key={'plitem' + index} />
+									))}
+								</GridWrapper>
+							) : !data?.name ? (
+								<p className="fallback-text">Pool not found.</p>
+							) : !isConnected ? (
+								<p className="fallback-text">
+									<button onClick={openConnectModal}>Connect</button> your wallet to view the NFTs you can use to borrow{' '}
+									{chainSymbol}.
+								</p>
+							) : !nftsList ? (
+								<p className="fallback-text">Something went wrong, couldn't fetch your NFTs.</p>
+							) : nftsList.length === 0 ? (
+								<p className="fallback-text">There are no {data.nftName} in this address.</p>
+							) : (
+								<GridWrapper className="xl:flex-1">
+									{nftsList.map((nftData) => (
+										<BorrowNftItem
+											key={nftData.tokenId}
+											data={nftData}
+											quotePrice={quote?.price}
+											contractAddress={data.nftContract}
+										/>
+									))}
+								</GridWrapper>
+							)}
+
+							<Cart />
+						</>
+					</React.Suspense>
 				</div>
 			</Layout>
 		</>
