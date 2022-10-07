@@ -17,6 +17,7 @@ interface IUseBorrowProps {
 export function useBorrow({ poolAddress, cartTokenIds, maxInterest, enabled }: IUseBorrowProps) {
 	const { data: quote, isLoading: isFetchingQuote, isError: failedFetchQuotation } = useGetQuote(poolAddress)
 	const router = useRouter()
+	const { cart, ...queries } = router.query
 
 	const queryClient = useQueryClient()
 
@@ -75,7 +76,7 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, enabled }: I
 					localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ [poolAddress]: [] }))
 				}
 
-				router.push('/')
+				router.push({ pathname: router.pathname, query: { ...queries } })
 			} else {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: config.blockExplorer })
 			}
