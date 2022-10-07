@@ -44,16 +44,16 @@ export default function TxSubmittedDialog({ dialog, transactionHash }: FormDialo
 					<line x1="12" y1="16" x2="12" y2="8"></line>
 				</svg>
 			</div>
-			<h1 className="text-xl font-medium text-center">Transaction Submitted</h1>
+			<h1 className="text-center text-xl font-medium">Transaction Submitted</h1>
 			<a
 				href={(blockExplorer?.url ?? 'https://etherscan.io') + '/tx/' + transactionHash.current}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="text-sm font-semibold text-center text-blue-500 -mt-5"
+				className="-mt-5 text-center text-sm font-semibold text-blue-500"
 			>
 				{`View on ${blockExplorer?.name ?? 'Etherscan'}`}
 			</a>
-			<button onClick={dialog.toggle} className="p-2 rounded-lg mt-5 bg-blue-500 shadow">
+			<button onClick={dialog.toggle} className="mt-5 rounded-lg bg-blue-500 p-2 shadow">
 				Close
 			</button>
 		</Dialog>

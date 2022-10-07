@@ -44,13 +44,13 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 			</Head>
 
 			<Layout className="relative">
-				<div className="px-3 py-6 bg-[#111111] rounded-xl shadow">
-					<div className="rounded-full mx-auto h-24 w-24 bg-gradient-to-r from-[#141e30] to-[#243b55]"></div>
+				<div className="rounded-xl bg-[#111111] px-3 py-6 shadow">
+					<div className="mx-auto h-24 w-24 rounded-full bg-gradient-to-r from-[#141e30] to-[#243b55]"></div>
 
 					<h1
 						className={cx(
-							'text-center text-2xl font-medium my-2 min-h-[2rem]',
-							isLoading ? 'mx-auto placeholder-box w-full max-w-[22rem]' : ''
+							'my-2 min-h-[2rem] text-center text-2xl font-medium',
+							isLoading ? 'placeholder-box mx-auto w-full max-w-[22rem]' : ''
 						)}
 					>
 						{data?.nftName ?? ''}
@@ -58,22 +58,22 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 
 					<a
 						className={cx(
-							'text-sm mx-auto mb-10 break-all min-h-[2rem] flex items-center',
+							'mx-auto mb-10 flex min-h-[2rem] items-center break-all text-sm',
 							isLoading ? 'placeholder-box w-full max-w-[22rem]' : 'w-fit'
 						)}
 						target="_blank"
 						rel="noreferrer noopener"
 						href={`${config.blockExplorer.url}/address/${data?.nftContract}`}
 					>
-						<span className="bg-[#202020] px-1 py-0.5 rounded">{data?.nftContract ?? ''}</span>
+						<span className="rounded bg-[#202020] px-1 py-0.5">{data?.nftContract ?? ''}</span>
 					</a>
 
-					<div className="flex flex-col justify-center gap-4 md:flex-row flex-wrap xl:items-center max-w-xl  xl:max-w-7xl mx-auto">
-						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
+					<div className="mx-auto flex max-w-xl flex-col flex-wrap justify-center gap-4 md:flex-row  xl:max-w-7xl xl:items-center">
+						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
 							<h2 className="text-center font-medium">Pool Name</h2>
 							<p
 								className={cx(
-									'text-[#F6F6F6] font-mono min-h-[1.5rem]',
+									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
@@ -81,11 +81,11 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 							</p>
 						</div>
 
-						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
+						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
 							<h2 className="text-center font-medium md:whitespace-nowrap">Current Annual Interest</h2>
 							<p
 								className={cx(
-									'text-[#F6F6F6] font-mono min-h-[1.5rem]',
+									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
@@ -93,12 +93,12 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 							</p>
 						</div>
 
-						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
+						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
 							<h2 className="text-center font-medium md:whitespace-nowrap">Maximum Annual Interest</h2>
 
 							<p
 								className={cx(
-									'text-[#F6F6F6] font-mono min-h-[1.5rem]',
+									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
@@ -106,12 +106,12 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 							</p>
 						</div>
 
-						<div className="flex flex-col gap-4 items-center px-8 py-4 rounded-xl bg-[#202020] flex-1">
+						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
 							<h2 className="text-center font-medium">Maximum Loan Duration</h2>
 
 							<p
 								className={cx(
-									'text-[#F6F6F6] font-mono min-h-[1.5rem]',
+									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
@@ -124,7 +124,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 					</div>
 				</div>
 
-				<div className="flex-1 min-h-screen py-6 xl:flex xl:gap-5 xl:justify-between">
+				<div className="min-h-screen flex-1 py-6 xl:flex xl:justify-between xl:gap-5">
 					<React.Suspense fallback={null}>
 						<>
 							{!chainId ? (

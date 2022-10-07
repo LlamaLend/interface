@@ -135,9 +135,9 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	return (
 		<>
 			{errorMsgOfQueries ? (
-				<p className="text-center mt-5 mb-9 p-6 text-sm text-[#ff9393] xl:mt-[60%]">{errorMsgOfQueries}</p>
+				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393] xl:mt-[60%]">{errorMsgOfQueries}</p>
 			) : cartItems && cartItems.length <= 0 ? (
-				<p className="text-center mt-8 mb-9 p-6 xl:mt-[60%]">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
+				<p className="mt-8 mb-9 p-6 text-center xl:mt-[60%]">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
 			) : (
 				<>
 					{/* Show placeholder when fetching items in cart */}
@@ -146,9 +146,9 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 					) : (
 						<ul className="flex flex-col gap-4">
 							{cartItemsList?.map(({ tokenId, imgUrl }) => (
-								<li key={tokenId} className="relative flex items-center gap-1.5 text-sm font-medium rounded-xl isolate">
+								<li key={tokenId} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
-										className="bg-white rounded-xl p-1 absolute -top-2 -left-1.5 z-10 transition-[1.125s_ease]"
+										className="absolute -top-2 -left-1.5 z-10 rounded-xl bg-white p-1 transition-[1.125s_ease]"
 										onClick={() => saveItemToCart({ tokenId, contractAddress: nftContractAddress })}
 									>
 										<svg
@@ -164,12 +164,12 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									</button>
 
 									<Image src={imgUrl} width="40px" height="40px" objectFit="cover" alt={`token id ${tokenId}`} />
-									<span className="flex flex-col justify-between flex-wrap gap-1">
+									<span className="flex flex-col flex-wrap justify-between gap-1">
 										<span>{`#${tokenId}`}</span>
-										<span className="text-[0.8rem] font-base text-[#989898]">{nftCollectionName}</span>
+										<span className="font-base text-[0.8rem] text-[#989898]">{nftCollectionName}</span>
 									</span>
 
-									<span className="flex ml-auto gap-1.5">
+									<span className="ml-auto flex gap-1.5">
 										<Image src="/ethereum.png" height="16px" width="16px" objectFit="contain" alt="ethereum" />
 										<span>{quote?.price?.toFixed(2)}</span>
 									</span>
@@ -180,42 +180,42 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 					<hr />
 
-					<h2 className="text-sm font-medium -mt-1.5 -mb-3">Loan Details</h2>
+					<h2 className="-mt-1.5 -mb-3 text-sm font-medium">Loan Details</h2>
 
 					{/* These values are always truth as error and loading states are handles, but adding a check satisfy typescript compiler  */}
 					{cartItems && quote && cartItems?.length > 0 && quote?.price && (
 						<ul className="flex flex-col gap-4">
-							<li className="relative flex items-center gap-1.5 text-sm font-medium rounded-xl isolate">
+							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">You Receive</span>
-								<span className="flex ml-auto gap-1.5">
+								<span className="ml-auto flex gap-1.5">
 									<Image src="/assets/ethereum.png" height="16px" width="16px" objectFit="contain" alt="ethereum" />
 									{/* Show placeholder when fetching quotation */}
 									{fetchingQuote ? (
-										<span className="placeholder-box w-[4ch] h-4" style={{ width: '4ch', height: '16px' }}></span>
+										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 									) : (
 										<span>{(cartItems.length * quote.price).toFixed(2)} ETH</span>
 									)}
 								</span>
 							</li>
 
-							<li className="relative flex items-center gap-1.5 text-sm font-medium rounded-xl isolate">
+							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">Interest</span>
-								<span className="flex ml-auto gap-1.5">
+								<span className="ml-auto flex gap-1.5">
 									{/* Show placeholder when fetching interest rates */}
 									{fetchingPoolData ? (
-										<span className="placeholder-box w-[7ch] h-4" style={{ width: '7ch', height: '16px' }}></span>
+										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
 										<span>{poolData && `${(poolData.currentAnnualInterest / 1e16).toFixed(2)}% p.a.`}</span>
 									)}
 								</span>
 							</li>
 
-							<li className="relative flex items-center gap-1.5 text-sm font-medium rounded-xl isolate">
+							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">Deadline</span>
-								<span className="flex ml-auto gap-1.5">
+								<span className="ml-auto flex gap-1.5">
 									{/* Show placeholder when fetching quotation */}
 									{fetchingQuote ? (
-										<span className="placeholder-box w-[7ch] h-4" style={{ width: '7ch', height: '16px' }}></span>
+										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
 										<span>{new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleString()}</span>
 									)}
@@ -226,20 +226,20 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 					{/* Show error message of txs/queries initiated with wallet */}
 					{errorMsgOfEthersQueries && !errorMsgOfEthersQueries.startsWith('user rejected transaction') && (
-						<p className="text-sm text-center mt-5 text-[#ff9393]">
+						<p className="mt-5 text-center text-sm text-[#ff9393]">
 							{errorMsgOfEthersQueries.slice(0, 150)}
 							{errorMsgOfEthersQueries.length > 150 ? '...' : ''}
 						</p>
 					)}
 
 					{isLoading ? (
-						<button className="p-2 rounded-lg mt-5 bg-blue-500 shadow" disabled>
+						<button className="mt-5 rounded-lg bg-blue-500 p-2 shadow" disabled>
 							<BeatLoader />
 						</button>
 					) : isApproved ? (
 						canUserBorrowETH ? (
 							<button
-								className="p-2 rounded-lg mt-5 bg-blue-500 shadow"
+								className="mt-5 rounded-lg bg-blue-500 p-2 shadow"
 								onClick={() => borrowETH?.()}
 								disabled={!borrowETH || mutationDisabled}
 							>
@@ -247,7 +247,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							</button>
 						) : (
 							<>
-								<button className="p-2 rounded-lg mt-5 bg-blue-500 shadow" data-not-allowed disabled={true}>
+								<button className="mt-5 rounded-lg bg-blue-500 p-2 shadow" data-not-allowed disabled={true}>
 									Borrow limit reached
 								</button>
 								<p style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '-12px' }}>
@@ -257,7 +257,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 						)
 					) : (
 						<button
-							className="p-2 rounded-lg mt-5 bg-blue-500 shadow"
+							className="mt-5 rounded-lg bg-blue-500 p-2 shadow"
 							onClick={() => approveContract?.()}
 							disabled={!approveContract || errorMsgOfQueries ? true : false}
 						>
@@ -266,7 +266,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 					)}
 
 					{contractBalance && quote?.price && (
-						<p className="flex items-center justify-center gap-[1ch] text-xs font-medium mt-auto pt-10 text-center">
+						<p className="mt-auto flex items-center justify-center gap-[1ch] pt-10 text-center text-xs font-medium">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 20 20"

@@ -11,8 +11,8 @@ export default function AppLink({ name, path }: { name: string; path: string }) 
 		<Link href={path}>
 			<a
 				className={cx(
-					'py-[2px] px-2 flex-1 text-center border-2 border-transparent rounded-xl whitespace-nowrap',
-					isActive ? 'bg-blue-50 border-blue-200' : ''
+					'flex-1 whitespace-nowrap rounded-xl border-2 border-transparent py-[2px] px-2 text-center',
+					isActive ? 'border-blue-200 bg-blue-50' : ''
 				)}
 			>
 				{name}

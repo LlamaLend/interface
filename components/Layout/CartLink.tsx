@@ -20,7 +20,7 @@ export function CartLink() {
 					query: { ...queries, cart: isCartToggled ? false : true }
 				})
 			}
-			className="bg-white text-black rounded-xl px-2 py-2"
+			className="rounded-xl bg-white px-2 py-2 text-black"
 		>
 			<span className="sr-only">{isCartToggled ? 'Close Cart' : 'Open Cart'}</span>
 

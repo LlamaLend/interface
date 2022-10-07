@@ -16,7 +16,7 @@ interface IGridItemProps {
 export function PoolItem({ data, chainName }: IGridItemProps) {
 	return (
 		<ItemWrapper>
-			<div className="h-20 bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364] rounded-t-xl relative -mx-4 -mt-4 mb-4">
+			<div className="relative -mx-4 -mt-4 mb-4 h-20 rounded-t-xl bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364]">
 				<span className="absolute -bottom-5 left-4 h-12 w-12 rounded-full bg-gradient-to-r from-[#141e30] to-[#243b55]"></span>
 			</div>
 			<h1>{data.name}</h1>
@@ -31,7 +31,7 @@ export function PoolItem({ data, chainName }: IGridItemProps) {
 			</p>
 
 			<Link href={`/pool/${chainName}/${data.address}`}>
-				<a className="text-sm text-center rounded-xl p-2 bg-[#243b55]">View Pool</a>
+				<a className="rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pool</a>
 			</Link>
 		</ItemWrapper>
 	)
@@ -40,13 +40,13 @@ export function PoolItem({ data, chainName }: IGridItemProps) {
 export function PlaceHolderPoolItem() {
 	return (
 		<ItemWrapper>
-			<div className="h-20 bg-[#202020] placeholder-box rounded-t-xl relative -mx-4 -mt-4 mb-4">
+			<div className="placeholder-box relative -mx-4 -mt-4 mb-4 h-20 rounded-t-xl bg-[#202020]">
 				<span
-					className="absolute -bottom-5 left-4 h-12 w-12 rounded-full placeholder-box"
+					className="placeholder-box absolute -bottom-5 left-4 h-12 w-12 rounded-full"
 					style={{ background: 'linear-gradient(to right, #232323 5%, #252525 20%, #232323 40%)' }}
 				></span>
 			</div>
-			<h1 className="h-6 w-36 placeholder-box"></h1>
+			<h1 className="placeholder-box h-6 w-36"></h1>
 			<p className="flex flex-col gap-1">
 				<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
 				<span className="placeholder-box h-6 w-20"></span>
@@ -56,7 +56,7 @@ export function PlaceHolderPoolItem() {
 				<span className="placeholder-box h-6 w-20"></span>
 			</p>
 
-			<div className="text-sm text-center rounded-xl p-2 bg-[#243b55] text-white text-opacity-40">
+			<div className="rounded-xl bg-[#243b55] p-2 text-center text-sm text-white text-opacity-40">
 				<div className="h-5"></div>
 			</div>
 		</ItemWrapper>

@@ -17,19 +17,19 @@
 	}
 
 	#__next {
-		@apply isolate flex min-h-full flex-col slashed-zero bg-primary text-white;
+		@apply isolate flex min-h-full flex-col bg-primary slashed-zero text-white;
 	}
 
 	#__next > * {
-		@apply flex-1 flex flex-col min-h-full;
+		@apply flex min-h-full flex-1 flex-col;
 	}
 
 	.fallback-text {
-		@apply py-6 px-2 mx-auto mb-auto mt-[20vh] text-center rounded-xl;
+		@apply mx-auto mb-auto mt-[20vh] rounded-xl py-6 px-2 text-center;
 	}
 
 	.fallback-text button {
-		@apply underline p-0;
+		@apply p-0 underline;
 	}
 
 	@keyframes slideUp {
@@ -53,7 +53,7 @@
 	}
 
 	.dialog {
-		@apply max-w-full min-h-[40vh] max-h-[70vh] opacity-100 fixed top-0 left-0 bottom-0 right-0 m-auto mb-0 z-50 flex flex-col w-full gap-6 p-4 overflow-auto rounded-t-xl text-white border border-white border-opacity-[0.08];
+		@apply fixed top-0 left-0 bottom-0 right-0 z-50 m-auto mb-0 flex max-h-[70vh] min-h-[40vh] w-full max-w-full flex-col gap-6 overflow-auto rounded-t-xl border border-white border-opacity-[0.08] p-4 text-white opacity-100;
 
 		background-color: #24262a;
 		box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.32);
@@ -69,11 +69,11 @@
 	}
 
 	.toastWithLink {
-		@apply flex flex-col gap-1 text-sm font-medium min-w-[160px];
+		@apply flex min-w-[160px] flex-col gap-1 text-sm font-medium;
 	}
 
 	.toastWithLink a {
-		@apply underline text-xs font-normal cursor-pointer;
+		@apply cursor-pointer text-xs font-normal underline;
 	}
 
 	.label {
@@ -81,7 +81,7 @@
 	}
 
 	.input-field {
-		@apply rounded-lg p-2 border-none bg-[#151515] text-white placeholder:slashed-zero placeholder:font-mono;
+		@apply rounded-lg border-none bg-[#151515] p-2 text-white placeholder:font-mono placeholder:slashed-zero;
 	}
 
 	[data-backdrop] {
@@ -140,12 +140,12 @@
 	}
 
 	.buttonDismiss {
-		@apply flex items-center justify-center h-7 w-7 bg-[rgba(255,255,255,0.08)] text-[#c9c9ca] border border-[rgba(255,255,255,0.08)] rounded-full transition-[0.125s_ease] hover:scale-110 active:scale-90;
+		@apply flex h-7 w-7 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.08)] text-[#c9c9ca] transition-[0.125s_ease] hover:scale-110 active:scale-90;
 	}
 
 	@media (min-width: 40rem) {
 		.dialog {
-			@apply top-0 rounded-xl p-6 h-fit min-h-[initial] mb-auto;
+			@apply top-0 mb-auto h-fit min-h-[initial] rounded-xl p-6;
 			max-width: min(calc(100% - 32px), 560px);
 			max-height: calc(100% - 32px);
 		}

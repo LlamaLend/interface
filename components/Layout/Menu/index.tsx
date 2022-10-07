@@ -6,14 +6,14 @@ export default function Menu() {
 
 	return (
 		<>
-			<MenuButton state={menu} className="bg-white text-black rounded-xl px-2 py-2">
+			<MenuButton state={menu} className="rounded-xl bg-white px-2 py-2 text-black">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-6 h-6"
+					className="h-6 w-6"
 				>
 					<path
 						strokeLinecap="round"
@@ -24,17 +24,17 @@ export default function Menu() {
 			</MenuButton>
 			<AriaMenu
 				state={menu}
-				className="bg-[#181818] rounded-lg shadow-xl border z-10 border-[#292929] min-w-[160px] h-full py-2 max-h-96 flex flex-col overflow-auto overscroll-contain"
+				className="z-10 flex h-full max-h-96 min-w-[160px] flex-col overflow-auto overscroll-contain rounded-lg border border-[#292929] bg-[#181818] py-2 shadow-xl"
 			>
 				<MenuItem as="span" className="flex">
 					<Link href="/manage-pools" passHref>
-						<a className="px-4 py-2 hover:bg-[#292929] w-full">Manage Pools</a>
+						<a className="w-full px-4 py-2 hover:bg-[#292929]">Manage Pools</a>
 					</Link>
 				</MenuItem>
 
 				<MenuItem
 					as="a"
-					className="px-4 py-2 w-full hover:bg-[#292929]"
+					className="w-full px-4 py-2 hover:bg-[#292929]"
 					href="https://twitter.com/llamalend"
 					target="_blank"
 					rel="noreferrer noopener"
@@ -43,7 +43,7 @@ export default function Menu() {
 				</MenuItem>
 				<MenuItem
 					as="a"
-					className="px-4 py-2 w-full hover:bg-[#292929]"
+					className="w-full px-4 py-2 hover:bg-[#292929]"
 					href="https://discord.gg/bzH9yZzvMy"
 					target="_blank"
 					rel="noreferrer noopener"
@@ -52,7 +52,7 @@ export default function Menu() {
 				</MenuItem>
 				<MenuItem
 					as="a"
-					className="px-4 py-2 w-full hover:bg-[#292929]"
+					className="w-full px-4 py-2 hover:bg-[#292929]"
 					href="https://github.com/llamalend"
 					target="_blank"
 					rel="noreferrer noopener"

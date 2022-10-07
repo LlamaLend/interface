@@ -9,7 +9,7 @@ export function DesktopOnlyCart({ children }: { children: React.ReactNode }) {
 	if (!isConnected) {
 		return (
 			<Wrapper>
-				<p className="xl:mt-[60%] text-center mt-8 mb-9 text-sm">Connect wallet to view items in cart.</p>
+				<p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">Connect wallet to view items in cart.</p>
 			</Wrapper>
 		)
 	}
@@ -17,7 +17,7 @@ export function DesktopOnlyCart({ children }: { children: React.ReactNode }) {
 	if (chain?.unsupported) {
 		return (
 			<Wrapper>
-				<p className="xl:mt-[60%] text-center mt-8 mb-9 text-sm">
+				<p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">
 					Connect wallet to the app's supported network to view items in cart.
 				</p>
 			</Wrapper>

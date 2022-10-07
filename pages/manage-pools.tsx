@@ -91,8 +91,8 @@ const ManagePools: NextPage = () => {
 			</Head>
 
 			<Layout>
-				<form className="max-w-lg mx-auto my-10 mb-20 flex flex-col gap-6" onSubmit={handleSubmit}>
-					<h1 className="mb-2 text-3xl font-semibold text-center">Create a Pool</h1>
+				<form className="mx-auto my-10 mb-20 flex max-w-lg flex-col gap-6" onSubmit={handleSubmit}>
+					<h1 className="mb-2 text-center text-3xl font-semibold">Create a Pool</h1>
 
 					<InputNumber
 						name="maxPrice"
@@ -171,16 +171,16 @@ const ManagePools: NextPage = () => {
 					{error && <small className="text-center text-red-500">{formatMsgInToast(error.message)}</small>}
 
 					{!isConnected ? (
-						<button type="button" className="p-2 rounded-lg bg-[#243b55] text-white" onClick={openConnectModal}>
+						<button type="button" className="rounded-lg bg-[#243b55] p-2 text-white" onClick={openConnectModal}>
 							Connect Wallet
 						</button>
 					) : chain?.unsupported ? (
-						<button type="button" className="p-2 rounded-lg bg-[#243b55] text-white" onClick={openChainModal}>
+						<button type="button" className="rounded-lg bg-[#243b55] p-2 text-white" onClick={openChainModal}>
 							Switch Network
 						</button>
 					) : (
 						<button
-							className="p-2 rounded-lg bg-[#243b55] text-white disabled:cursor-not-allowed"
+							className="rounded-lg bg-[#243b55] p-2 text-white disabled:cursor-not-allowed"
 							disabled={isLoading || !isConnected || chain?.unsupported || isInvalidInterests}
 						>
 							{isLoading ? <BeatLoader color="white" /> : 'Create'}

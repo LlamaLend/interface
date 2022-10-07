@@ -10,7 +10,7 @@ export default function ItemWrapper({ className, children }: IGridItemProps) {
 	return (
 		<li
 			className={cx(
-				'flex flex-col gap-4 min-h-[300px] min-w-[240px] bg-[#191919] rounded-xl shadow backdrop-blur p-4',
+				'flex min-h-[300px] min-w-[240px] flex-col gap-4 rounded-xl bg-[#191919] p-4 shadow backdrop-blur',
 				className
 			)}
 		>

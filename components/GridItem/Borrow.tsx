@@ -25,10 +25,10 @@ export const BorrowNftItem = ({
 	const isAddedToCart = cartItems?.includes(data.tokenId)
 
 	return (
-		<ItemWrapper className="text-sm gap-0 !p-2">
-			<div className="aspect-square bg-[#202020] rounded-t-xl -mx-2 -mt-2 relative">
+		<ItemWrapper className="gap-0 !p-2 text-sm">
+			<div className="relative -mx-2 -mt-2 aspect-square rounded-t-xl bg-[#202020]">
 				{data.imgUrl !== '' && (
-					<Image src={data.imgUrl} fill alt={data.tokenId.toString()} className="rounded-t-xl aspect-square" />
+					<Image src={data.imgUrl} fill alt={data.tokenId.toString()} className="aspect-square rounded-t-xl" />
 				)}
 			</div>
 
@@ -44,7 +44,7 @@ export const BorrowNftItem = ({
 
 				{isAddedToCart ? (
 					<button
-						className="text-sm text-center rounded-xl px-2 py-1 border border-[#243b55] text-white flex items-center gap-1"
+						className="flex items-center gap-1 rounded-xl border border-[#243b55] px-2 py-1 text-center text-sm text-white"
 						onClick={storeItem}
 					>
 						<svg
@@ -61,7 +61,7 @@ export const BorrowNftItem = ({
 					</button>
 				) : (
 					<button
-						className="text-sm text-center rounded-xl px-2 py-1 border border-[#243b55] bg-[#243b55] text-white flex items-center gap-1"
+						className="flex items-center gap-1 rounded-xl border border-[#243b55] bg-[#243b55] px-2 py-1 text-center text-sm text-white"
 						onClick={storeItem}
 					>
 						Add to cart
@@ -74,10 +74,10 @@ export const BorrowNftItem = ({
 
 export const BorrowNftPlaceholder = () => {
 	return (
-		<ItemWrapper className="text-sm gap-0 !p-2">
-			<div className="aspect-square bg-[#202020] placeholder-box rounded-t-xl relative -mx-2 -mt-2"></div>
+		<ItemWrapper className="gap-0 !p-2 text-sm">
+			<div className="placeholder-box relative -mx-2 -mt-2 aspect-square rounded-t-xl bg-[#202020]"></div>
 
-			<div className="placeholder-box h-5 w-[10ch] mt-2 mb-4"></div>
+			<div className="placeholder-box mt-2 mb-4 h-5 w-[10ch]"></div>
 
 			<h4 className="mt-auto">Quote</h4>
 
@@ -87,7 +87,7 @@ export const BorrowNftPlaceholder = () => {
 					<div className="placeholder-box h-4 w-[6ch]"></div>
 				</div>
 
-				<div className="text-sm text-center rounded-xl bg-[#243b55] text-white text-opacity-40">
+				<div className="rounded-xl bg-[#243b55] text-center text-sm text-white text-opacity-40">
 					<div className="h-[1.875rem] w-[5.5rem]"></div>
 				</div>
 			</div>

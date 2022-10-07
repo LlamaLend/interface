@@ -26,7 +26,7 @@ const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 				) : isError ? (
 					<p className="fallback-text">Something went wrong, couldn't get pools on this network.</p>
 				) : isLoading ? (
-					<GridWrapper className="mt-8 mb-auto mx-0 sm:my-9">
+					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{new Array(10).fill(1).map((_, index) => (
 							<PlaceHolderPoolItem key={'plitem' + index} />
 						))}
@@ -40,7 +40,7 @@ const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 						to create a new pool.
 					</p>
 				) : (
-					<GridWrapper className="mt-8 mb-auto mx-0 sm:my-9">
+					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{data.map((item) => (
 							<PoolItem key={item.address} data={item} chainName={chainName} />
 						))}

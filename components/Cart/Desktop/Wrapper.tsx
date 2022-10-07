@@ -24,7 +24,7 @@ export default function Wrapper({ children }: { children: React.ReactNode }) {
 
 	return (
 		<m.div
-			className="sticky top-0 flex flex-col gap-6 w-full max-w-[22.5rem] max-h-screen px-5 py-4 rounded-xl bg-black overflow-auto"
+			className="sticky top-0 flex max-h-screen w-full max-w-[22.5rem] flex-col gap-6 overflow-auto rounded-xl bg-black px-5 py-4"
 			animate={isOpen ? 'open' : 'closed'}
 			variants={variants}
 		>
