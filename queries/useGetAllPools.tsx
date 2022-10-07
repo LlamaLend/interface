@@ -22,7 +22,7 @@ export interface IPool {
 
 export async function getAllpools({ contractArgs, chainId }: IGetAllPoolsArgs) {
 	try {
-		// return empty array when no chainId, as there is no chainId returned on /pool/[chainName] when chainName is not supported/invalid
+		// return empty array when no chainId, as there is no chainId returned on /borrow/[chainName] when chainName is not supported/invalid
 		if (!chainId) {
 			return []
 		}

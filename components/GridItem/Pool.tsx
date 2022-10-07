@@ -30,7 +30,7 @@ export function PoolItem({ data, chainName }: IGridItemProps) {
 				<span>{(data.currentAnnualInterest / 1e16).toFixed(2)}% p.a.</span>
 			</p>
 
-			<Link href={`/pool/${chainName}/${data.address}`}>
+			<Link href={`/borrow/${chainName}/${data.address}`}>
 				<a className="rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pool</a>
 			</Link>
 		</ItemWrapper>

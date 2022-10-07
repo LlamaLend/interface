@@ -5,7 +5,7 @@ import { cx } from 'cva'
 export default function AppLink({ name, path }: { name: string; path: string }) {
 	const { pathname } = useRouter()
 
-	const isActive = pathname === path || (pathname.startsWith('/pool') && path === '/')
+	const isActive = pathname === path || (pathname.startsWith('/borrow') && path === '/')
 
 	return (
 		<Link href={path}>
