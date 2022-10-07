@@ -63,7 +63,7 @@ async function fetchCartItems({ contractAddress, userAddress }: { contractAddres
 
 		const prevItems = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}')
 
-		return prevItems?.[contractAddress] ?? []
+		return prevItems?.[userAddress]?.[contractAddress] ?? []
 	} catch (error: any) {
 		throw new Error("Couldn't get items in cart")
 	}
@@ -115,7 +115,7 @@ const useGetCartItems = (contractAddress: string) => {
 	const { chain } = useNetwork()
 
 	// fetch and filter cart items which are owned by user
-	return useQuery<Array<INftItem>, ITransactionError>(['cartItems', address, chain?.id, contractAddress], () =>
+	return useQuery<Array<number>, ITransactionError>(['cartItems', address, chain?.id, contractAddress], () =>
 		fetchCartItems({ contractAddress, userAddress: address })
 	)
 }

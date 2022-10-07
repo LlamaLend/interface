@@ -2,8 +2,28 @@ import * as React from 'react'
 import Image from 'next/future/image'
 import ItemWrapper from './ItemWrapper'
 import { INftItem } from '~/types'
+import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 
-export const BorrowNftItem = ({ data, quotePrice }: { data: INftItem; quotePrice?: number | null }) => {
+export const BorrowNftItem = ({
+	data,
+	quotePrice,
+	contractAddress
+}: {
+	data: INftItem
+	quotePrice?: number | null
+	contractAddress: string
+}) => {
+	const { data: cartItems } = useGetCartItems(contractAddress)
+	const { mutate } = useSaveItemToCart()
+
+	const storeItem = () => {
+		if (!data.tokenId) return
+
+		mutate({ tokenId: data.tokenId, contractAddress })
+	}
+
+	const isAddedToCart = cartItems?.includes(data.tokenId)
+
 	return (
 		<ItemWrapper className="text-sm gap-0 !p-2">
 			<div className="aspect-square bg-[#202020] rounded-t-xl -mx-2 -mt-2 relative">
@@ -22,9 +42,31 @@ export const BorrowNftItem = ({ data, quotePrice }: { data: INftItem; quotePrice
 					<p className="min-h-4">{quotePrice || '-'}</p>
 				</div>
 
-				<button className="text-sm text-center rounded-xl px-2 py-1 border border-blue-500 text-white">
-					Add to cart
-				</button>
+				{isAddedToCart ? (
+					<button
+						className="text-sm text-center rounded-xl px-2 py-1 border border-[#243b55] text-white flex items-center gap-1"
+						onClick={storeItem}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth={2}
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+						</svg>
+						<span>Added to cart</span>
+					</button>
+				) : (
+					<button
+						className="text-sm text-center rounded-xl px-2 py-1 border border-[#243b55] bg-[#243b55] text-white flex items-center gap-1"
+						onClick={storeItem}
+					>
+						Add to cart
+					</button>
+				)}
 			</div>
 		</ItemWrapper>
 	)

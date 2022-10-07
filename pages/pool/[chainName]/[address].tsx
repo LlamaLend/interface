@@ -144,8 +144,13 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 						<p className="fallback-text">There are no {data.nftName} in this address.</p>
 					) : (
 						<GridWrapper>
-							{nftsList.map((data) => (
-								<BorrowNftItem key={data.tokenId} data={data} quotePrice={quote?.price} />
+							{nftsList.map((nftData) => (
+								<BorrowNftItem
+									key={nftData.tokenId}
+									data={nftData}
+									quotePrice={quote?.price}
+									contractAddress={data.nftContract}
+								/>
 							))}
 						</GridWrapper>
 					)}
