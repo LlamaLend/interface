@@ -102,7 +102,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{data ? `${(data.maxInterestPerEthPerSecond / (10 * SECONDS_IN_A_YEAR)).toFixed(2)}% p.a.` : ''}
+								{data ? `${(data.maxInterestPerEthPerSecond * (SECONDS_IN_A_YEAR / 1e16)).toFixed(2)}% p.a.` : ''}
 							</p>
 						</div>
 

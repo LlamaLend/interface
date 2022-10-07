@@ -33,15 +33,23 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 
 		const contract = new ethers.Contract(address, abi, provider)
 
-		const [name, symbol, maxLoanLength, currentAnnualInterest, maxInterestPerEthPerSecond, nftContract]: Array<string> =
-			await Promise.all([
-				contract.name(),
-				contract.symbol(),
-				contract.maxLoanLength(),
-				contract.currentAnnualInterest(0),
-				contract.maxInterestPerEthPerSecond(),
-				contract.nftContract()
-			])
+		const [
+			name,
+			symbol,
+			maxLoanLength,
+			currentAnnualInterest,
+			minimumInterest,
+			maxInterestPerEthPerSecond,
+			nftContract
+		]: Array<string> = await Promise.all([
+			contract.name(),
+			contract.symbol(),
+			contract.maxLoanLength(),
+			contract.currentAnnualInterest(0),
+			contract.minimumInterest(),
+			contract.maxInterestPerEthPerSecond(),
+			contract.nftContract()
+		])
 
 		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
 
@@ -52,7 +60,7 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 			symbol,
 			maxLoanLength: Number(maxLoanLength),
 			currentAnnualInterest: Number(currentAnnualInterest),
-			maxInterestPerEthPerSecond: Number(maxInterestPerEthPerSecond),
+			maxInterestPerEthPerSecond: Number(maxInterestPerEthPerSecond) + Number(minimumInterest),
 			nftContract,
 			nftName
 		}
