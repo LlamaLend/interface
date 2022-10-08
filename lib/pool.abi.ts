@@ -8,7 +8,7 @@ export const POOL_ABI = [
 			{ internalType: 'string', name: '_name', type: 'string' },
 			{ internalType: 'string', name: '_symbol', type: 'string' },
 			{ internalType: 'uint256', name: '_maxLoanLength', type: 'uint256' },
-			{ internalType: 'uint256', name: '_maxInterestPerEthPerSecond', type: 'uint256' },
+			{ internalType: 'uint256', name: '_maxVariableInterestPerEthPerSecond', type: 'uint256' },
 			{ internalType: 'uint256', name: '_minimumInterest', type: 'uint256' },
 			{ internalType: 'address', name: '_owner', type: 'address' }
 		],
@@ -42,6 +42,18 @@ export const POOL_ABI = [
 			{ indexed: false, internalType: 'uint256', name: 'newBorrowedAmount', type: 'uint256' }
 		],
 		name: 'Borrowed',
+		type: 'event'
+	},
+	{
+		anonymous: false,
+		inputs: [{ indexed: false, internalType: 'address', name: 'liquidator', type: 'address' }],
+		name: 'LiquidatorAdded',
+		type: 'event'
+	},
+	{
+		anonymous: false,
+		inputs: [{ indexed: false, internalType: 'address', name: 'liquidator', type: 'address' }],
+		name: 'LiquidatorRemoved',
 		type: 'event'
 	},
 	{
@@ -148,6 +160,14 @@ export const POOL_ABI = [
 		type: 'function'
 	},
 	{
+		inputs: [{ internalType: 'uint256', name: 'priceOfNextItem', type: 'uint256' }],
+		name: 'currentAnnualInterest',
+		outputs: [{ internalType: 'uint256', name: 'interest', type: 'uint256' }],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{ inputs: [], name: 'deposit', outputs: [], stateMutability: 'payable', type: 'function' },
+	{
 		inputs: [
 			{
 				components: [
@@ -160,21 +180,13 @@ export const POOL_ABI = [
 				name: 'loan',
 				type: 'tuple'
 			},
-			{ internalType: 'uint256', name: 'liquidatorIndex', type: 'uint256' }
+			{ internalType: 'address', name: 'to', type: 'address' }
 		],
-		name: 'claw',
+		name: 'doEffectiveAltruism',
 		outputs: [],
 		stateMutability: 'nonpayable',
 		type: 'function'
 	},
-	{
-		inputs: [{ internalType: 'uint256', name: 'priceOfNextItem', type: 'uint256' }],
-		name: 'currentAnnualInterest',
-		outputs: [{ internalType: 'uint256', name: 'interest', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{ inputs: [], name: 'deposit', outputs: [], stateMutability: 'payable', type: 'function' },
 	{ inputs: [], name: 'emergencyShutdown', outputs: [], stateMutability: 'nonpayable', type: 'function' },
 	{
 		inputs: [],
@@ -249,23 +261,9 @@ export const POOL_ABI = [
 		type: 'function'
 	},
 	{
-		inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+		inputs: [{ internalType: 'address', name: '', type: 'address' }],
 		name: 'liquidators',
-		outputs: [{ internalType: 'address', name: '', type: 'address' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [],
-		name: 'liquidatorsLength',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [],
-		name: 'maxInterestPerEthPerSecond',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+		outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
 		stateMutability: 'view',
 		type: 'function'
 	},
@@ -279,6 +277,13 @@ export const POOL_ABI = [
 	{
 		inputs: [],
 		name: 'maxPrice',
+		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [],
+		name: 'maxVariableInterestPerEthPerSecond',
 		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
 		stateMutability: 'view',
 		type: 'function'
@@ -326,7 +331,7 @@ export const POOL_ABI = [
 		type: 'function'
 	},
 	{
-		inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
+		inputs: [{ internalType: 'address', name: 'liq', type: 'address' }],
 		name: 'removeLiquidator',
 		outputs: [],
 		stateMutability: 'nonpayable',
@@ -381,13 +386,6 @@ export const POOL_ABI = [
 			{ internalType: 'bool', name: 'approved', type: 'bool' }
 		],
 		name: 'setApprovalForAll',
-		outputs: [],
-		stateMutability: 'nonpayable',
-		type: 'function'
-	},
-	{
-		inputs: [{ internalType: 'string', name: 'newBaseURI', type: 'string' }],
-		name: 'setBaseURI',
 		outputs: [],
 		stateMutability: 'nonpayable',
 		type: 'function'
