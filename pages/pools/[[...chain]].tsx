@@ -58,3 +58,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
 	return { props: { chainId: chainDetails.id, chainName: chainDetails.name } }
 }
+
+export const config = {
+	runtime: 'experimental-edge'
+}
