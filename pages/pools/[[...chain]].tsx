@@ -25,7 +25,9 @@ const PoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 
 export default PoolsByChain
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+	res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
+
 	const chainParam = query.chain?.[0] ?? null
 
 	const chainDetails = chainParam
@@ -57,8 +59,4 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	// )
 
 	return { props: { chainId: chainDetails.id, chainName: chainDetails.name } }
-}
-
-export const config = {
-	runtime: 'experimental-edge'
 }
