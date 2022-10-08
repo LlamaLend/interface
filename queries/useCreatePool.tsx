@@ -14,7 +14,7 @@ export enum FormNames {
 	name = 'name',
 	symbol = 'symbol',
 	maxLength = 'maxLength',
-	maxInterestPerEthPerSecond = 'maxInterestPerEthPerSecond',
+	maxVariableInterestPerEthPerSecond = 'maxVariableInterestPerEthPerSecond',
 	minimumInterest = 'minimumInterest'
 }
 
@@ -39,7 +39,7 @@ const createPool = async (args: ICreatePoolArgs) => {
 			name,
 			symbol,
 			maxLength,
-			maxInterestPerEthPerSecond,
+			maxVariableInterestPerEthPerSecond,
 			minimumInterest
 		} = args
 
@@ -59,7 +59,7 @@ const createPool = async (args: ICreatePoolArgs) => {
 			name,
 			symbol,
 			maxLength,
-			maxInterestPerEthPerSecond,
+			maxVariableInterestPerEthPerSecond,
 			minimumInterest
 		)
 	} catch (error: any) {

@@ -18,7 +18,7 @@ export interface IPoolData {
 	symbol: string
 	maxLoanLength: number
 	currentAnnualInterest: number
-	maxInterestPerEthPerSecond: number
+	maxVariableInterestPerEthPerSecond: number
 	nftContract: string
 	nftName: string
 }
@@ -45,7 +45,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			maxLoanLength,
 			currentAnnualInterest,
 			minimumInterest,
-			maxInterestPerEthPerSecond,
+			maxVariableInterestPerEthPerSecond,
 			nftContract
 		]: Array<string> = await Promise.all([
 			contract.name(),
@@ -53,7 +53,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			contract.maxLoanLength(),
 			contract.currentAnnualInterest(new BigNumber(quote?.price ?? 0).multipliedBy(1e18).toFixed(0)),
 			contract.minimumInterest(),
-			contract.maxInterestPerEthPerSecond(),
+			contract.maxVariableInterestPerEthPerSecond(),
 			contract.nftContract()
 		])
 
@@ -66,7 +66,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			symbol,
 			maxLoanLength: Number(maxLoanLength),
 			currentAnnualInterest: Number(currentAnnualInterest),
-			maxInterestPerEthPerSecond: Number(maxInterestPerEthPerSecond) + Number(minimumInterest),
+			maxVariableInterestPerEthPerSecond: Number(maxVariableInterestPerEthPerSecond) + Number(minimumInterest),
 			nftContract,
 			nftName
 		}

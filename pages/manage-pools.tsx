@@ -43,21 +43,21 @@ const ManagePools: NextPage = () => {
 			const maxLengthInDays = Number(form.maxLengthInDays.value)
 			const maxPrice = Number(form.maxPrice.value)
 			const maxDailyBorrows = Number(form.maxDailyBorrows.value)
-			const maxInterestPerEthPerSecond = Number(form.maxInterestPerEthPerSecond.value)
+			const maxVariableInterestPerEthPerSecond = Number(form.maxVariableInterestPerEthPerSecond.value)
 			const minimumInterest = Number(form.minimumInterest.value)
 
 			if (
 				Number.isNaN(maxLengthInDays) ||
 				Number.isNaN(maxPrice) ||
 				Number.isNaN(maxDailyBorrows) ||
-				Number.isNaN(maxInterestPerEthPerSecond) ||
+				Number.isNaN(maxVariableInterestPerEthPerSecond) ||
 				Number.isNaN(minimumInterest)
 			) {
 				throw new Error('Invalid arguments')
 			}
 
 			const maxInt = Number(
-				new BigNumber(maxInterestPerEthPerSecond / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+				new BigNumber(maxVariableInterestPerEthPerSecond / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
 			)
 			const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
 
@@ -68,7 +68,7 @@ const ManagePools: NextPage = () => {
 				name: form.name.value,
 				symbol: form.symbol.value,
 				maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
-				maxInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
+				maxVariableInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
 				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
 			})
 
@@ -148,7 +148,7 @@ const ManagePools: NextPage = () => {
 					/>
 
 					<InputNumber
-						name="maxInterestPerEthPerSecond"
+						name="maxVariableInterestPerEthPerSecond"
 						placeholder="70"
 						label={`Maximum annual interest`}
 						helperText={'This can be changed afterwards and must be higher than minimum annual interest.'}
@@ -200,7 +200,7 @@ export default ManagePools
 // name - name of loan NFTs, eg:"TubbyLoan"
 // symbol - symbol of loans NFTs, eg: "TL"
 // maxLengthInDays - maximum duration of loans in seconds, eg: 2 weeks would be "1209600", better to make this < 1 mo
-// maxInterestPerEthPerSecond - max interest that can be paid, to calculate run (percent * 1e18)/(seconds in 1 year)
+// maxVariableInterestPerEthPerSecond - max interest that can be paid, to calculate run (percent * 1e18)/(seconds in 1 year)
 // eg: 80% is 0.8e18/1 year = "25367833587", this is what will be charged if pool utilisation is at 100%
 
 {
