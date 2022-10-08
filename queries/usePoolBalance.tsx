@@ -20,7 +20,7 @@ export default function usePoolBalance(poolAddress?: string) {
 
 	return {
 		contractBalance,
-		maxNftsToBorrow,
+		maxNftsToBorrow: Number(maxNftsToBorrow),
 		quote,
 		errorFetchingContractBalance,
 		fetchingContractBalance,

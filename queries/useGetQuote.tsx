@@ -44,7 +44,7 @@ const useGetQuote = (poolAddress?: string) => {
 
 	return useQuery<IQuoteResponse | null, ITransactionError>(
 		['quote', chain?.id, poolAddress],
-		() => fetchQuote({ api: config.quoteApi, poolAddress, isTestnet: chain?.testnet }),
+		() => fetchQuote({ api: config.quoteApi, poolAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}

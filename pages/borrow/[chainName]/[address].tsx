@@ -102,7 +102,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 									fetchingContractBalance || fetchingQuote ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{maxNftsToBorrow}
+								{fetchingContractBalance || fetchingQuote ? '' : maxNftsToBorrow}
 							</p>
 						</div>
 
