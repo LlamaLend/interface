@@ -12,8 +12,8 @@ import Layout from '~/components/Layout'
 import { BorrowCart } from '~/components/Cart'
 import { useGetPoolData } from '~/queries/useGetPoolData'
 import { useGetNftsList } from '~/queries/useNftsList'
-import { chainConfig, SECONDS_IN_A_YEAR } from '~/lib/constants'
-import { useGetQuote } from '~/queries/useGetQuote'
+import { chainConfig } from '~/lib/constants'
+import usePoolBalance from '~/queries/usePoolBalance'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -31,7 +31,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 
 	const { data, isLoading } = useGetPoolData({ chainId, address })
 
-	const { data: quote, isLoading: quoteLoading } = useGetQuote(address)
+	const { quote, fetchingQuote, maxNftsToBorrow, fetchingContractBalance } = usePoolBalance(address)
 
 	const { data: nftsList, isLoading: nftsListLoading } = useGetNftsList(data?.nftContract)
 
@@ -94,15 +94,15 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 						</div>
 
 						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
-							<h2 className="text-center font-medium md:whitespace-nowrap">Maximum Annual Interest</h2>
+							<h2 className="text-center font-medium md:whitespace-nowrap">Maximum NFTs to borrow</h2>
 
 							<p
 								className={cx(
 									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
-									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
+									fetchingContractBalance || fetchingQuote ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{data ? `${(data.maxInterestPerEthPerSecond * (SECONDS_IN_A_YEAR / 1e16)).toFixed(2)}% p.a.` : ''}
+								{maxNftsToBorrow}
 							</p>
 						</div>
 
@@ -129,7 +129,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 						<>
 							{!chainId ? (
 								<p className="fallback-text">Network not supported, Please check URL validity.</p>
-							) : isLoading || nftsListLoading || quoteLoading ? (
+							) : isLoading || nftsListLoading || fetchingQuote || fetchingContractBalance ? (
 								<GridWrapper className="xl:flex-1">
 									{new Array(10).fill(1).map((_, index) => (
 										<BorrowNftPlaceholder key={'plitem' + index} />
@@ -164,7 +164,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 								chainId={chainId}
 								nftContractAddress={data?.nftContract}
 								nftCollectionName={data?.nftName}
-								isLoading={isLoading || nftsListLoading || quoteLoading}
+								isLoading={isLoading || nftsListLoading || fetchingQuote || fetchingContractBalance}
 							/>
 						</>
 					</React.Suspense>

@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Image from 'next/future/image'
-import { useBalance } from 'wagmi'
 import BeatLoader from '~/components/BeatLoader'
 import ItemsPlaceholder from './Placeholder'
 import { useGetNftsList } from '~/queries/useNftsList'
@@ -10,6 +9,7 @@ import { useGetQuote } from '~/queries/useGetQuote'
 import { useGetPoolData } from '~/queries/useGetPoolData'
 import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
+import usePoolBalance from '~/queries/usePoolBalance'
 
 const formatErrorMsg = (error: any) => {
 	if (error?.code === 'UNPREDICTABLE_GAS_LIMIT') {
@@ -78,13 +78,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		maxInterest: poolData?.maxInterestPerEthPerSecond
 	})
 
-	const {
-		data: contractBalance,
-		error: errorFetchingContractBalance,
-		isLoading: fethcingContractBalance
-	} = useBalance({
-		addressOrName: poolAddress
-	})
+	const { contractBalance, maxNftsToBorrow, errorFetchingContractBalance, fetchingContractBalance } =
+		usePoolBalance(poolAddress)
 
 	// construct error messages
 	// Failed queries, but user can't retry with data of these queries
@@ -126,16 +121,12 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		fetchingIfApproved ||
 		userConfirmingBorrow ||
 		checkingForBorrowTxOnChain ||
-		fethcingContractBalance
+		fetchingContractBalance
 
 	const canUserBorrowETH =
 		contractBalance && cartItems && quote?.price
 			? Number((cartItems.length * quote.price).toFixed(2)) < Number(contractBalance.formatted)
 			: false
-
-	const maxNftsToBorrow = (
-		contractBalance && quote?.price ? Number(contractBalance.formatted) / quote.price : 0
-	).toFixed(0)
 
 	return (
 		<>

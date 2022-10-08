@@ -15,11 +15,11 @@ export async function getOwnedNfts({
 	nftContractAddress
 }: IGetOwnedNfts): Promise<Array<INftItem>> {
 	try {
-		if (!nftContractAddress) {
+		if (!nftContractAddress || !userAddress) {
 			return []
 		}
 
-		if (!userAddress || !alchemyNftUrl) {
+		if (!alchemyNftUrl) {
 			throw new Error('Error: Invalid arguments')
 		}
 
