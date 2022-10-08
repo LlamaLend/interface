@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
-import { erc721ABI, useContractReads, useNetwork } from 'wagmi'
+import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
@@ -100,14 +100,10 @@ export function useGetPoolInterestInCart({
 	const { chain } = useNetwork()
 	const config = chainConfig(chain?.id)
 
-	return useContractReads({
-		contracts: [
-			{
-				addressOrName: poolAddress,
-				contractInterface: config.poolABI,
-				functionName: 'currentAnnualInterest',
-				args: new BigNumber(totalReceived).multipliedBy(1e18).toFixed(0)
-			}
-		]
+	return useContractRead({
+		addressOrName: poolAddress,
+		contractInterface: config.poolABI,
+		functionName: 'currentAnnualInterest',
+		args: new BigNumber(totalReceived).multipliedBy(1e18).toFixed(0)
 	})
 }
