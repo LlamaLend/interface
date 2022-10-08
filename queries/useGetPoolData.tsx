@@ -4,10 +4,13 @@ import { useQuery } from '@tanstack/react-query'
 import { IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
+import { fetchQuote } from './useGetQuote'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
 	chainId?: number | null
+	isTestnet: boolean
+	quoteApi: string
 }
 
 export interface IPoolData {
@@ -20,7 +23,7 @@ export interface IPoolData {
 	nftName: string
 }
 
-export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
+export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IGetPoolDataArgs) {
 	try {
 		if (!chainId || !contractArgs) {
 			return null
@@ -28,9 +31,11 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 
 		const { address, abi, provider } = contractArgs
 
-		if (!provider) {
+		if (!provider || !quoteApi) {
 			throw new Error('Invalid arguments')
 		}
+
+		const quote = await fetchQuote({ api: quoteApi, isTestnet, poolAddress: address })
 
 		const contract = new ethers.Contract(address, abi, provider)
 
@@ -46,7 +51,7 @@ export async function getPool({ contractArgs, chainId }: IGetPoolDataArgs) {
 			contract.name(),
 			contract.symbol(),
 			contract.maxLoanLength(),
-			contract.currentAnnualInterest(0),
+			contract.currentAnnualInterest(new BigNumber(quote?.price ?? 0).multipliedBy(1e18).toFixed(0)),
 			contract.minimumInterest(),
 			contract.maxInterestPerEthPerSecond(),
 			contract.nftContract()
@@ -83,7 +88,7 @@ export function useGetPoolData({ chainId, address }: { chainId?: number | null; 
 
 	return useQuery<IPoolData | null, ITransactionError>(
 		['pool', chainId, address],
-		() => getPool({ contractArgs, chainId }),
+		() => getPool({ contractArgs, chainId, quoteApi: config.quoteApi, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}
