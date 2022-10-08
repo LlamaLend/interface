@@ -14,7 +14,12 @@ async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddre
 			gql`
 				query {
 					loans(where: { originalOwner: "${userAddress}" }) {
+            id
+            loanId
 						nftId
+            interest
+            borrowed
+            startTime
 					}
 				}
 			`

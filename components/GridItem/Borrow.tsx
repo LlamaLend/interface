@@ -36,7 +36,7 @@ export const BorrowNftItem = ({
 
 			<h4 className="mt-auto">Quote</h4>
 
-			<div className="flex items-center justify-between gap-4">
+			<div className="flex flex-wrap items-center justify-between gap-4">
 				<div className="flex items-center gap-1.5">
 					<Image src="/assets/ethereum.png" width={16} height={16} className="object-contain" alt="ethereum" />
 					<p className="min-h-4">{quotePrice || '-'}</p>
@@ -81,7 +81,7 @@ export const BorrowNftPlaceholder = () => {
 
 			<h4 className="mt-auto">Quote</h4>
 
-			<div className="flex items-center justify-between gap-4">
+			<div className="flex flex-wrap items-center justify-between gap-4">
 				<div className="flex items-center gap-1.5">
 					<Image src="/assets/ethereum.png" width={16} height={16} className="object-contain" alt="ethereum" />
 					<div className="placeholder-box h-4 w-[6ch]"></div>
