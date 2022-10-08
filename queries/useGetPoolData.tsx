@@ -1,8 +1,9 @@
 import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
-import { erc721ABI } from 'wagmi'
+import { erc721ABI, useContractReads, useNetwork } from 'wagmi'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
@@ -87,4 +88,26 @@ export function useGetPoolData({ chainId, address }: { chainId?: number | null; 
 			refetchInterval: 30_000
 		}
 	)
+}
+
+export function useGetPoolInterestInCart({
+	poolAddress,
+	totalReceived
+}: {
+	poolAddress: string
+	totalReceived: number
+}) {
+	const { chain } = useNetwork()
+	const config = chainConfig(chain?.id)
+
+	return useContractReads({
+		contracts: [
+			{
+				addressOrName: poolAddress,
+				contractInterface: config.poolABI,
+				functionName: 'currentAnnualInterest',
+				args: new BigNumber(totalReceived).multipliedBy(1e18).toFixed(0)
+			}
+		]
+	})
 }

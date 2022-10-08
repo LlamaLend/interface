@@ -6,7 +6,7 @@ import { useGetNftsList } from '~/queries/useNftsList'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import type { IBorrowItemsProps } from '../types'
 import { useGetQuote } from '~/queries/useGetQuote'
-import { useGetPoolData } from '~/queries/useGetPoolData'
+import { useGetPoolData, useGetPoolInterestInCart } from '~/queries/useGetPoolData'
 import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
 import usePoolBalance from '~/queries/usePoolBalance'
@@ -80,6 +80,10 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 	const { contractBalance, maxNftsToBorrow, errorFetchingContractBalance, fetchingContractBalance } =
 		usePoolBalance(poolAddress)
+
+	const totalReceived = quote?.price && cartItemsList.length ? cartItemsList.length * quote.price : 0
+
+	const { data: currentAnnualInterest } = useGetPoolInterestInCart({ poolAddress, totalReceived: totalReceived })
 
 	// construct error messages
 	// Failed queries, but user can't retry with data of these queries
@@ -202,7 +206,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingQuote ? (
 										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 									) : (
-										<span>{(cartItemsList.length * quote.price).toFixed(2)} ETH</span>
+										<span>{totalReceived.toFixed(2)} ETH</span>
 									)}
 								</span>
 							</li>
@@ -214,7 +218,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingPoolData ? (
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
-										<span>{poolData && `${(poolData.currentAnnualInterest / 1e16).toFixed(2)}% p.a.`}</span>
+										<span>{currentAnnualInterest && `${(Number(currentAnnualInterest) / 1e16).toFixed(2)}% p.a.`}</span>
 									)}
 								</span>
 							</li>
