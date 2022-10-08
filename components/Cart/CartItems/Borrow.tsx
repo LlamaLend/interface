@@ -22,7 +22,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 	// query to get cart items from local storage
 	const {
-		data: cartItems,
+		data: itemsInCart,
 		isLoading: fetchingCartItems,
 		isError: errorLoadingCartItems
 	} = useGetCartItems(nftContractAddress)
@@ -40,7 +40,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	// query to save/remove item to cart/localstorage
 	const { mutate: saveItemToCart } = useSaveItemToCart()
 
-	const cartItemsList = nftsList?.filter((item) => cartItems?.includes(item.tokenId)) ?? []
+	const cartItemsList = nftsList?.filter((item) => itemsInCart?.includes(item.tokenId)) ?? []
 	const cartTokenIds = cartItemsList?.map((item) => item.tokenId) ?? []
 
 	// query to check approval of all tokens
@@ -124,15 +124,15 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		fetchingContractBalance
 
 	const canUserBorrowETH =
-		contractBalance && cartItems && quote?.price
-			? Number((cartItems.length * quote.price).toFixed(2)) < Number(contractBalance.formatted)
+		contractBalance && cartItemsList && quote?.price
+			? Number((cartItemsList.length * quote.price).toFixed(2)) < Number(contractBalance.formatted)
 			: false
 
 	return (
 		<>
 			{errorMsgOfQueries ? (
 				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393] xl:mt-[60%]">{errorMsgOfQueries}</p>
-			) : cartItems && cartItems.length <= 0 ? (
+			) : cartItemsList && cartItemsList.length <= 0 ? (
 				<p className="mt-8 mb-9 p-6 text-center xl:mt-[60%]">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
 			) : (
 				<>
@@ -192,7 +192,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 					<h2 className="-mt-1.5 -mb-3 text-sm font-medium">Loan Details</h2>
 
 					{/* These values are always truth as error and loading states are handles, but adding a check satisfy typescript compiler  */}
-					{cartItems && quote && cartItems?.length > 0 && quote?.price && (
+					{cartItemsList && quote && cartItemsList?.length > 0 && quote?.price && (
 						<ul className="flex flex-col gap-4">
 							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">You Receive</span>
@@ -202,7 +202,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingQuote ? (
 										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 									) : (
-										<span>{(cartItems.length * quote.price).toFixed(2)} ETH</span>
+										<span>{(cartItemsList.length * quote.price).toFixed(2)} ETH</span>
 									)}
 								</span>
 							</li>
