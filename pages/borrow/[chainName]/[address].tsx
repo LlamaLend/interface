@@ -176,7 +176,9 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 
 export default PoolByChain
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
+
 	const chainParam = typeof query.chainName === 'string' && query.chainName
 	const address = typeof query.address === 'string' && query.address
 

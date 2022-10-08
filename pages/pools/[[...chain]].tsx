@@ -26,7 +26,7 @@ const PoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 export default PoolsByChain
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
-	res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
+	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
 
 	const chainParam = query.chain?.[0] ?? null
 
