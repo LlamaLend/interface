@@ -75,19 +75,19 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 	}
 }
 
-export function useGetPoolData({ chainId, address }: { chainId?: number | null; address?: string }) {
+export function useGetPoolData({ chainId, poolAddress }: { chainId?: number | null; poolAddress?: string }) {
 	const config = chainConfig(chainId)
 
-	const contractArgs = address
+	const contractArgs = poolAddress
 		? {
-				address,
+				address: poolAddress,
 				abi: config.poolABI,
 				provider: config.chainProvider
 		  }
 		: null
 
 	return useQuery<IPoolData | null, ITransactionError>(
-		['pool', chainId, address],
+		['pool', chainId, poolAddress],
 		() => getPool({ contractArgs, chainId, quoteApi: config.quoteApi, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000

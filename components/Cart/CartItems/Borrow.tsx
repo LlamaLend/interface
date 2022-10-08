@@ -35,7 +35,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		data: poolData,
 		isLoading: fetchingPoolData,
 		isError: errorFetchingPoolData
-	} = useGetPoolData({ chainId, address: poolAddress })
+	} = useGetPoolData({ chainId, poolAddress })
 
 	// query to save/remove item to cart/localstorage
 	const { mutate: saveItemToCart } = useSaveItemToCart()

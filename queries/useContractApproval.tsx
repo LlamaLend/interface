@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import {
 	erc721ABI,
 	useAccount,
@@ -17,6 +18,7 @@ interface IContractApprovalProps {
 
 export function useSetContractApproval({ poolAddress, nftContractAddress }: IContractApprovalProps) {
 	const { chain } = useNetwork()
+	const queryClient = useQueryClient()
 
 	const cConfig = chainConfig(chain?.id)
 
@@ -36,6 +38,7 @@ export function useSetContractApproval({ poolAddress, nftContractAddress }: ICon
 			if (data?.status === 0) {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: cConfig.blockExplorer })
 			}
+			queryClient.invalidateQueries()
 		}
 	})
 

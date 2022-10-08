@@ -21,17 +21,17 @@ dayjs.extend(relativeTime)
 interface IPageProps {
 	chainId?: number
 	chainName?: string
-	address?: string
+	poolAddress?: string
 	chainSymbol: string
 }
 
-const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) => {
+const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }) => {
 	const { isConnected } = useAccount()
 	const { openConnectModal } = useConnectModal()
 
-	const { data, isLoading } = useGetPoolData({ chainId, address })
+	const { data, isLoading } = useGetPoolData({ chainId, poolAddress })
 
-	const { quote, fetchingQuote, maxNftsToBorrow, fetchingContractBalance } = usePoolBalance(address)
+	const { quote, fetchingQuote, maxNftsToBorrow, fetchingContractBalance } = usePoolBalance(poolAddress)
 
 	const { data: nftsList, isLoading: nftsListLoading } = useGetNftsList(data?.nftContract)
 
@@ -160,7 +160,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, address, chainSymbol }) =>
 							)}
 
 							<BorrowCart
-								poolAddress={address}
+								poolAddress={poolAddress}
 								chainId={chainId}
 								nftContractAddress={data?.nftContract}
 								nftCollectionName={data?.nftName}
@@ -194,22 +194,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 
 	const validAddress = address.length === 42 ? address : null
 
-	// const config = chainConfig(chainDetails.id)
-
-	// const queryClient = new QueryClient()
-
-	// await queryClient.prefetchQuery(['pool', chainDetails.id, address], () =>
-	// 	getPool({
-	// 		chainId: chainDetails.id,
-	// 		contractArgs: validAddress ? { address: validAddress, provider: config.chainProvider, abi: config.poolABI } : null
-	// 	})
-	// )
-
 	return {
 		props: {
 			chainId: chainDetails.id,
 			chainName: chainDetails.name,
-			address: validAddress,
+			poolAddress: validAddress,
 			chainSymbol: chainDetails.nativeCurrency?.symbol ?? 'ETH'
 		}
 	}

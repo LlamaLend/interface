@@ -23,7 +23,8 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 		quoteApi: `${QUOTE_SERVER_API}/1`,
 		oracleAddress: ORACLE_ADDRESS,
 		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth'),
-		isTestnet: false
+		isTestnet: false,
+		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend-mainnet'
 	},
 	5: {
 		ankrUrl: 'https://rpc.ankr.com/eth_goerli',
@@ -37,7 +38,8 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 		quoteApi: `${QUOTE_SERVER_API}/5`,
 		oracleAddress: ORACLE_ADDRESS,
 		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth_goerli'),
-		isTestnet: true
+		isTestnet: true,
+		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend-goerli'
 	}
 }
 
@@ -55,6 +57,7 @@ export interface IChainConfig {
 		oracleAddress: string
 		chainProvider: providers.BaseProvider
 		isTestnet: boolean
+		subgraphUrl: string
 	}
 }
 

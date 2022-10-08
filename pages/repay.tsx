@@ -1,17 +1,13 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Layout from '~/components/Layout'
+import { useAccount, useNetwork } from 'wagmi'
+import LoansContainer from '~/containers/LoansContainer'
 
 const Repay: NextPage = () => {
-	return (
-		<div>
-			<Head>
-				<title>Repay - LlamaLend</title>
-			</Head>
+	const { chain } = useNetwork()
+	const { address } = useAccount()
 
-			<Layout></Layout>
-		</div>
-	)
+	// by default if wallet is not connected, show pools on ethereum
+	return <LoansContainer chainId={chain?.id ?? 1} chainName={chain?.name ?? 'Ethereum'} userAddress={address} />
 }
 
 export default Repay
