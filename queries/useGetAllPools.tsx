@@ -1,7 +1,7 @@
 import { ContractInterface, ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
 import BigNumber from 'bignumber.js'
-import type { IContractReadConfig, ITransactionError } from '~/types'
+import type { IBorrowPool, IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { fetchQuote } from './useGetQuote'
 
@@ -14,14 +14,6 @@ interface IGetAllPoolsArgs {
 	chainId?: number | null
 	isTestnet: boolean
 	quoteApi: string
-}
-
-export interface IPool {
-	name: string
-	symbol: string
-	maxLoanLength: number
-	currentAnnualInterest: number
-	address: string
 }
 
 interface IPoolInterestPerNft {
@@ -99,7 +91,7 @@ export function useGetAllPools({ chainId }: { chainId?: number | null }) {
 		provider: config.chainProvider
 	}
 
-	return useQuery<Array<IPool>, ITransactionError>(
+	return useQuery<Array<IBorrowPool>, ITransactionError>(
 		['allPools', chainId],
 		() => getAllpools({ contractArgs, chainId, quoteApi: config.quoteApi, isTestnet: config.isTestnet }),
 		{

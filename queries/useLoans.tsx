@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
 import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
-import type { ILoan, ITransactionError } from '~/types'
+import type { ILoan, IRepayPool, ITransactionError } from '~/types'
 
 interface IGraphLoanResponse {
 	id: string
@@ -10,16 +10,23 @@ interface IGraphLoanResponse {
 	interest: string
 	borrowed: string
 	startTime: string
-	maxLoanLength: string
 	deadline: string
 	tokenUri: string
 }
 
+interface IGraphLoanPoolsResponse {
+	pool: IRepayPool
+}
+
 function infoToRepayLoan(loan: IGraphLoanResponse) {
-	const blockTimestamp = Date.now() / 1e3
-	const deadline = Number(loan.startTime) + Number(loan.maxLoanLength)
+	const blockTimestamp = Number((Date.now() / 1e3).toFixed(0))
+
+	const deadline = Number(loan.deadline)
+
 	const interest = ((blockTimestamp - Number(loan.startTime)) * Number(loan.interest) * Number(loan.borrowed)) / 1e18
+
 	let lateFees = 0
+
 	if (blockTimestamp > deadline) {
 		lateFees = ((blockTimestamp - deadline) * Number(loan.borrowed)) / SECONDS_IN_A_DAY
 	}
@@ -27,9 +34,61 @@ function infoToRepayLoan(loan: IGraphLoanResponse) {
 	return Number(loan.borrowed) + interest + lateFees
 }
 
-async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddress?: string }) {
+async function getRepayPools({ endpoint, userAddress }: { endpoint: string; userAddress?: string }) {
 	try {
-		if (!endpoint) {
+		if (!endpoint || !userAddress) {
+			throw new Error('Error: Invalid arguments')
+		}
+
+		const { loans }: { loans: Array<IGraphLoanPoolsResponse> } = await request(
+			endpoint,
+			gql`
+				query {
+					loans (where: { originalOwner: "${userAddress.toLowerCase()}", owner: "${userAddress.toLowerCase()}" }) {
+            pool {
+							address
+							name
+						}
+					}
+				}
+			`
+		)
+
+		const pools: Array<IRepayPool> = []
+
+		loans.forEach((loan) => {
+			const poolIndex = pools.findIndex((p) => p.address === loan.pool.address)
+
+			if (poolIndex >= 0) {
+				pools[poolIndex] = { ...pools[poolIndex], loans: pools[poolIndex].loans + 1 }
+			} else {
+				pools.push({ ...loan.pool, loans: 1 })
+			}
+		})
+
+		return pools
+	} catch (error: any) {
+		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
+	}
+}
+
+async function getLoansByPool({
+	endpoint,
+	userAddress,
+	poolAddress,
+	isTestnet
+}: {
+	endpoint: string
+	userAddress?: string
+	poolAddress?: string
+	isTestnet: boolean
+}) {
+	try {
+		if (!userAddress) {
+			return []
+		}
+
+		if (!endpoint || !poolAddress) {
 			throw new Error('Error: Invalid arguments')
 		}
 
@@ -37,7 +96,7 @@ async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddre
 			endpoint,
 			gql`
 				query {
-					loans(where: { originalOwner: "${userAddress}" }) {
+					loans(where: { originalOwner: "${userAddress.toLowerCase()}" }) {
             id
             loanId
 						nftId
@@ -46,29 +105,48 @@ async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddre
 						startTime
 						deadline
 						tokenUri
-						pool{
-							maxLoanLength
-						}
 					}
 				}
 			`
 		)
+
 		return loans.map((loan) => ({
-			loanId: Number(loan.loanId),
-			toPay: 0,
-			deadline: Number(loan.deadline)
+			id: loan.id,
+			toPay: infoToRepayLoan(loan),
+			deadline: Number(loan.deadline) * 1000,
+			tokenUri: isTestnet ? '' : loan.tokenUri
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
 	}
 }
 
-export default function useGetLoans({ chainId, userAddress }: { chainId?: number | null; userAddress?: string }) {
+export function useGetRepayPools({ chainId, userAddress }: { chainId?: number | null; userAddress?: string }) {
+	const config = chainConfig(chainId)
+
+	return useQuery<Array<IRepayPool>, ITransactionError>(
+		['repayPools', chainId, userAddress],
+		() => getRepayPools({ endpoint: config.subgraphUrl, userAddress }),
+		{
+			refetchInterval: 30_000
+		}
+	)
+}
+
+export function useGetLoansByPool({
+	chainId,
+	poolAddress,
+	userAddress
+}: {
+	chainId?: number | null
+	poolAddress?: string
+	userAddress?: string
+}) {
 	const config = chainConfig(chainId)
 
 	return useQuery<Array<ILoan>, ITransactionError>(
-		['loans', chainId, userAddress],
-		() => getLoans({ endpoint: config.subgraphUrl, userAddress }),
+		['loansByPool', chainId, poolAddress, userAddress],
+		() => getLoansByPool({ endpoint: config.subgraphUrl, userAddress, poolAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}

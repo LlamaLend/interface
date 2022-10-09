@@ -1,38 +1,34 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { allChains, useNetwork } from 'wagmi'
-import LoansContainer from '~/containers/LoansContainer'
+import BorrowPoolsContainer from '~/containers/BorrowPoolsContainer'
 
 interface IPageProps {
 	chainId?: number
 	chainName?: string
-	userAddress?: string
 }
 
-// TODO support ens names in  query params
-const LoansByChain: NextPage<IPageProps> = ({ chainId, chainName, userAddress }) => {
+const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 	const router = useRouter()
 	const { chain } = useNetwork()
 
-	const isDefaultRoute = router.asPath === '/loans'
+	const isDefaultRoute = router.asPath === '/borrow/pools'
 
-	// only show loans of network user is connected to if they are on /loans, as /loans is similare index route i.e., '/'
+	// only show pools of network user is connected to if they are on /borrow/pools, as /borrow/pools is similare index route i.e., '/'
 	return (
-		<LoansContainer
+		<BorrowPoolsContainer
 			chainId={chainId || (isDefaultRoute ? chain?.id ?? 1 : null)}
 			chainName={chainName || (isDefaultRoute ? chain?.name ?? 'Ethereum' : null)}
-			userAddress={userAddress}
 		/>
 	)
 }
 
-export default LoansByChain
+export default BorrowPoolsByChain
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
 	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
 
-	const chainParam = typeof query.chainName === 'string' && query.chainName
-	const address = typeof query.userAddress === 'string' && query.userAddress
+	const chainParam = query.chain?.[0] ?? null
 
 	const chainDetails = chainParam
 		? allChains.find(
@@ -40,13 +36,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 		  )
 		: null
 
-	if (!chainDetails || !address) {
+	if (!chainDetails) {
 		return {
 			props: {}
 		}
 	}
 
-	const validAddress = address.length === 42 ? address : null
-
-	return { props: { chainId: chainDetails.id, chainName: chainDetails.name, userAddress: validAddress } }
+	return { props: { chainId: chainDetails.id, chainName: chainDetails.name } }
 }

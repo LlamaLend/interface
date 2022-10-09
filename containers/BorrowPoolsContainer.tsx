@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { PoolItem } from '~/components/GridItem'
-import { PlaceHolderPoolItem } from '~/components/GridItem/Pool'
+import { BorrowPoolItem, PlaceholderBorrowPoolItem } from '~/components/GridItem'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import { useGetAllPools } from '~/queries/useGetAllPools'
@@ -11,7 +10,7 @@ interface IPoolsContainerProps {
 	chainName?: string | null
 }
 
-const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
+const BorrowPoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 	const { data, isError, isLoading } = useGetAllPools({ chainId })
 
 	return (
@@ -28,7 +27,7 @@ const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 				) : isLoading ? (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{new Array(10).fill(1).map((_, index) => (
-							<PlaceHolderPoolItem key={'plitem' + index} />
+							<PlaceholderBorrowPoolItem key={'plitem' + index} />
 						))}
 					</GridWrapper>
 				) : data.length === 0 ? (
@@ -42,7 +41,7 @@ const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 				) : (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{data.map((item) => (
-							<PoolItem key={item.address} data={item} chainName={chainName} />
+							<BorrowPoolItem key={item.address} data={item} chainName={chainName} />
 						))}
 					</GridWrapper>
 				)}
@@ -51,4 +50,4 @@ const PoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 	)
 }
 
-export default PoolsContainer
+export default BorrowPoolsContainer

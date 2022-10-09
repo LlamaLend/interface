@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { RepayNftItem, RepayNftPlaceholder } from '~/components/GridItem/Repay'
+import { RepayPoolItem, PlaceholderRepayPoolItem } from '~/components/GridItem'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import { chainConfig } from '~/lib/constants'
-import useGetLoans from '~/queries/useLoans'
+import { useGetRepayPools } from '~/queries/useLoans'
 
 interface ILoansContainerProps {
 	chainId?: number | null
@@ -13,9 +13,10 @@ interface ILoansContainerProps {
 	userAddress?: string
 }
 
-export default function LoansContainer({ chainId, chainName, userAddress }: ILoansContainerProps) {
+export default function LoanPoolsContainer({ chainId, chainName, userAddress }: ILoansContainerProps) {
 	const { openConnectModal } = useConnectModal()
-	const { data, isLoading, isError } = useGetLoans({ chainId, userAddress })
+
+	const { data, isLoading, isError } = useGetRepayPools({ chainId, userAddress })
 
 	const chainSymbol = chainConfig(chainId).nativeCurrency?.symbol
 
@@ -37,7 +38,7 @@ export default function LoansContainer({ chainId, chainName, userAddress }: ILoa
 				) : isLoading ? (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{new Array(10).fill(1).map((_, index) => (
-							<RepayNftPlaceholder key={'plitem' + index} />
+							<PlaceholderRepayPoolItem key={'rplitem' + index} />
 						))}
 					</GridWrapper>
 				) : data.length === 0 ? (
@@ -50,8 +51,8 @@ export default function LoansContainer({ chainId, chainName, userAddress }: ILoa
 					</p>
 				) : (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
-						{data.map((item) => (
-							<RepayNftItem key={item.loanId} data={item} />
+						{data.map((pool) => (
+							<RepayPoolItem data={pool} chainName={chainName} key={pool.address} />
 						))}
 					</GridWrapper>
 				)}

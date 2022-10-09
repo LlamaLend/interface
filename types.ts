@@ -54,8 +54,23 @@ export interface IQuoteResponse {
 	}
 }
 
+export interface IBorrowPool {
+	name: string
+	symbol: string
+	maxLoanLength: number
+	currentAnnualInterest: number
+	address: string
+}
+
+export interface IRepayPool {
+	address: string
+	name: string
+	loans: number
+}
+
 export interface ILoan {
-	loanId: number
+	id: string
 	toPay: number
 	deadline: number
+	tokenUri: string
 }

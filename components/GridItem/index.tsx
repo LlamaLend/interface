@@ -1,1 +1,1 @@
-export { PoolItem } from './Pool'
+export { BorrowPoolItem, PlaceholderBorrowPoolItem, RepayPoolItem, PlaceholderRepayPoolItem } from './Pool'

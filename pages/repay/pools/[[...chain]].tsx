@@ -1,29 +1,31 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { allChains, useNetwork } from 'wagmi'
-import PoolsContainer from '~/containers/PoolsContainer'
+import { allChains, useAccount, useNetwork } from 'wagmi'
+import RepayPoolsContainer from '~/containers/RepayPoolsContainer'
 
 interface IPageProps {
 	chainId?: number
 	chainName?: string
 }
 
-const PoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
+const RepayPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 	const router = useRouter()
 	const { chain } = useNetwork()
+	const { address } = useAccount()
 
-	const isDefaultRoute = router.asPath === '/pools'
+	const isDefaultRoute = router.asPath === '/repay/pools'
 
-	// only show pools of network user is connected to if they are on /pools, as /pools is similare index route i.e., '/'
+	// only show loans of network user is connected to if they are on /repay/pools, as /repay/pools is similare index route i.e., '/repay'
 	return (
-		<PoolsContainer
+		<RepayPoolsContainer
 			chainId={chainId || (isDefaultRoute ? chain?.id ?? 1 : null)}
 			chainName={chainName || (isDefaultRoute ? chain?.name ?? 'Ethereum' : null)}
+			userAddress={address}
 		/>
 	)
 }
 
-export default PoolsByChain
+export default RepayPoolsByChain
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
 	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')

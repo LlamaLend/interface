@@ -8,7 +8,7 @@ export default function AppLink({ name, path }: { name: string; path: string }) 
 	const isActive =
 		pathname === path ||
 		(pathname.startsWith('/borrow') && path === '/') ||
-		(pathname.startsWith('/pools') && path === '/')
+		(pathname.startsWith('/repay') && path === '/repay')
 
 	return (
 		<Link href={path}>
