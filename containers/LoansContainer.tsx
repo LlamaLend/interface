@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { RepayNftPlaceholder } from '~/components/GridItem/Repay'
+import { RepayNftItem, RepayNftPlaceholder } from '~/components/GridItem/Repay'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import { chainConfig } from '~/lib/constants'
@@ -16,8 +16,6 @@ export default function LoansContainer({ chainId, chainName, userAddress }: ILoa
 	const { data, isLoading, isError } = useGetLoans({ chainId, userAddress })
 
 	const chainSymbol = chainConfig(chainId).nativeCurrency?.symbol
-
-	console.log({ data })
 
 	return (
 		<>
@@ -38,12 +36,16 @@ export default function LoansContainer({ chainId, chainName, userAddress }: ILoa
 					</GridWrapper>
 				) : data.length === 0 ? (
 					<p className="fallback-text">
-						You don't have any loans, Click <Link href="/">here</Link> to borrow {chainSymbol}.
+						You don't have any loans, Click{' '}
+						<Link href="/">
+							<a className="underline">here</a>
+						</Link>{' '}
+						to borrow {chainSymbol}.
 					</p>
 				) : (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
-						{new Array(10).fill(1).map((_, index) => (
-							<RepayNftPlaceholder key={'plitem' + index} />
+						{data.map((item) => (
+							<RepayNftItem key={item.loanId} data={item} />
 						))}
 					</GridWrapper>
 				)}

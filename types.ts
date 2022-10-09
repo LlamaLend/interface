@@ -53,3 +53,14 @@ export interface IQuoteResponse {
 		v: number
 	}
 }
+
+export interface ILoan {
+	borrowed: number
+	id: string
+	interest: number
+	loanId: number
+	nftId: number
+	deadline: number
+	startTime: number
+	maxLoanLength: number
+}
