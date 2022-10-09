@@ -4,27 +4,28 @@ import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
 import type { ILoan, ITransactionError } from '~/types'
 
 interface IGraphLoanResponse {
-	loans: Array<{
-		id: string
-		loanId: string
-		nftId: string
-		interest: string
-		borrowed: string
-		startTime: string
-		maxLoanLength: string
-	}>
+	id: string
+	loanId: string
+	nftId: string
+	interest: string
+	borrowed: string
+	startTime: string
+	maxLoanLength: string
+	deadline: string
+	tokenUri: string
 }
 
-// function infoToRepayLoan(loan: ILoan) {
-// 	const deadline = loan.startTime + loan.maxLoanLength
-// 	const interest = ((block.timestamp - loan.startTime) * loan.interest * loan.borrowed) / 1e18
-// 	let lateFees = 0
-// 	if (block.timestamp > deadline) {
-// 		lateFees = ((block.timestamp - deadline) * loan.borrowed) / SECONDS_IN_A_DAY
-// 	}
+function infoToRepayLoan(loan: IGraphLoanResponse) {
+	const blockTimestamp = Date.now() / 1e3
+	const deadline = Number(loan.startTime) + Number(loan.maxLoanLength)
+	const interest = ((blockTimestamp - Number(loan.startTime)) * Number(loan.interest) * Number(loan.borrowed)) / 1e18
+	let lateFees = 0
+	if (blockTimestamp > deadline) {
+		lateFees = ((blockTimestamp - deadline) * Number(loan.borrowed)) / SECONDS_IN_A_DAY
+	}
 
-// 	return loan.borrowed + interest + lateFees
-// }
+	return Number(loan.borrowed) + interest + lateFees
+}
 
 async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddress?: string }) {
 	try {
@@ -32,7 +33,7 @@ async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddre
 			throw new Error('Error: Invalid arguments')
 		}
 
-		const { loans }: IGraphLoanResponse = await request(
+		const { loans }: { loans: Array<IGraphLoanResponse> } = await request(
 			endpoint,
 			gql`
 				query {
@@ -42,18 +43,17 @@ async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddre
 						nftId
             interest
             borrowed
+						startTime
 						deadline
+						tokenUri
 					}
 				}
 			`
 		)
-		return loans.map(({ id, loanId, nftId, interest, borrowed }) => ({
-			id,
-			loanId: Number(loanId),
-			nftId: Number(nftId),
-			interest: Number(interest),
-			borrowed: Number(borrowed),
-			deadline: Date.now()
+		return loans.map((loan) => ({
+			loanId: Number(loan.loanId),
+			toPay: 0,
+			deadline: Number(loan.deadline)
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))

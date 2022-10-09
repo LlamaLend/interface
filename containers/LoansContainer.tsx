@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { RepayNftItem, RepayNftPlaceholder } from '~/components/GridItem/Repay'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
@@ -13,6 +14,7 @@ interface ILoansContainerProps {
 }
 
 export default function LoansContainer({ chainId, chainName, userAddress }: ILoansContainerProps) {
+	const { openConnectModal } = useConnectModal()
 	const { data, isLoading, isError } = useGetLoans({ chainId, userAddress })
 
 	const chainSymbol = chainConfig(chainId).nativeCurrency?.symbol
@@ -26,6 +28,10 @@ export default function LoansContainer({ chainId, chainName, userAddress }: ILoa
 			<Layout>
 				{!chainId || !chainName ? (
 					<p className="fallback-text">Network not supported.</p>
+				) : !userAddress ? (
+					<p className="fallback-text">
+						<button onClick={openConnectModal}>Connect</button> your wallet to view loans.
+					</p>
 				) : isError ? (
 					<p className="fallback-text">Something went wrong, couldn't get loans.</p>
 				) : isLoading ? (

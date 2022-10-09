@@ -55,10 +55,7 @@ export interface IQuoteResponse {
 }
 
 export interface ILoan {
-	borrowed: number
-	id: string
-	interest: number
 	loanId: number
-	nftId: number
+	toPay: number
 	deadline: number
 }
