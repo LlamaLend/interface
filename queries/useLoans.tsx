@@ -10,6 +10,8 @@ interface IGraphLoanResponse {
 		nftId: string
 		interest: string
 		borrowed: string
+		startTime: string
+		maxLoanLength: string
 	}>
 }
 

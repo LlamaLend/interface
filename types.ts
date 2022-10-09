@@ -61,6 +61,4 @@ export interface ILoan {
 	loanId: number
 	nftId: number
 	deadline: number
-	startTime: number
-	maxLoanLength: number
 }
