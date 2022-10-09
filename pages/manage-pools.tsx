@@ -72,7 +72,7 @@ const ManagePools: NextPage = () => {
 				maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
 				maxVariableInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
 				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0),
-				ltv: ltv.toFixed(0)
+				ltv: new BigNumber(ltv).times(1e16).toFixed(0)
 			})
 
 			form.reset()
@@ -154,7 +154,7 @@ const ManagePools: NextPage = () => {
 						name="maxVariableInterestPerEthPerSecond"
 						placeholder="70"
 						label={`Maximum annual interest`}
-						helperText={'This can be changed afterwards and must be higher than minimum annual interest.'}
+						helperText={'This can be changed afterwards. Must be higher than minimum annual interest.'}
 						onChange={(e) => {
 							const value = Number(e.target.value)
 
@@ -171,7 +171,7 @@ const ManagePools: NextPage = () => {
 						placeholder="30"
 						label={`Loan to Value`}
 						helperText={
-							'Percentage of money to lend relative to the floor value, this can be changed afterwards must be less than or equal to 80%.'
+							'Percentage of money to lend relative to the floor value. This can be changed afterwards. Must be less than or equal to 80%.'
 						}
 						maxLength={2}
 						pattern="^(80|[1-7][0-9]?)$"
