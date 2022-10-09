@@ -45,13 +45,15 @@ const ManagePools: NextPage = () => {
 			const maxDailyBorrows = Number(form.maxDailyBorrows.value)
 			const maxVariableInterestPerEthPerSecond = Number(form.maxVariableInterestPerEthPerSecond.value)
 			const minimumInterest = Number(form.minimumInterest.value)
+			const ltv = Number(form.ltv.value)
 
 			if (
 				Number.isNaN(maxLengthInDays) ||
 				Number.isNaN(maxPrice) ||
 				Number.isNaN(maxDailyBorrows) ||
 				Number.isNaN(maxVariableInterestPerEthPerSecond) ||
-				Number.isNaN(minimumInterest)
+				Number.isNaN(minimumInterest) ||
+				Number.isNaN(ltv)
 			) {
 				throw new Error('Invalid arguments')
 			}
@@ -69,7 +71,8 @@ const ManagePools: NextPage = () => {
 				symbol: form.symbol.value,
 				maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
 				maxVariableInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
-				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0),
+				ltv: ltv.toFixed(0)
 			})
 
 			form.reset()
@@ -161,6 +164,17 @@ const ManagePools: NextPage = () => {
 								setMaxInterest(value)
 							}
 						}}
+					/>
+
+					<InputNumber
+						name="ltv"
+						placeholder="30"
+						label={`Loan to Value`}
+						helperText={
+							'Percentage of money to lend relative to the floor value, this can be changed afterwards must be less than or equal to 80%.'
+						}
+						maxLength={2}
+						pattern="^(80|[1-7][0-9]?)$"
 					/>
 
 					<PoolUtilisationChart

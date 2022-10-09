@@ -15,7 +15,8 @@ export enum FormNames {
 	symbol = 'symbol',
 	maxLength = 'maxLength',
 	maxVariableInterestPerEthPerSecond = 'maxVariableInterestPerEthPerSecond',
-	minimumInterest = 'minimumInterest'
+	minimumInterest = 'minimumInterest',
+	ltv = 'ltv'
 }
 
 type PoolArgs = {
@@ -40,7 +41,8 @@ const createPool = async (args: ICreatePoolArgs) => {
 			symbol,
 			maxLength,
 			maxVariableInterestPerEthPerSecond,
-			minimumInterest
+			minimumInterest,
+			ltv
 		} = args
 
 		if (Object.values(args).filter((x) => !x).length > 0 || !contractArgs.signer) {
@@ -60,7 +62,8 @@ const createPool = async (args: ICreatePoolArgs) => {
 			symbol,
 			maxLength,
 			maxVariableInterestPerEthPerSecond,
-			minimumInterest
+			minimumInterest,
+			ltv
 		)
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't create a pool"))
