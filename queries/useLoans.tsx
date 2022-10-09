@@ -46,6 +46,9 @@ async function getLoans({ endpoint, userAddress }: { endpoint: string; userAddre
 						startTime
 						deadline
 						tokenUri
+						pool{
+							maxLoanLength
+						}
 					}
 				}
 			`

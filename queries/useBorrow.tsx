@@ -11,10 +11,11 @@ interface IUseBorrowProps {
 	poolAddress: string
 	cartTokenIds: Array<number>
 	maxInterest?: number
+	ltv: number
 	enabled: boolean
 }
 
-export function useBorrow({ poolAddress, cartTokenIds, maxInterest, enabled }: IUseBorrowProps) {
+export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled }: IUseBorrowProps) {
 	const { data: quote, isLoading: isFetchingQuote, isError: failedFetchQuotation } = useGetQuote(poolAddress)
 	const router = useRouter()
 
@@ -38,6 +39,7 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, enabled }: I
 			new BigNumber(quote?.price ?? 0).times(1e18).toFixed(0),
 			quote?.deadline,
 			maxInterest,
+			new BigNumber(quote?.price ?? 0).times(ltv).div(1e18).times(cartTokenIds.length).toFixed(0),
 			quote?.signature?.v,
 			quote?.signature?.r,
 			quote?.signature?.s

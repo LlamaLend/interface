@@ -75,7 +75,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		poolAddress,
 		cartTokenIds,
 		enabled: isApproved && quote && poolData ? true : false,
-		maxInterest: poolData?.maxVariableInterestPerEthPerSecond
+		maxInterest: poolData?.maxVariableInterestPerEthPerSecond,
+		ltv: poolData?.ltv ?? 0
 	})
 
 	const { contractBalance, maxNftsToBorrow, errorFetchingContractBalance, fetchingContractBalance } =
