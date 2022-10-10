@@ -93,15 +93,15 @@ export function useCreatePool() {
 					toast.dismiss(toastid)
 					if (res.status === 1) {
 						txSuccess({ txHash: data.hash, blockExplorer, content: 'Transaction Success' })
+
+						// redirect user to home page
+						router.push('/')
 					} else {
 						txError({ txHash: data.hash, blockExplorer })
 					}
 				})
 
 				queryClient.invalidateQueries()
-
-				// redirect user to home page
-				router.push('/')
 			},
 			onSettled: () => {
 				queryClient.invalidateQueries()
