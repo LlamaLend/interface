@@ -5,13 +5,21 @@ import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
 import { txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'
 
+export interface ILoanToRepay {
+	nft: string
+	interest: string
+	startTime: string
+	borrowed: string
+}
+
 interface IUseRepayProps {
-	poolAddress: string
-	loans: Array<{ nft: string; interest: string; startTime: string; borrowed: string }>
+	loanPoolAddress: string
+	loansToRepay: Array<ILoanToRepay>
+	payableAmout: string
 	enabled: boolean
 }
 
-export function useRepay({ poolAddress, loans, enabled }: IUseRepayProps) {
+export function useRepay({ loanPoolAddress, loansToRepay, payableAmout, enabled }: IUseRepayProps) {
 	const router = useRouter()
 
 	const { cart, ...queries } = router.query
@@ -25,12 +33,15 @@ export function useRepay({ poolAddress, loans, enabled }: IUseRepayProps) {
 
 	const txContext = useTxContext()
 
-	const { config: contractConfig, refetch } = usePrepareContractWrite({
-		addressOrName: poolAddress,
+	const { config: contractConfig } = usePrepareContractWrite({
+		addressOrName: loanPoolAddress,
 		contractInterface: config.poolABI,
-		functionName: 'borrow',
-		args: [...loans],
-		// overrides: { gasLimit: new BigNumber(0.0005).times(1e9).toFixed(0) },
+		functionName: 'repay',
+		args: [loansToRepay],
+		overrides: {
+			value: payableAmout
+			// gasLimit: new BigNumber(0.0005).times(1e9).toFixed(0)
+		},
 		enabled
 	})
 
@@ -64,7 +75,7 @@ export function useRepay({ poolAddress, loans, enabled }: IUseRepayProps) {
 							JSON.stringify({
 								...items,
 								[userAddress]: {
-									[poolAddress]: []
+									[loanPoolAddress]: []
 								}
 							})
 						)
@@ -73,7 +84,7 @@ export function useRepay({ poolAddress, loans, enabled }: IUseRepayProps) {
 							LOCAL_STORAGE_KEY,
 							JSON.stringify({
 								[userAddress]: {
-									[poolAddress]: []
+									[loanPoolAddress]: []
 								}
 							})
 						)
@@ -91,21 +102,6 @@ export function useRepay({ poolAddress, loans, enabled }: IUseRepayProps) {
 
 	return {
 		...contractWrite,
-		waitForTransaction,
-		refetchBorrow: refetch
+		waitForTransaction
 	}
 }
-
-// repay([{
-// 	nft: nftId,
-// 	interest,
-// 	startTime,
-// 	borrowed,
-// },
-// {
-// 	nft: nftId,
-// 	interest,
-// 	startTime,
-// 	borrowed,
-// },
-// ])

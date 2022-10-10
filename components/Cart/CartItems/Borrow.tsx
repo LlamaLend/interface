@@ -10,12 +10,7 @@ import { useGetPoolData, useGetPoolInterestInCart } from '~/queries/useGetPoolDa
 import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
 import usePoolBalance from '~/queries/usePoolBalance'
-
-const formatErrorMsg = (error: any) => {
-	if (error?.code === 'UNPREDICTABLE_GAS_LIMIT') {
-		return 'Cannot estimate gas, Transaction may fail or may require manual gas limit.'
-	} else return error.reason
-}
+import { formatErrorMsg } from './utils'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
 	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList(nftContractAddress)
@@ -149,7 +144,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							{cartItemsList?.map(({ tokenId, imgUrl }) => (
 								<li key={tokenId} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
-										className="absolute -top-2 -left-1.5 z-10 h-6 w-6 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
+										className="absolute -top-2 -left-1.5 z-10 h-5 w-5 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
 										onClick={() => saveItemToCart({ tokenId, contractAddress: nftContractAddress })}
 									>
 										<svg

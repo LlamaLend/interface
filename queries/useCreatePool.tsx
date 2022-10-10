@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useMutation } from '@tanstack/react-query'
-import { useNetwork, useSigner } from 'wagmi'
+import { useNetwork, useQueryClient, useSigner } from 'wagmi'
 import { useTxContext } from '~/contexts'
 import toast from 'react-hot-toast'
 import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
@@ -28,7 +28,6 @@ interface ICreatePoolArgs extends PoolArgs {
 	contractArgs: IContractWriteConfig
 }
 
-// TODO: invalidate queries
 const createPool = async (args: ICreatePoolArgs) => {
 	try {
 		const {
@@ -84,6 +83,8 @@ export function useCreatePool() {
 		signer: signer || null
 	}
 
+	const queryClient = useQueryClient()
+
 	return useMutation<ITransactionSuccess, ITransactionError, PoolArgs, unknown>(
 		(args: PoolArgs) => createPool({ ...args, contractArgs, oracleAddress }),
 		{
@@ -101,6 +102,9 @@ export function useCreatePool() {
 						txError({ txHash: data.hash, blockExplorer })
 					}
 				})
+			},
+			onSettled: () => {
+				queryClient.invalidateQueries()
 			}
 		}
 	)

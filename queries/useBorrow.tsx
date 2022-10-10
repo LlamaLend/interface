@@ -30,7 +30,7 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled
 
 	const txContext = useTxContext()
 
-	const { config: contractConfig, refetch } = usePrepareContractWrite({
+	const { config: contractConfig } = usePrepareContractWrite({
 		addressOrName: poolAddress,
 		contractInterface: config.poolABI,
 		functionName: 'borrow',
@@ -110,7 +110,6 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled
 	return {
 		...contractWrite,
 		waitForTransaction,
-		mutationDisabled: isFetchingQuote || failedFetchQuotation,
-		refetchBorrow: refetch
+		mutationDisabled: isFetchingQuote || failedFetchQuotation
 	}
 }

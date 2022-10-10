@@ -11,7 +11,7 @@ async function saveItemToCart({
 	userAddress
 }: {
 	contractAddress: string
-	tokenId: number
+	tokenId: number | string
 	userAddress?: string
 }) {
 	try {
@@ -24,7 +24,7 @@ async function saveItemToCart({
 		const userItems = storage?.[userAddress]
 
 		if (userItems) {
-			let contractItems: Array<number> = userItems[contractAddress] ?? []
+			let contractItems: Array<number | string> = userItems[contractAddress] ?? []
 
 			if (contractItems.includes(tokenId)) {
 				// removes items from cart
@@ -79,7 +79,7 @@ const useSaveItemToCart = () => {
 	const { cart, ...queries } = router.query
 
 	return useMutation(
-		({ contractAddress, tokenId }: { contractAddress: string; tokenId: number }) =>
+		({ contractAddress, tokenId }: { contractAddress: string; tokenId: number | string }) =>
 			saveItemToCart({ contractAddress, tokenId, userAddress: address }),
 		{
 			onMutate: ({ contractAddress }) => {
@@ -87,7 +87,7 @@ const useSaveItemToCart = () => {
 
 				return contractAddress ? cart?.[contractAddress] ?? [] : []
 			},
-			onSuccess: (data: Array<number>, variables, prevItems) => {
+			onSuccess: (data: Array<number | string>, variables, prevItems) => {
 				const contractAddress = variables.contractAddress
 
 				// If its the first item added to cart, show cart section
@@ -113,7 +113,7 @@ const useGetCartItems = (contractAddress: string) => {
 	const { chain } = useNetwork()
 
 	// fetch and filter cart items which are owned by user
-	return useQuery<Array<number>, ITransactionError>(['cartItems', address, chain?.id, contractAddress], () =>
+	return useQuery<Array<number | string>, ITransactionError>(['cartItems', address, chain?.id, contractAddress], () =>
 		fetchCartItems({ contractAddress, userAddress: address })
 	)
 }

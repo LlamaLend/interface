@@ -12,3 +12,16 @@ export interface IBorrowItemsProps {
 	nftContractAddress: string
 	nftCollectionName: string
 }
+
+export interface IRepayCartProps {
+	chainId?: number
+	loanPoolAddress?: string
+	loanPoolName?: string
+	isLoading: boolean
+}
+
+export interface IRepayItemProps {
+	chainId: number
+	loanPoolAddress: string
+	loanPoolName: string
+}

@@ -3,11 +3,23 @@ import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import ItemWrapper from './ItemWrapper'
 import type { ILoan } from '~/types'
+import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
 
-export function RepayNftItem({ data }: { data: ILoan }) {
+export function RepayNftItem({ data, poolAddress }: { data: ILoan; poolAddress: string }) {
+	const { data: cartItems } = useGetCartItems(poolAddress)
+	const { mutate } = useSaveItemToCart()
+
+	const storeItem = () => {
+		if (!data.id) return
+
+		mutate({ tokenId: data.id, contractAddress: poolAddress })
+	}
+
+	const isAddedToCart = cartItems?.includes(data.id)
+
 	const isExpired = data.deadline - Date.now() <= 0 ? true : false
 
 	return (
@@ -48,9 +60,31 @@ export function RepayNftItem({ data }: { data: ILoan }) {
 					<p>{data.toPay}</p>
 				</div>
 
-				<button className="flex items-center gap-1 rounded-xl border border-[#243b55] bg-[#243b55] px-2 py-1 text-center text-sm text-white">
-					Add to cart
-				</button>
+				{isAddedToCart ? (
+					<button
+						className="flex items-center gap-1 rounded-xl border border-[#243b55] px-2 py-1 text-center text-sm text-white"
+						onClick={storeItem}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth={2}
+						>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+						</svg>
+						<span>Added to cart</span>
+					</button>
+				) : (
+					<button
+						className="flex items-center gap-1 rounded-xl border border-[#243b55] bg-[#243b55] px-2 py-1 text-center text-sm text-white"
+						onClick={storeItem}
+					>
+						Add to cart
+					</button>
+				)}
 			</div>
 		</ItemWrapper>
 	)

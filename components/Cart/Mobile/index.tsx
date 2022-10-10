@@ -18,7 +18,7 @@ export function MobileOnlyCart({ children }: { children: React.ReactNode }) {
 		return (
 			<Wrapper>
 				<p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">
-					Connect wallet to supported network to view items in cart.
+					Connect wallet to the app's supported network to view items in cart.
 				</p>
 			</Wrapper>
 		)

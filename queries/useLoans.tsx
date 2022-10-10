@@ -12,6 +12,9 @@ interface IGraphLoanResponse {
 	startTime: string
 	deadline: string
 	tokenUri: string
+	pool?: {
+		name: string
+	}
 }
 
 interface IGraphLoanPoolsResponse {
@@ -96,7 +99,7 @@ async function getLoansByPool({
 			endpoint,
 			gql`
 				query {
-					loans(where: { originalOwner: "${userAddress.toLowerCase()}" }) {
+					loans(where: { originalOwner: "${userAddress.toLowerCase()}", pool: "${poolAddress.toLowerCase()}" }) {
             id
             loanId
 						nftId
@@ -105,6 +108,9 @@ async function getLoansByPool({
 						startTime
 						deadline
 						tokenUri
+						pool {
+							name
+						}
 					}
 				}
 			`
@@ -112,9 +118,15 @@ async function getLoansByPool({
 
 		return loans.map((loan) => ({
 			id: loan.id,
+			interest: loan.interest,
+			startTime: loan.startTime,
+			borrowed: loan.borrowed,
 			toPay: infoToRepayLoan(loan),
 			deadline: Number(loan.deadline) * 1000,
-			tokenUri: isTestnet ? '' : loan.tokenUri
+			tokenUri: isTestnet ? '' : loan.tokenUri,
+			pool: {
+				name: loan.pool?.name
+			}
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))

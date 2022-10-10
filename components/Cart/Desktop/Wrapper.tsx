@@ -3,13 +3,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { m } from 'framer-motion'
 import { useMedia } from '~/hooks'
+import { cx } from 'cva'
 
 const variants = {
 	open: { opacity: 1, x: 0, display: 'flex' },
 	closed: { opacity: 0, x: '100%', display: 'none' }
 }
 
-export default function Wrapper({ children }: { children: React.ReactNode }) {
+export default function Wrapper({ className, children }: { className?: string; children: React.ReactNode }) {
 	const router = useRouter()
 
 	const { cart } = router.query
@@ -24,7 +25,10 @@ export default function Wrapper({ children }: { children: React.ReactNode }) {
 
 	return (
 		<m.div
-			className="sticky top-0 flex max-h-screen w-full max-w-[22.5rem] flex-col gap-6 overflow-auto rounded-xl bg-black px-5 py-4"
+			className={cx(
+				'sticky top-0 flex max-h-screen w-full max-w-[22.5rem] flex-col gap-6 overflow-auto rounded-xl bg-black px-5 py-4',
+				className
+			)}
 			animate={isOpen ? 'open' : 'closed'}
 			variants={variants}
 		>

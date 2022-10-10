@@ -70,7 +70,13 @@ export interface IRepayPool {
 
 export interface ILoan {
 	id: string
+	interest: string
+	startTime: string
+	borrowed: string
 	toPay: number
 	deadline: number
 	tokenUri: string
+	pool: {
+		name?: string | null
+	}
 }

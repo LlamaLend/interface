@@ -6,6 +6,7 @@ import Layout from '~/components/Layout'
 import GridWrapper from '~/components/GridWrapper'
 import { RepayNftItem, RepayNftPlaceholder } from '~/components/GridItem/Repay'
 import { useGetLoansByPool } from '~/queries/useLoans'
+import { RepayCart } from '~/components/Cart'
 
 interface IPageProps {
 	chainId?: number
@@ -27,7 +28,7 @@ const LoansByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress })
 				<title>Repay - LlamaLend</title>
 			</Head>
 
-			<Layout>
+			<Layout className="flex-1 xl:flex xl:flex-row xl:justify-between xl:gap-5">
 				{!chainId || !chainName ? (
 					<p className="fallback-text">Network not supported.</p>
 				) : !address ? (
@@ -39,7 +40,7 @@ const LoansByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress })
 				) : isError ? (
 					<p className="fallback-text">Something went wrong, couldn't get loans.</p>
 				) : isLoading ? (
-					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
+					<GridWrapper className="mx-0 mt-8 mb-auto flex-1 sm:my-9">
 						{new Array(10).fill(1).map((_, index) => (
 							<RepayNftPlaceholder key={'rplitem' + index} />
 						))}
@@ -47,12 +48,19 @@ const LoansByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress })
 				) : data.length === 0 ? (
 					<p className="fallback-text">You don't have any loans in this pool.</p>
 				) : (
-					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
+					<GridWrapper className="mx-0 mt-8 mb-auto flex-1 sm:my-9">
 						{data.map((item) => (
-							<RepayNftItem key={item.id} data={item} />
+							<RepayNftItem key={item.id} data={item} poolAddress={poolAddress} />
 						))}
 					</GridWrapper>
 				)}
+
+				<RepayCart
+					loanPoolAddress={poolAddress}
+					chainId={chainId}
+					loanPoolName={data?.[0]?.pool?.name ?? ''}
+					isLoading={isLoading}
+				/>
 			</Layout>
 		</>
 	)
