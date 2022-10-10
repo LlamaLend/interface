@@ -47,14 +47,17 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 				<div className="rounded-xl bg-[#111111] px-3 py-6 shadow">
 					<div className="mx-auto h-24 w-24 rounded-full bg-gradient-to-r from-[#141e30] to-[#243b55]"></div>
 
-					<h1
+					<a
 						className={cx(
-							'my-2 min-h-[2rem] text-center text-2xl font-medium',
+							'my-2 block min-h-[2rem] text-center text-2xl font-medium',
 							isLoading ? 'placeholder-box mx-auto w-full max-w-[22rem]' : ''
 						)}
+						target="_blank"
+						rel="noreferrer noopener"
+						href={`${config.blockExplorer.url}/address/${data?.nftContract}`}
 					>
 						{data?.nftName ?? ''}
-					</h1>
+					</a>
 
 					<a
 						className={cx(
@@ -63,24 +66,12 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 						)}
 						target="_blank"
 						rel="noreferrer noopener"
-						href={`${config.blockExplorer.url}/address/${data?.nftContract}`}
+						href={`${config.blockExplorer.url}/address/${data?.owner}`}
 					>
-						<span className="rounded bg-[#202020] px-1 py-0.5">{data?.nftContract ?? ''}</span>
+						<span className="rounded bg-[#202020] px-1 py-0.5">{data ? `${data.name} by ${data.owner}` : ''}</span>
 					</a>
 
 					<div className="mx-auto flex max-w-xl flex-col flex-wrap justify-center gap-4 md:flex-row  xl:max-w-7xl xl:items-center">
-						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
-							<h2 className="text-center font-medium">Pool Name</h2>
-							<p
-								className={cx(
-									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
-									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
-								)}
-							>
-								{data ? data.name : ''}
-							</p>
-						</div>
-
 						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
 							<h2 className="text-center font-medium md:whitespace-nowrap">Current Annual Interest</h2>
 							<p
@@ -103,6 +94,19 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 								)}
 							>
 								{fetchingContractBalance || fetchingQuote ? '' : maxNftsToBorrow}
+							</p>
+						</div>
+
+						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
+							<h2 className="text-center font-medium md:whitespace-nowrap">Loan-to-Value(LTV) Ratio</h2>
+
+							<p
+								className={cx(
+									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
+									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
+								)}
+							>
+								{data ? data.ltv / 1e18 : ''}
 							</p>
 						</div>
 

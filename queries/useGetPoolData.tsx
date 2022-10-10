@@ -22,6 +22,7 @@ export interface IPoolData {
 	ltv: number
 	nftContract: string
 	nftName: string
+	owner: string
 }
 
 export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IGetPoolDataArgs) {
@@ -48,7 +49,8 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			minimumInterest,
 			maxVariableInterestPerEthPerSecond,
 			ltv,
-			nftContract
+			nftContract,
+			owner
 		]: Array<string> = await Promise.all([
 			contract.name(),
 			contract.symbol(),
@@ -57,7 +59,8 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			contract.minimumInterest(),
 			contract.maxVariableInterestPerEthPerSecond(),
 			contract.ltv(),
-			contract.nftContract()
+			contract.nftContract(),
+			contract.owner()
 		])
 
 		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
@@ -72,7 +75,8 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			maxVariableInterestPerEthPerSecond: Number(maxVariableInterestPerEthPerSecond) + Number(minimumInterest),
 			ltv: Number(ltv),
 			nftContract,
-			nftName
+			nftName,
+			owner
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
