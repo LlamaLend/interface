@@ -74,8 +74,6 @@ const ManagePools: NextPage = () => {
 				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0),
 				ltv: new BigNumber(ltv).times(1e16).toFixed(0)
 			})
-
-			form.reset()
 		} catch (error) {
 			// console.log(error)
 		}

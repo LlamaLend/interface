@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 import { useMutation } from '@tanstack/react-query'
 import { useNetwork, useQueryClient, useSigner } from 'wagmi'
@@ -52,18 +53,11 @@ const createPool = async (args: ICreatePoolArgs) => {
 
 		const contract = new ethers.Contract(address, abi, signer)
 
-		return await contract.createPool(
-			oracleAddress,
-			maxPrice,
-			nftAddress,
-			maxDailyBorrows,
-			name,
-			symbol,
-			maxLength,
+		return await contract.createPool(oracleAddress, maxPrice, nftAddress, maxDailyBorrows, name, symbol, maxLength, {
 			maxVariableInterestPerEthPerSecond,
 			minimumInterest,
 			ltv
-		)
+		})
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't create a pool"))
 	}
@@ -84,6 +78,7 @@ export function useCreatePool() {
 	}
 
 	const queryClient = useQueryClient()
+	const router = useRouter()
 
 	return useMutation<ITransactionSuccess, ITransactionError, PoolArgs, unknown>(
 		(args: PoolArgs) => createPool({ ...args, contractArgs, oracleAddress }),
@@ -102,6 +97,11 @@ export function useCreatePool() {
 						txError({ txHash: data.hash, blockExplorer })
 					}
 				})
+
+				queryClient.invalidateQueries()
+
+				// redirect user to home page
+				router.push('/')
 			},
 			onSettled: () => {
 				queryClient.invalidateQueries()
