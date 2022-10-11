@@ -18,7 +18,11 @@ interface IGraphLoanResponse {
 }
 
 interface IGraphLoanPoolsResponse {
-	pool: IRepayPool
+	pools: Array<{
+		name: string
+		address: string
+		loans: Array<String>
+	}>
 }
 
 function infoToRepayLoan(loan: IGraphLoanResponse) {
@@ -43,33 +47,20 @@ async function getRepayPools({ endpoint, userAddress }: { endpoint: string; user
 			throw new Error('Error: Invalid arguments')
 		}
 
-		const { loans }: { loans: Array<IGraphLoanPoolsResponse> } = await request(
+		const { pools }: IGraphLoanPoolsResponse = await request(
 			endpoint,
 			gql`
 				query {
-					loans (where: { originalOwner: "${userAddress.toLowerCase()}", owner: "${userAddress.toLowerCase()}" }) {
-            pool {
-							address
-							name
-						}
+					pools (where: { owner: "${userAddress.toLowerCase()}" }) {
+            name
+						address
+						loans
 					}
 				}
 			`
 		)
 
-		const pools: Array<IRepayPool> = []
-
-		loans.forEach((loan) => {
-			const poolIndex = pools.findIndex((p) => p.address === loan.pool.address)
-
-			if (poolIndex >= 0) {
-				pools[poolIndex] = { ...pools[poolIndex], loans: pools[poolIndex].loans + 1 }
-			} else {
-				pools.push({ ...loan.pool, loans: 1 })
-			}
-		})
-
-		return pools
+		return pools.map((pool) => ({ name: pool.name, address: pool.address, loans: pool.loans.length }))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
 	}

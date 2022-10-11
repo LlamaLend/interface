@@ -1,29 +1,39 @@
 import { ContractInterface, ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
 import BigNumber from 'bignumber.js'
-import type { IBorrowPool, IContractReadConfig, ITransactionError } from '~/types'
+import { request, gql } from 'graphql-request'
+import type { IBorrowPool, Provider, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { fetchQuote } from './useGetQuote'
 
-interface IContractArgs extends IContractReadConfig {
-	poolAbi: ContractInterface
-}
-
 interface IGetAllPoolsArgs {
-	contractArgs: IContractArgs
-	chainId?: number | null
-	isTestnet: boolean
+	endpoint: string
+	poolAbi: ContractInterface
 	quoteApi: string
+	isTestnet: boolean
+	provider: Provider
 }
 
 interface IPoolInterestPerNft {
-	contract: ethers.Contract
 	poolAddress: string
 	quoteApi: string
 	isTestnet: boolean
+	poolAbi: ContractInterface
+	provider: Provider
 }
 
-async function getPoolInterestPerNft({ contract, poolAddress, quoteApi, isTestnet }: IPoolInterestPerNft) {
+interface IPoolsQueryResponse {
+	pools: Array<{
+		name: string
+		address: string
+		symbol: string
+		maxLoanLength: string
+	}>
+}
+
+async function getPoolInterestPerNft({ poolAddress, quoteApi, isTestnet, poolAbi, provider }: IPoolInterestPerNft) {
+	const contract = new ethers.Contract(poolAddress, poolAbi, provider)
+
 	const quote = await fetchQuote({ api: quoteApi, isTestnet, poolAddress })
 
 	const interest = await contract.currentAnnualInterest(new BigNumber(quote?.price ?? 0).multipliedBy(1e18).toFixed(0))
@@ -31,50 +41,41 @@ async function getPoolInterestPerNft({ contract, poolAddress, quoteApi, isTestne
 	return Number(interest)
 }
 
-export async function getAllpools({ contractArgs, chainId, quoteApi, isTestnet }: IGetAllPoolsArgs) {
+export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poolAbi }: IGetAllPoolsArgs) {
 	try {
 		// return empty array when no chainId, as there is no chainId returned on /borrow/[chainName] when chainName is not supported/invalid
-		if (!chainId) {
+		if (!endpoint) {
 			return []
 		}
 
-		const { address, abi, provider, poolAbi } = contractArgs
-
-		if (!address || !abi || !provider || !poolAbi) {
+		if (!poolAbi || !provider || !quoteApi || !provider) {
 			throw new Error('Invalid arguments')
 		}
 
-		const factory = new ethers.Contract(address, abi, provider)
-
-		// get no.of pools created from factory and loop over them to get their addresses
-		const poolsLength = await factory.allPoolsLength()
-
-		const poolAddresses = await Promise.all(
-			new Array(Number(poolsLength)).fill(1).map((_, index) => factory.allPools(index))
+		const { pools }: IPoolsQueryResponse = await request(
+			endpoint,
+			gql`
+				query {
+					pools {
+						name
+						symbol
+						maxLoanLength
+						address
+					}
+				}
+			`
 		)
-
-		const allPoolContracts = poolAddresses.map((address) => {
-			return new ethers.Contract(address, poolAbi, provider)
-		})
-
-		const allPoolNames = await Promise.all(allPoolContracts.map((contract) => contract.name()))
-
-		const allPoolSymbols = await Promise.all(allPoolContracts.map((contract) => contract.symbol()))
-
-		const allPoolMaxLoanLengths = await Promise.all(allPoolContracts.map((contract) => contract.maxLoanLength()))
 
 		const allPoolCurrentAnnualInterests = await Promise.all(
-			allPoolContracts.map((contract, index) =>
-				getPoolInterestPerNft({ contract, quoteApi, isTestnet, poolAddress: poolAddresses[index] })
-			)
+			pools.map((pool) => getPoolInterestPerNft({ quoteApi, isTestnet, poolAddress: pool.address, poolAbi, provider }))
 		)
 
-		return allPoolNames.map((name, index) => ({
-			name,
-			symbol: allPoolSymbols[index],
-			maxLoanLength: Number(allPoolMaxLoanLengths[index]),
+		return pools.map((pool, index) => ({
+			name: pool.name,
+			symbol: pool.symbol,
+			maxLoanLength: Number(pool.maxLoanLength),
 			currentAnnualInterest: Number(allPoolCurrentAnnualInterests[index]),
-			address: poolAddresses[index]
+			address: pool.address
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pools"))
@@ -84,16 +85,16 @@ export async function getAllpools({ contractArgs, chainId, quoteApi, isTestnet }
 export function useGetAllPools({ chainId }: { chainId?: number | null }) {
 	const config = chainConfig(chainId)
 
-	const contractArgs: IContractArgs = {
-		address: config.factoryAddress,
-		abi: config.factoryABI,
-		poolAbi: config.poolABI,
-		provider: config.chainProvider
-	}
-
 	return useQuery<Array<IBorrowPool>, ITransactionError>(
 		['allPools', chainId],
-		() => getAllpools({ contractArgs, chainId, quoteApi: config.quoteApi, isTestnet: config.isTestnet }),
+		() =>
+			getAllpools({
+				endpoint: config.subgraphUrl,
+				poolAbi: config.poolABI,
+				quoteApi: config.quoteApi,
+				isTestnet: config.isTestnet,
+				provider: config.chainProvider
+			}),
 		{
 			refetchInterval: 30_000
 		}

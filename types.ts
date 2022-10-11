@@ -1,7 +1,7 @@
 import { ContractInterface, providers, Signer } from 'ethers'
 import {} from 'wagmi'
 
-type Provider = providers.BaseProvider
+export type Provider = providers.BaseProvider
 
 export interface ITransactionSuccess {
 	hash: string

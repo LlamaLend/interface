@@ -49,48 +49,10 @@ export const FACTORY_ABI = [
 				internalType: 'address',
 				name: 'pool',
 				type: 'address'
-			},
-			{
-				indexed: false,
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
 			}
 		],
 		name: 'PoolCreated',
 		type: 'event'
-	},
-	{
-		inputs: [
-			{
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
-			}
-		],
-		name: 'allPools',
-		outputs: [
-			{
-				internalType: 'address',
-				name: '',
-				type: 'address'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [],
-		name: 'allPoolsLength',
-		outputs: [
-			{
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
 	},
 	{
 		inputs: [
@@ -125,9 +87,9 @@ export const FACTORY_ABI = [
 				type: 'string'
 			},
 			{
-				internalType: 'uint256',
+				internalType: 'uint96',
 				name: '_maxLoanLength',
-				type: 'uint256'
+				type: 'uint96'
 			},
 			{
 				components: [
@@ -166,9 +128,9 @@ export const FACTORY_ABI = [
 	{
 		inputs: [
 			{
-				internalType: 'uint256[]',
+				internalType: 'address[]',
 				name: 'pools',
-				type: 'uint256[]'
+				type: 'address[]'
 			}
 		],
 		name: 'emergencyShutdown',
@@ -184,49 +146,6 @@ export const FACTORY_ABI = [
 				internalType: 'contract LendingPool',
 				name: '',
 				type: 'address'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [
-			{
-				internalType: 'address',
-				name: '',
-				type: 'address'
-			},
-			{
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
-			}
-		],
-		name: 'nftPools',
-		outputs: [
-			{
-				internalType: 'address',
-				name: '',
-				type: 'address'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
-	},
-	{
-		inputs: [
-			{
-				internalType: 'address',
-				name: 'nftContract',
-				type: 'address'
-			}
-		],
-		name: 'nftPoolsLength',
-		outputs: [
-			{
-				internalType: 'uint256',
-				name: '',
-				type: 'uint256'
 			}
 		],
 		stateMutability: 'view',
