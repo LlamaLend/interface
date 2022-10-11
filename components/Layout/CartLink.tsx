@@ -9,7 +9,7 @@ export function CartLink() {
 
 	// only show link to cart on pool page
 	if (
-		!(router.pathname.startsWith('/[chainName]/[address]') || router.pathname === '/repay/[chainName]/[poolAddress]')
+		!(router.pathname === '/borrow/[chainName]/[address]' || router.pathname === '/repay/[chainName]/[poolAddress]')
 	) {
 		return null
 	}
