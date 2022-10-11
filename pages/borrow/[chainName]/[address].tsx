@@ -49,8 +49,8 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 
 					<a
 						className={cx(
-							'my-2 block min-h-[2rem] text-center text-2xl font-medium',
-							isLoading ? 'placeholder-box mx-auto w-full max-w-[22rem]' : ''
+							'my-2 mx-auto block min-h-[2rem] text-center text-2xl font-medium',
+							isLoading ? 'placeholder-box mx-auto w-full max-w-[22rem]' : 'w-fit'
 						)}
 						target="_blank"
 						rel="noreferrer noopener"
@@ -68,7 +68,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 						rel="noreferrer noopener"
 						href={`${config.blockExplorer.url}/address/${data?.owner}`}
 					>
-						<span className="rounded bg-[#202020] px-1 py-0.5">{data ? `${data.name} by ${data.owner}` : ''}</span>
+						{data ? <span className="rounded bg-[#202020] px-1 py-0.5">{`${data.name} by ${data.owner}`}</span> : ''}
 					</a>
 
 					<div className="mx-auto flex max-w-xl flex-col flex-wrap justify-center gap-4 md:flex-row  xl:max-w-7xl xl:items-center">

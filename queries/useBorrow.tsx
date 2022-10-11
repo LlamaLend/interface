@@ -39,7 +39,7 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled
 			new BigNumber(quote?.price ?? 0).times(1e18).toFixed(0),
 			quote?.deadline,
 			maxInterest,
-			new BigNumber(quote?.price ?? 0).times(ltv).div(1e18).times(cartTokenIds.length).toFixed(0),
+			new BigNumber(quote?.price ?? 0).times(cartTokenIds.length).times(ltv).toFixed(0),
 			quote?.signature?.v,
 			quote?.signature?.r,
 			quote?.signature?.s

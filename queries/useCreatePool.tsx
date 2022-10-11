@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import { IContractWriteConfig, ITransactionError, ITransactionSuccess } from '~/types'
 import { txConfirming, txError, txSuccess } from '~/components/TxToast'
 import { chainConfig } from '~/lib/constants'
+import { useGetAllPools } from './useGetAllPools'
 
 export enum FormNames {
 	maxPrice = 'maxPrice',
@@ -67,6 +68,8 @@ export function useCreatePool() {
 	const { chain } = useNetwork()
 	const txContext = useTxContext()
 
+	const { refetch } = useGetAllPools({ chainId: chain?.id })
+
 	const { factoryAddress, factoryABI, oracleAddress, blockExplorer } = chainConfig(chain?.id)
 
 	const { data: signer } = useSigner()
@@ -94,14 +97,15 @@ export function useCreatePool() {
 					if (res.status === 1) {
 						txSuccess({ txHash: data.hash, blockExplorer, content: 'Transaction Success' })
 
+						// refetch all pools query before redirecting
+						refetch()
+
 						// redirect user to home page
 						router.push('/')
 					} else {
 						txError({ txHash: data.hash, blockExplorer })
 					}
 				})
-
-				queryClient.invalidateQueries()
 			},
 			onSettled: () => {
 				queryClient.invalidateQueries()
