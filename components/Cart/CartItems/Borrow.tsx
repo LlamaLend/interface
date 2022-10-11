@@ -5,12 +5,12 @@ import ItemsPlaceholder from './Placeholder'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import type { IBorrowItemsProps } from '../types'
-import { useGetQuote } from '~/queries/useGetQuote'
+import { useGetOracle } from '~/queries/useGetOracle'
 import { useGetPoolData, useGetPoolInterestInCart } from '~/queries/useGetPoolData'
 import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
-import usePoolBalance from '~/queries/usePoolBalance'
 import { formatErrorMsg } from './utils'
+import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from '~/utils'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
 	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList(nftContractAddress)
@@ -23,7 +23,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	} = useGetCartItems(nftContractAddress)
 
 	// query to get quotation from server
-	const { data: quote, isLoading: fetchingQuote, isError: errorFetchingQuote } = useGetQuote(poolAddress)
+	const { data: oracle, isLoading: fetchingOracle, isError: errorFetchingOracle } = useGetOracle(poolAddress)
 
 	// query to get interest rates
 	const {
@@ -59,6 +59,12 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 	const isApproved = isApprovedForAll || approvalTxOnChain?.status === 1 ? true : false
 
+	const totalReceived = getTotalReceivedArg({
+		oraclePrice: oracle?.price ?? 0,
+		noOfItems: cartTokenIds.length,
+		ltv: poolData?.ltv ?? 0
+	})
+
 	//query to borrow eth using nfts
 	const {
 		mutationDisabled,
@@ -69,23 +75,18 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	} = useBorrow({
 		poolAddress,
 		cartTokenIds,
-		enabled: isApproved && quote && poolData ? true : false,
+		enabled: isApproved && oracle && poolData ? true : false,
 		maxInterest: poolData?.maxVariableInterestPerEthPerSecond,
-		ltv: poolData?.ltv ?? 0
+		totalReceived
 	})
 
-	const { contractBalance, maxNftsToBorrow, errorFetchingContractBalance, fetchingContractBalance } =
-		usePoolBalance(poolAddress)
-
-	const totalReceived = quote?.price && cartItemsList.length ? cartItemsList.length * quote.price : 0
-
-	const { data: currentAnnualInterest } = useGetPoolInterestInCart({ poolAddress, totalReceived: totalReceived })
+	const { data: currentAnnualInterest } = useGetPoolInterestInCart({ poolAddress, totalReceived })
 
 	// construct error messages
 	// Failed queries, but user can't retry with data of these queries
 	const errorMsgOfQueries = errorLoadingCartItems
 		? "Couldn't fetch items in your cart"
-		: errorFetchingQuote
+		: errorFetchingOracle
 		? "Couldn't fetch price quotation"
 		: errorFetchingPoolData
 		? "Couldn't fetch interest rate"
@@ -106,27 +107,21 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		? txBorrowErrorOnChain?.message
 		: borrowTxOnChain?.status === 0
 		? 'Transaction failed, please try again'
-		: errorFetchingContractBalance
-		? errorFetchingContractBalance.message
 		: null
 
 	// check all loading states to show beat loader
 	const isLoading =
 		fetchingNftsList ||
 		fetchingCartItems ||
-		fetchingQuote ||
+		fetchingOracle ||
 		fetchingPoolData ||
 		approvingContract ||
 		checkingForApproveTxOnChain ||
 		fetchingIfApproved ||
 		userConfirmingBorrow ||
-		checkingForBorrowTxOnChain ||
-		fetchingContractBalance
+		checkingForBorrowTxOnChain
 
-	const canUserBorrowETH =
-		contractBalance && cartItemsList && quote?.price
-			? Number((cartItemsList.length * quote.price).toFixed(2)) < Number(contractBalance.formatted)
-			: false
+	const canUserBorrowETH = poolData ? Number(poolData.maxNftsToBorrow) > 0 : false
 
 	return (
 		<>
@@ -180,7 +175,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 											className="object-contain"
 											alt="ethereum"
 										/>
-										<span>{quote?.price?.toFixed(2)}</span>
+										<span>{getQuotePrice({ oraclePrice: oracle?.price ?? 0, ltv: poolData?.ltv ?? 0 })}</span>
 									</span>
 								</li>
 							))}
@@ -192,17 +187,17 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 					<h2 className="-mt-1.5 -mb-3 text-sm font-medium">Loan Details</h2>
 
 					{/* These values are always truth as error and loading states are handles, but adding a check satisfy typescript compiler  */}
-					{cartItemsList && quote && cartItemsList?.length > 0 && quote?.price && (
+					{cartItemsList && oracle && cartItemsList?.length > 0 && oracle?.price && (
 						<ul className="flex flex-col gap-4">
 							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">You Receive</span>
 								<span className="ml-auto flex gap-1.5">
 									<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
 									{/* Show placeholder when fetching quotation */}
-									{fetchingQuote ? (
+									{fetchingOracle ? (
 										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 									) : (
-										<span>{totalReceived.toFixed(2)} ETH</span>
+										<span>{Number(totalReceived) / 1e18} ETH</span>
 									)}
 								</span>
 							</li>
@@ -214,7 +209,9 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingPoolData ? (
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
-										<span>{currentAnnualInterest && `${(Number(currentAnnualInterest) / 1e16).toFixed(2)}% p.a.`}</span>
+										<span>
+											{currentAnnualInterest && `${formatCurrentAnnualInterest(Number(currentAnnualInterest))}% p.a.`}
+										</span>
 									)}
 								</span>
 							</li>
@@ -223,7 +220,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 								<span className="font-base text-[#989898]">Deadline</span>
 								<span className="ml-auto flex gap-1.5">
 									{/* Show placeholder when fetching quotation */}
-									{fetchingQuote ? (
+									{fetchingOracle ? (
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
 										<span>{new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleString()}</span>
@@ -281,7 +278,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 						</button>
 					)}
 
-					{contractBalance && quote?.price && (
+					{poolData && (
 						<p className="mt-auto flex items-center justify-center gap-[1ch] pt-10 text-center text-xs font-medium">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -297,7 +294,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									clipRule="evenodd"
 								/>
 							</svg>
-							<span>{`Max ${nftCollectionName} to borrow against: ${maxNftsToBorrow}`}</span>
+							<span>{`Max ${nftCollectionName} to borrow against: ${poolData?.maxNftsToBorrow}`}</span>
 						</p>
 					)}
 				</>

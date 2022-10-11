@@ -4,6 +4,7 @@ import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import ItemWrapper from './ItemWrapper'
 import type { IBorrowPool, IRepayPool } from '~/types'
+import { formatCurrentAnnualInterest } from '~/utils'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -32,7 +33,7 @@ export function BorrowPoolItem({ data, chainName }: IBorrowPoolItemProps) {
 			</p>
 			<p className="flex flex-col gap-1">
 				<span className="text-xs font-light text-gray-400">Current Annual Interest</span>
-				<span>{(data.currentAnnualInterest / 1e16).toFixed(2)}% p.a.</span>
+				<span>{formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.</span>
 			</p>
 
 			<Link href={`/borrow/${chainName}/${data.address}`}>

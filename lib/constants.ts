@@ -6,9 +6,10 @@ import { POOL_ABI } from './pool.abi'
 const FACTORY_MAINNET = '0x4da4d56B1fe6716A055A7D3a8AD323DC321f9C75'
 const FACTORY_GOERLI = '0x8d7573074b08a1f1F2B1A73754d3820E72bB46f2'
 
-const ORACLE_ADDRESS = '0x4096b3f0e89c06e98d1095da7aefdd4b38eeb1e0'
+const ORACLE_MAINNET = '0x4096b3f0e89c06e98d1095da7aefdd4b38eeb1e0'
+const ORACLE_GOERLI = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 
-const QUOTE_SERVER_API = 'https://oracle.llamalend.com/quote'
+const ORACLE_SERVER_API = 'https://oracle.llamalend.com/quote'
 
 export const CHAINS_CONFIGURATION: IChainConfig = {
 	1: {
@@ -20,8 +21,8 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 		factoryABI: FACTORY_ABI,
 		poolABI: POOL_ABI,
 		ankrShortName: 'eth',
-		quoteApi: `${QUOTE_SERVER_API}/1`,
-		oracleAddress: ORACLE_ADDRESS,
+		quoteApi: `${ORACLE_SERVER_API}/1`,
+		oracleAddress: ORACLE_MAINNET,
 		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth'),
 		isTestnet: false,
 		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend-mainnet'
@@ -35,8 +36,8 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 		factoryABI: FACTORY_ABI,
 		poolABI: POOL_ABI,
 		ankrShortName: 'eth_goerli',
-		quoteApi: `${QUOTE_SERVER_API}/5`,
-		oracleAddress: ORACLE_ADDRESS,
+		quoteApi: `${ORACLE_SERVER_API}/5`,
+		oracleAddress: ORACLE_GOERLI,
 		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth_goerli'),
 		isTestnet: true,
 		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend-goerli'

@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import BigNumber from 'bignumber.js'
 import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
-import { useGetQuote } from './useGetQuote'
+import { useGetOracle } from './useGetOracle'
 import { txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'
 
@@ -11,12 +10,12 @@ interface IUseBorrowProps {
 	poolAddress: string
 	cartTokenIds: Array<number>
 	maxInterest?: number
-	ltv: number
+	totalReceived: string
 	enabled: boolean
 }
 
-export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled }: IUseBorrowProps) {
-	const { data: quote, isLoading: isFetchingQuote, isError: failedFetchQuotation } = useGetQuote(poolAddress)
+export function useBorrow({ poolAddress, cartTokenIds, maxInterest, totalReceived, enabled }: IUseBorrowProps) {
+	const { data: oracle, isLoading: fetchingOracle, isError: errorFetchingOracle } = useGetOracle(poolAddress)
 	const router = useRouter()
 
 	const { cart, ...queries } = router.query
@@ -36,16 +35,15 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled
 		functionName: 'borrow',
 		args: [
 			[...cartTokenIds],
-			new BigNumber(quote?.price ?? 0).times(1e18).toFixed(0),
-			quote?.deadline,
+			(oracle?.price ?? 0).toFixed(0),
+			oracle?.deadline,
 			maxInterest,
-			new BigNumber(quote?.price ?? 0).times(cartTokenIds.length).times(ltv).toFixed(0),
-			quote?.signature?.v,
-			quote?.signature?.r,
-			quote?.signature?.s
+			totalReceived,
+			oracle?.signature?.v,
+			oracle?.signature?.r,
+			oracle?.signature?.s
 		],
-		// overrides: { gasLimit: new BigNumber(0.0005).times(1e9).toFixed(0) },
-		enabled
+		enabled: enabled || (oracle?.price ? true : false)
 	})
 
 	const contractWrite = useContractWrite({
@@ -60,14 +58,12 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled
 		hash: contractWrite.data?.hash,
 		onSettled: (data) => {
 			if (data?.status === 1) {
-				const nfts = contractWrite.variables?.args?.[0].length
-				const price = contractWrite.variables?.args?.[1]
-				const total = new BigNumber(price).times(nfts).div(1e18).toFixed(3)
+				const totalReceived = contractWrite.variables?.args?.[4]
 
 				txSuccess({
 					txHash: contractWrite.data?.hash ?? '',
 					blockExplorer: config.blockExplorer,
-					content: <span>{`Borrow ${total} ETH`}</span>
+					content: <span>{`Borrow ${totalReceived / 1e18} ETH`}</span>
 				})
 
 				// clear items in cart if tx is successfull
@@ -110,6 +106,6 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, ltv, enabled
 	return {
 		...contractWrite,
 		waitForTransaction,
-		mutationDisabled: isFetchingQuote || failedFetchQuotation
+		mutationDisabled: fetchingOracle || errorFetchingOracle
 	}
 }

@@ -2,7 +2,6 @@ import type { NextPage } from 'next'
 import { FormEvent, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import BigNumber from 'bignumber.js'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useAccount, useNetwork } from 'wagmi'
 import { InputNumber, InputText } from '~/components/Form'
@@ -12,7 +11,7 @@ import { formatMsgInToast } from '~/components/TxToast'
 import BeatLoader from '~/components/BeatLoader'
 import { FormNames, useCreatePool } from '~/queries/useCreatePool'
 import { useDebounce } from '~/hooks'
-import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
+import { formatCreatePoolFormInputs } from '~/utils'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -58,22 +57,19 @@ const ManagePools: NextPage = () => {
 				throw new Error('Invalid arguments')
 			}
 
-			const maxInt = Number(
-				new BigNumber(maxVariableInterestPerEthPerSecond / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+			mutate(
+				formatCreatePoolFormInputs({
+					nftAddress: form.nftAddress.value,
+					name: form.name.value,
+					symbol: form.symbol.value,
+					maxPrice,
+					maxDailyBorrows,
+					maxLengthInDays,
+					maxVariableInterestPerEthPerSecond,
+					minimumInterest,
+					ltv
+				})
 			)
-			const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
-
-			mutate({
-				maxPrice: new BigNumber(maxPrice).times(1e18).toFixed(0),
-				nftAddress: form.nftAddress.value,
-				maxDailyBorrows: new BigNumber(maxDailyBorrows).times(1e18).toFixed(0),
-				name: form.name.value,
-				symbol: form.symbol.value,
-				maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
-				maxVariableInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
-				minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0),
-				ltv: new BigNumber(ltv).times(1e16).toFixed(0)
-			})
 		} catch (error) {
 			// console.log(error)
 		}
@@ -95,14 +91,6 @@ const ManagePools: NextPage = () => {
 				<form className="mx-auto my-10 mb-20 flex max-w-lg flex-col gap-6" onSubmit={handleSubmit}>
 					<h1 className="mb-2 text-center text-3xl font-semibold">Create a Pool</h1>
 
-					<InputNumber
-						name="maxPrice"
-						placeholder="0.03"
-						label={'Maximum price per NFT'}
-						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards. We recommend setting it to current floor price * 0.66`}
-						required
-					/>
-
 					<InputText
 						name="nftAddress"
 						placeholder="0x..."
@@ -112,6 +100,18 @@ const ManagePools: NextPage = () => {
 						title="Enter valid address."
 					/>
 
+					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
+
+					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
+
+					<InputNumber
+						name="maxPrice"
+						placeholder="0.03"
+						label={'Maximum price per NFT'}
+						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards. We recommend setting it to current floor price * 0.66`}
+						required
+					/>
+
 					<InputNumber
 						name="maxDailyBorrows"
 						placeholder="1"
@@ -119,10 +119,6 @@ const ManagePools: NextPage = () => {
 						required
 						helperText={`This can be changed afterwards.`}
 					/>
-
-					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
-
-					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
 
 					<InputNumber
 						name="maxLengthInDays"
@@ -205,31 +201,3 @@ const ManagePools: NextPage = () => {
 }
 
 export default ManagePools
-
-// maxPrice - the max Price people should be able to borrow at, a good baseline is to pick 60% of the current floor of nft
-// nftAddress - address of nft to borrow
-// maxDailyBorrows - max amount of borrowed ETH each day, using 1 ETH for tubbyloans
-// name - name of loan NFTs, eg:"TubbyLoan"
-// symbol - symbol of loans NFTs, eg: "TL"
-// maxLengthInDays - maximum duration of loans in seconds, eg: 2 weeks would be "1209600", better to make this < 1 mo
-// maxVariableInterestPerEthPerSecond - max interest that can be paid, to calculate run (percent * 1e18)/(seconds in 1 year)
-// eg: 80% is 0.8e18/1 year = "25367833587", this is what will be charged if pool utilisation is at 100%
-
-{
-	/* <span className="flex justify-center items-center">
-								<svg
-									className="animate-spin -ml-1 mr-3 h-5 w-5 text-black"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-								>
-									<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-									<path
-										className="opacity-75"
-										fill="currentColor"
-										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-									></path>
-								</svg>
-								Confirming...
-							</span> */
-}

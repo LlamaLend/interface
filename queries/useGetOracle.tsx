@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNetwork } from 'wagmi'
 import { chainConfig } from '~/lib/constants'
-import { IQuoteResponse, ITransactionError } from '~/types'
+import { IOracleResponse, ITransactionError } from '~/types'
 
-interface IFetchQuoteProps {
+interface IFetchOracleProps {
 	api: string
 	poolAddress?: string
 	isTestnet?: boolean
 }
 
-async function fetchQuote({ api, poolAddress, isTestnet }: IFetchQuoteProps): Promise<IQuoteResponse | null> {
+async function fetchOracle({ api, poolAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
 	try {
 		if (!poolAddress) {
 			return null
@@ -17,7 +17,7 @@ async function fetchQuote({ api, poolAddress, isTestnet }: IFetchQuoteProps): Pr
 
 		if (isTestnet) {
 			return {
-				price: 0.01,
+				price: 10000000000000000,
 				deadline: 1667412882,
 				normalizedNftContract: '0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b',
 				signature: {
@@ -30,25 +30,23 @@ async function fetchQuote({ api, poolAddress, isTestnet }: IFetchQuoteProps): Pr
 
 		const res = await fetch(`${api}/pool/${poolAddress}`).then((res) => res.json())
 
-		const price = Number(res.price)
-
-		return { ...res, price: !Number.isNaN(price) ? price / 1e18 : null }
+		return { ...res, price: Number(res.price) }
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't fetch quote"))
 	}
 }
 
-const useGetQuote = (poolAddress?: string) => {
+const useGetOracle = (poolAddress?: string) => {
 	const { chain } = useNetwork()
 	const config = chainConfig(chain?.id)
 
-	return useQuery<IQuoteResponse | null, ITransactionError>(
+	return useQuery<IOracleResponse | null, ITransactionError>(
 		['quote', chain?.id, poolAddress],
-		() => fetchQuote({ api: config.quoteApi, poolAddress, isTestnet: config.isTestnet }),
+		() => fetchOracle({ api: config.quoteApi, poolAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}
 	)
 }
 
-export { useGetQuote, fetchQuote }
+export { useGetOracle, fetchOracle }

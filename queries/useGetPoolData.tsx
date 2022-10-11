@@ -1,10 +1,10 @@
 import { ethers } from 'ethers'
-import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
-import { fetchQuote } from './useGetQuote'
+import { fetchOracle } from './useGetOracle'
+import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
@@ -23,6 +23,7 @@ export interface IPoolData {
 	nftContract: string
 	nftName: string
 	owner: string
+	maxNftsToBorrow: string
 }
 
 export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IGetPoolDataArgs) {
@@ -37,7 +38,11 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			throw new Error('Invalid arguments')
 		}
 
-		const quote = await fetchQuote({ api: quoteApi, isTestnet, poolAddress: address })
+		const quote = await fetchOracle({ api: quoteApi, isTestnet, poolAddress: address })
+
+		if (!quote?.price) {
+			throw new Error("Couldn't get oracle price")
+		}
 
 		const contract = new ethers.Contract(address, abi, provider)
 
@@ -45,7 +50,6 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			name,
 			symbol,
 			maxLoanLength,
-			currentAnnualInterest,
 			minimumInterest,
 			maxVariableInterestPerEthPerSecond,
 			ltv,
@@ -55,7 +59,6 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			contract.name(),
 			contract.symbol(),
 			contract.maxLoanLength(),
-			contract.currentAnnualInterest(new BigNumber(quote?.price ?? 0).multipliedBy(1e18).toFixed(0)),
 			contract.minimumInterest(),
 			contract.maxVariableInterestPerEthPerSecond(),
 			contract.ltv(),
@@ -65,7 +68,11 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 
 		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
 
-		const nftName = await nftContractInterface.name()
+		const [currentAnnualInterest, { maxInstantBorrow }, nftName] = await Promise.all([
+			contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote.price, noOfItems: 1, ltv: Number(ltv) })),
+			contract.getDailyBorrows(),
+			nftContractInterface.name()
+		])
 
 		return {
 			name,
@@ -76,7 +83,12 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			ltv: Number(ltv),
 			nftContract,
 			nftName,
-			owner
+			owner,
+			maxNftsToBorrow: getMaxNftsToBorrow({
+				maxInstantBorrow: Number(maxInstantBorrow),
+				oraclePrice: quote.price,
+				ltv: Number(ltv)
+			})
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
@@ -108,7 +120,7 @@ export function useGetPoolInterestInCart({
 	totalReceived
 }: {
 	poolAddress: string
-	totalReceived: number
+	totalReceived: string
 }) {
 	const { chain } = useNetwork()
 	const config = chainConfig(chain?.id)
@@ -117,6 +129,6 @@ export function useGetPoolInterestInCart({
 		addressOrName: poolAddress,
 		contractInterface: config.poolABI,
 		functionName: 'currentAnnualInterest',
-		args: new BigNumber(totalReceived).multipliedBy(1e18).toFixed(0)
+		args: totalReceived
 	})
 }

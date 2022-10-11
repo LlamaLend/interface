@@ -1,5 +1,4 @@
 import { ContractInterface, providers, Signer } from 'ethers'
-import {} from 'wagmi'
 
 export type Provider = providers.BaseProvider
 
@@ -43,7 +42,7 @@ export interface INftItem {
 	imgUrl: string
 }
 
-export interface IQuoteResponse {
+export interface IOracleResponse {
 	deadline: number
 	normalizedNftContract: string
 	price: number | null

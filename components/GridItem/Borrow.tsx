@@ -3,14 +3,17 @@ import Image from 'next/future/image'
 import ItemWrapper from './ItemWrapper'
 import { INftItem } from '~/types'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
+import { getQuotePrice } from '~/utils'
 
 export const BorrowNftItem = ({
 	data,
-	quotePrice,
+	oraclePrice,
+	ltv,
 	contractAddress
 }: {
 	data: INftItem
-	quotePrice?: number | null
+	oraclePrice: number
+	ltv: number
 	contractAddress: string
 }) => {
 	const { data: cartItems } = useGetCartItems(contractAddress)
@@ -39,7 +42,7 @@ export const BorrowNftItem = ({
 			<div className="flex flex-wrap items-center justify-between gap-4">
 				<div className="flex items-center gap-1.5">
 					<Image src="/assets/ethereum.png" width={16} height={16} className="object-contain" alt="ethereum" />
-					<p className="min-h-4">{quotePrice || '-'}</p>
+					<p className="min-h-4">{getQuotePrice({ oraclePrice, ltv })}</p>
 				</div>
 
 				{isAddedToCart ? (

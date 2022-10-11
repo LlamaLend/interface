@@ -1,10 +1,10 @@
 import { ContractInterface, ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
-import BigNumber from 'bignumber.js'
 import { request, gql } from 'graphql-request'
 import type { IBorrowPool, Provider, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
-import { fetchQuote } from './useGetQuote'
+import { fetchOracle } from './useGetOracle'
+import { getTotalReceivedArg } from '~/utils'
 
 interface IGetAllPoolsArgs {
 	endpoint: string
@@ -20,6 +20,7 @@ interface IPoolInterestPerNft {
 	isTestnet: boolean
 	poolAbi: ContractInterface
 	provider: Provider
+	ltv: string
 }
 
 interface IPoolsQueryResponse {
@@ -28,15 +29,29 @@ interface IPoolsQueryResponse {
 		address: string
 		symbol: string
 		maxLoanLength: string
+		ltv: string
 	}>
 }
 
-async function getPoolInterestPerNft({ poolAddress, quoteApi, isTestnet, poolAbi, provider }: IPoolInterestPerNft) {
+async function getPoolInterestPerNft({
+	poolAddress,
+	quoteApi,
+	isTestnet,
+	poolAbi,
+	provider,
+	ltv
+}: IPoolInterestPerNft) {
 	const contract = new ethers.Contract(poolAddress, poolAbi, provider)
 
-	const quote = await fetchQuote({ api: quoteApi, isTestnet, poolAddress })
+	const oracle = await fetchOracle({ api: quoteApi, isTestnet, poolAddress })
 
-	const interest = await contract.currentAnnualInterest(new BigNumber(quote?.price ?? 0).multipliedBy(1e18).toFixed(0))
+	if (!oracle?.price) {
+		throw new Error("Couldn't get oracle price")
+	}
+
+	const interest = await contract.currentAnnualInterest(
+		getTotalReceivedArg({ oraclePrice: oracle.price, noOfItems: 1, ltv: Number(ltv) })
+	)
 
 	return Number(interest)
 }
@@ -61,13 +76,16 @@ export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poo
 						symbol
 						maxLoanLength
 						address
+						ltv
 					}
 				}
 			`
 		)
 
 		const allPoolCurrentAnnualInterests = await Promise.all(
-			pools.map((pool) => getPoolInterestPerNft({ quoteApi, isTestnet, poolAddress: pool.address, poolAbi, provider }))
+			pools.map((pool) =>
+				getPoolInterestPerNft({ quoteApi, isTestnet, poolAddress: pool.address, ltv: pool.ltv, poolAbi, provider })
+			)
 		)
 
 		return pools.map((pool, index) => ({

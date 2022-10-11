@@ -40,7 +40,6 @@ export function useRepay({ loanPoolAddress, loansToRepay, payableAmout, enabled 
 		args: [loansToRepay],
 		overrides: {
 			value: payableAmout
-			// gasLimit: new BigNumber(0.0005).times(1e9).toFixed(0)
 		},
 		enabled
 	})

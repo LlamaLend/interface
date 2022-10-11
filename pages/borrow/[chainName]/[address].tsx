@@ -13,7 +13,8 @@ import { BorrowCart } from '~/components/Cart'
 import { useGetPoolData } from '~/queries/useGetPoolData'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { chainConfig } from '~/lib/constants'
-import usePoolBalance from '~/queries/usePoolBalance'
+import { formatCurrentAnnualInterest } from '~/utils'
+import { useGetOracle } from '~/queries/useGetOracle'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -31,7 +32,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 
 	const { data, isLoading } = useGetPoolData({ chainId, poolAddress })
 
-	const { quote, fetchingQuote, maxNftsToBorrow, fetchingContractBalance } = usePoolBalance(poolAddress)
+	const { data: oracle, isLoading: fetchingOracle } = useGetOracle(poolAddress)
 
 	const { data: nftsList, isLoading: nftsListLoading } = useGetNftsList(data?.nftContract)
 
@@ -80,7 +81,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{data ? `${(data.currentAnnualInterest / 1e16).toFixed(2)}% p.a.` : ''}
+								{data ? `${formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.` : ''}
 							</p>
 						</div>
 
@@ -90,10 +91,10 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 							<p
 								className={cx(
 									'min-h-[1.5rem] font-mono text-[#F6F6F6]',
-									fetchingContractBalance || fetchingQuote ? 'placeholder-box w-full max-w-[100px]' : ''
+									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{fetchingContractBalance || fetchingQuote ? '' : maxNftsToBorrow}
+								{data ? data.maxNftsToBorrow : ''}
 							</p>
 						</div>
 
@@ -133,7 +134,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 						<>
 							{!chainId ? (
 								<p className="fallback-text">Network not supported, Please check URL validity.</p>
-							) : isLoading || nftsListLoading || fetchingQuote || fetchingContractBalance ? (
+							) : isLoading || nftsListLoading || fetchingOracle ? (
 								<GridWrapper className="xl:flex-1">
 									{new Array(10).fill(1).map((_, index) => (
 										<BorrowNftPlaceholder key={'plitem' + index} />
@@ -156,7 +157,8 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 										<BorrowNftItem
 											key={nftData.tokenId}
 											data={nftData}
-											quotePrice={quote?.price}
+											oraclePrice={oracle?.price ?? 0}
+											ltv={data.ltv}
 											contractAddress={data.nftContract}
 										/>
 									))}
@@ -168,7 +170,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 								chainId={chainId}
 								nftContractAddress={data?.nftContract}
 								nftCollectionName={data?.nftName}
-								isLoading={isLoading || nftsListLoading || fetchingQuote || fetchingContractBalance}
+								isLoading={isLoading || nftsListLoading || fetchingOracle}
 							/>
 						</>
 					</React.Suspense>
