@@ -33,7 +33,7 @@ const BorrowPoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 				) : data.length === 0 ? (
 					<p className="fallback-text">
 						There are no pools on {chainName || 'this'} network. Click{' '}
-						<Link href="/manage-pools">
+						<Link href="/create">
 							<a className="underline">here</a>
 						</Link>{' '}
 						to create a new pool.
