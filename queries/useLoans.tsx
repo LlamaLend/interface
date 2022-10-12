@@ -12,8 +12,10 @@ interface IGraphLoanResponse {
 	startTime: string
 	deadline: string
 	tokenUri: string
-	pool?: {
+	pool: {
 		name: string
+		owner: string
+		address: string
 	}
 }
 
@@ -68,24 +70,27 @@ async function getUserLoans({
 						originalOwner
 						pool {
 							name
+							owner
+							address
 						}
 					}
 				}
 			`
 		)
 
-		return loans.map((loan) => ({
-			id: loan.id,
-			interest: loan.interest,
-			startTime: loan.startTime,
-			borrowed: loan.borrowed,
-			toPay: infoToRepayLoan(loan),
-			deadline: Number(loan.deadline) * 1000,
-			tokenUri: isTestnet ? '' : loan.tokenUri,
-			pool: {
-				name: loan.pool?.name
-			}
-		}))
+		return loans
+			.map((loan) => ({
+				id: loan.id,
+				nftId: loan.nftId,
+				interest: loan.interest,
+				startTime: loan.startTime,
+				borrowed: loan.borrowed,
+				toPay: infoToRepayLoan(loan),
+				deadline: Number(loan.deadline) * 1000,
+				tokenUri: isTestnet ? '' : loan.tokenUri,
+				pool: loan.pool
+			}))
+			.sort((a, b) => Date.now() - b.deadline - (Date.now() - a.deadline))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
 	}

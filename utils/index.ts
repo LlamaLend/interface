@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js'
+import * as dayjs from 'dayjs'
+import * as relativeTime from 'dayjs/plugin/relativeTime'
 import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
+
+// @ts-ignore
+dayjs.extend(relativeTime)
 
 // returns item quote price in 'ether'
 export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: number; ltv: number }) {
@@ -84,3 +89,19 @@ export function getMaxNftsToBorrow({
 }) {
 	return (maxInstantBorrow / (oraclePrice * (ltv / 1e18))).toFixed(0)
 }
+
+export function formatLoanDeadline(deadline: number) {
+	const isExpired = deadline - Date.now() <= 0 ? true : false
+
+	// @ts-ignore
+	return isExpired ? 'Expired' : dayjs(deadline).toNow(true)
+}
+
+export function getLoansPayableAmount(totalToRepay: number) {
+	// add 5% buffer to totalToRepay
+	const buffer = new BigNumber(totalToRepay).times(0.05).toFixed(0)
+
+	return new BigNumber(totalToRepay).plus(buffer).toFixed(0)
+}
+
+export const gasLimitOverride = new BigNumber(0.0005).times(1e9).toFixed(0)

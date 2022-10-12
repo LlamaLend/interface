@@ -13,9 +13,13 @@ import { formatErrorMsg } from './utils'
 import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from '~/utils'
 import { useNetwork } from 'wagmi'
 import { useChainModal } from '@rainbow-me/rainbowkit'
+import { chainConfig } from '~/lib/constants'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
 	const { chain } = useNetwork()
+
+	const config = chainConfig(chainId)
+
 	const { openChainModal } = useChainModal()
 
 	// check if user is on same network or else show switch network button and disable all write methods
@@ -136,6 +140,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 	const canUserBorrowETH = poolData ? Number(poolData.maxNftsToBorrow) > 0 : false
 
+	const chainSymbol = config.nativeCurrency?.symbol ?? 'ETH'
+
 	return (
 		<>
 			{errorMsgOfQueries ? (
@@ -210,7 +216,9 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingOracle ? (
 										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 									) : (
-										<span>{Number(totalReceived) / 1e18} ETH</span>
+										<span>
+											{Number(totalReceived) / 1e18} {chainSymbol}
+										</span>
 									)}
 								</span>
 							</li>

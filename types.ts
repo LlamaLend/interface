@@ -63,6 +63,7 @@ export interface IBorrowPool {
 
 export interface ILoan {
 	id: string
+	nftId: string
 	interest: string
 	startTime: string
 	borrowed: string
@@ -70,6 +71,8 @@ export interface ILoan {
 	deadline: number
 	tokenUri: string
 	pool: {
-		name?: string | null
+		name: string
+		owner: string
+		address: string
 	}
 }

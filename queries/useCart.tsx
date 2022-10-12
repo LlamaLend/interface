@@ -14,7 +14,7 @@ async function saveItemToCart({
 	contractAddress: string
 	tokenId: number | string
 	userAddress?: string
-	chainId?: number
+	chainId?: number | null
 }) {
 	try {
 		if (!contractAddress || !tokenId || !userAddress || !chainId) {
@@ -80,7 +80,7 @@ async function fetchCartItems({
 }: {
 	contractAddress: string
 	userAddress?: string
-	chainId?: number
+	chainId?: number | null
 }) {
 	try {
 		if (!contractAddress || !userAddress || !chainId) {
@@ -97,7 +97,7 @@ async function fetchCartItems({
 
 // *------------------------------------------------*
 
-const useSaveItemToCart = ({ chainId }: { chainId?: number }) => {
+const useSaveItemToCart = ({ chainId }: { chainId?: number | null }) => {
 	const { address } = useAccount()
 
 	const queryClient = useQueryClient()
@@ -137,7 +137,7 @@ const useSaveItemToCart = ({ chainId }: { chainId?: number }) => {
 
 interface IGetCartItems {
 	contractAddress: string
-	chainId?: number
+	chainId?: number | null
 	userAddress?: string
 }
 

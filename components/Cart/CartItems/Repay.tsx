@@ -1,16 +1,27 @@
 import * as React from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useNetwork } from 'wagmi'
+import Image from 'next/future/image'
+import { useChainModal } from '@rainbow-me/rainbowkit'
 import BeatLoader from '~/components/BeatLoader'
 import ItemsPlaceholder from './Placeholder'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
+import { useRepay } from '~/queries/useRepay'
+import { useGetUserLoans } from '~/queries/useLoans'
+import { chainConfig } from '~/lib/constants'
+import { getLoansPayableAmount } from '~/utils'
 import type { IRepayItemProps } from '../types'
 import type { ILoan } from '~/types'
-import { useRepay } from '~/queries/useRepay'
-import type { ILoanToRepay } from '~/queries/useRepay'
-import BigNumber from 'bignumber.js'
-import { useGetUserLoans } from '~/queries/useLoans'
 
 export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
+	const { chain } = useNetwork()
+
+	const config = chainConfig(chainId)
+
+	const { openChainModal } = useChainModal()
+
+	// check if user is on same network or else show switch network button and disable all write methods
+	const isUserOnDifferentChain = chainId !== chain?.id
+
 	const { address } = useAccount()
 
 	// query to get cart items from local storage
@@ -18,7 +29,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 		data: cartTokenIds,
 		isLoading: fetchingCartItems,
 		isError: errorLoadingCartItems
-	} = useGetCartItems({ contractAddress: 'repay', userAddress, chainId })
+	} = useGetCartItems({ contractAddress: 'repay', chainId })
 
 	const {
 		data: loans,
@@ -29,12 +40,16 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 		userAddress: address
 	})
 
+	const poolAddresses = new Set<string>()
+
 	const cartItems =
 		(cartTokenIds
 			?.map((id) => {
 				const loan = loans?.find((loan) => loan.id === id)
 
 				if (!loan) return null
+
+				poolAddresses.add(loan.pool.address)
 
 				return loan
 			})
@@ -43,27 +58,31 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 	// query to save/remove item to cart/localstorage
 	const { mutate: saveItemToCart } = useSaveItemToCart({ chainId })
 
-	const loansToRepay: Array<ILoanToRepay> = cartItems.map((item) => ({
-		nft: item.id,
-		interest: item.interest,
-		startTime: item.startTime,
-		borrowed: item.borrowed
+	const loansToRepay = Array.from(poolAddresses).map((pool) => ({
+		pool,
+		loans: cartItems
+			.filter((item) => item.pool.address === pool)
+			.map((item) => ({
+				nft: item.nftId,
+				interest: item.interest,
+				startTime: item.startTime,
+				borrowed: item.borrowed
+			}))
 	}))
 
-	const totalToRepay = 0.025 // cartItems.reduce((acc, curr) => (acc += curr.toPay), 0)
+	const totalToRepay = cartItems.reduce((acc, curr) => (acc += curr.toPay), 0)
 
-	const buffer = new BigNumber(totalToRepay).times(0.05).toFixed(0)
-
-	//query to borrow eth using nfts
+	//query to repay loans
 	const {
 		write: repayLoans,
 		isLoading: userConfirmingRepay,
 		error: errorConfirmingRepay,
 		waitForTransaction: { data: repayTxOnChain, isLoading: checkingForRepayTxOnChain, error: txRepayErrorOnChain }
 	} = useRepay({
-		payableAmout: new BigNumber(totalToRepay).plus(buffer).times(1e18).toFixed(0),
+		payableAmout: getLoansPayableAmount(totalToRepay),
 		loansToRepay,
-		enabled: loansToRepay.length > 0
+		enabled: loansToRepay.length > 0,
+		chainId
 	})
 
 	// construct error messages
@@ -86,12 +105,16 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 	// check all loading states to show beat loader
 	const isLoading = fetchingCartItems || fetchingLoans || userConfirmingRepay || checkingForRepayTxOnChain
 
+	const chainSymbol = config.nativeCurrency?.symbol ?? 'ETH'
+
+	const isCartEmpty = (cartTokenIds && cartTokenIds.length <= 0) || address !== userAddress
+
 	return (
 		<>
 			{errorMsgOfQueries ? (
 				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393] xl:mt-[60%]">{errorMsgOfQueries}</p>
-			) : cartTokenIds && cartTokenIds.length <= 0 ? (
-				<p className="mt-8 mb-9 p-6 text-center xl:mt-[60%]">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
+			) : isCartEmpty ? (
+				<p className="mt-8 mb-9 p-6 text-center xl:mt-[60%]">Your cart is empty.</p>
 			) : (
 				<>
 					{/* Show placeholder when fetching items in cart */}
@@ -99,11 +122,11 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 						<ItemsPlaceholder />
 					) : (
 						<ul className="flex flex-col gap-4">
-							{/* {cartItems?.map(({ id, tokenUri, toPay }) => (
+							{cartItems?.map(({ id, tokenUri, toPay, pool }) => (
 								<li key={id} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
 										className="absolute -top-2 -left-1.5 z-10 h-5 w-5 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
-										onClick={() => saveItemToCart({ tokenId: id, contractAddress: loanPoolAddress })}
+										onClick={() => saveItemToCart({ tokenId: id, contractAddress: 'repay' })}
 									>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +146,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 
 									<span className="flex flex-col flex-wrap justify-between gap-1">
 										<span>{`${id.slice(0, 4) + '...' + id.slice(-3)}`}</span>
-										<span className="font-base text-[0.8rem] text-[#989898]">{loanPoolName}</span>
+										<span className="font-base text-[0.8rem] text-[#989898]">{pool.name}</span>
 									</span>
 
 									<span className="ml-auto flex gap-1.5">
@@ -134,12 +157,29 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 											className="object-contain"
 											alt="ethereum"
 										/>
-										<span>{(toPay / 1e18).toFixed(2)}</span>
+										<span>{(toPay / 1e18).toFixed(4)}</span>
 									</span>
 								</li>
-							))} */}
+							))}
 						</ul>
 					)}
+
+					<hr className="border-[rgba(255,255,255,0.08)]" />
+
+					<h2 className="flex items-center">
+						<span className="font-base text-[#989898]">Total to Repay</span>
+						<span className="ml-auto flex gap-1.5">
+							<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
+							{/* Show placeholder when fetching quotation */}
+							{fetchingCartItems || fetchingLoans ? (
+								<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
+							) : (
+								<span>
+									{(totalToRepay / 1e18).toFixed(4)} {chainSymbol}
+								</span>
+							)}
+						</span>
+					</h2>
 
 					{/* Show error message of txs/queries initiated with wallet */}
 					{errorMsgOfEthersQueries && !errorMsgOfEthersQueries.startsWith('user rejected transaction') && (
@@ -155,6 +195,13 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 							disabled
 						>
 							<BeatLoader />
+						</button>
+					) : isUserOnDifferentChain ? (
+						<button
+							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
+							onClick={openChainModal}
+						>
+							Switch Network
 						</button>
 					) : (
 						<button

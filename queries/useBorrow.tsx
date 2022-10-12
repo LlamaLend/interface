@@ -56,7 +56,7 @@ export function useBorrow({
 			oracle?.signature?.r,
 			oracle?.signature?.s
 		],
-		enabled: enabled || (oracle?.price ? true : false) || chain?.id === chainId
+		enabled: enabled && (oracle?.price ? true : false) && chain?.id === chainId
 	})
 
 	const contractWrite = useContractWrite({
@@ -80,30 +80,31 @@ export function useBorrow({
 				})
 
 				// clear items in cart if tx is successfull
-				const prevItems = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}')
+				const storage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}')
 
-				if (userAddress) {
-					if (prevItems) {
-						const items = prevItems[userAddress]
+				// get all items of this chain from local storage
+				const allItemsInChain = chainId && storage?.[chainId]
 
-						localStorage.setItem(
-							LOCAL_STORAGE_KEY,
-							JSON.stringify({
-								...items,
-								[userAddress]: {
-									[poolAddress]: []
-								}
-							})
-						)
-					} else {
-						localStorage.setItem(
-							LOCAL_STORAGE_KEY,
-							JSON.stringify({
-								[userAddress]: {
-									[poolAddress]: []
-								}
-							})
-						)
+				if (allItemsInChain) {
+					if (userAddress) {
+						// get all items of user
+						const userItems = allItemsInChain[userAddress]
+						if (userItems) {
+							// clear items in cart
+							localStorage.setItem(
+								LOCAL_STORAGE_KEY,
+								JSON.stringify({
+									...storage,
+									[chainId]: {
+										...allItemsInChain,
+										[userAddress]: {
+											...userItems,
+											[poolAddress]: []
+										}
+									}
+								})
+							)
+						}
 					}
 				}
 
