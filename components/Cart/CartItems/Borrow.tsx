@@ -11,19 +11,31 @@ import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
 import { formatErrorMsg } from './utils'
 import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from '~/utils'
+import { useNetwork } from 'wagmi'
+import { useChainModal } from '@rainbow-me/rainbowkit'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
-	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList(nftContractAddress)
+	const { chain } = useNetwork()
+	const { openChainModal } = useChainModal()
+
+	// check if user is on same network or else show switch network button and disable all write methods
+	const isUserOnDifferentChain = chainId !== chain?.id
+
+	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList({ nftContractAddress, chainId })
 
 	// query to get cart items from local storage
 	const {
 		data: itemsInCart,
 		isLoading: fetchingCartItems,
 		isError: errorLoadingCartItems
-	} = useGetCartItems(nftContractAddress)
+	} = useGetCartItems({ contractAddress: nftContractAddress, chainId })
 
 	// query to get quotation from server
-	const { data: oracle, isLoading: fetchingOracle, isError: errorFetchingOracle } = useGetOracle(poolAddress)
+	const {
+		data: oracle,
+		isLoading: fetchingOracle,
+		isError: errorFetchingOracle
+	} = useGetOracle({ poolAddress, chainId })
 
 	// query to get interest rates
 	const {
@@ -33,7 +45,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	} = useGetPoolData({ chainId, poolAddress })
 
 	// query to save/remove item to cart/localstorage
-	const { mutate: saveItemToCart } = useSaveItemToCart()
+	const { mutate: saveItemToCart } = useSaveItemToCart({ chainId })
 
 	const cartItemsList = nftsList?.filter((item) => itemsInCart?.includes(item.tokenId)) ?? []
 	const cartTokenIds = cartItemsList?.map((item) => item.tokenId) ?? []
@@ -43,7 +55,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		data: isApprovedForAll,
 		isLoading: fetchingIfApproved,
 		error: failedToFetchIfApproved
-	} = useGetContractApproval({ poolAddress, nftContractAddress })
+	} = useGetContractApproval({ poolAddress, nftContractAddress, enabled: isUserOnDifferentChain ? false : true })
 
 	// query to set approval for all tokens
 	const {
@@ -55,7 +67,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 			isLoading: checkingForApproveTxOnChain,
 			error: txApproveErrorOnChain
 		}
-	} = useSetContractApproval({ poolAddress, nftContractAddress })
+	} = useSetContractApproval({ poolAddress, nftContractAddress, enabled: isUserOnDifferentChain ? false : true })
 
 	const isApproved = isApprovedForAll || approvalTxOnChain?.status === 1 ? true : false
 
@@ -75,12 +87,13 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	} = useBorrow({
 		poolAddress,
 		cartTokenIds,
-		enabled: isApproved && oracle && poolData ? true : false,
+		enabled: isApproved && oracle && poolData && !isUserOnDifferentChain ? true : false,
 		maxInterest: poolData?.maxVariableInterestPerEthPerSecond,
-		totalReceived
+		totalReceived,
+		chainId
 	})
 
-	const { data: currentAnnualInterest } = useGetPoolInterestInCart({ poolAddress, totalReceived })
+	const { data: currentAnnualInterest } = useGetPoolInterestInCart({ poolAddress, totalReceived, chainId })
 
 	// construct error messages
 	// Failed queries, but user can't retry with data of these queries
@@ -244,6 +257,13 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							disabled
 						>
 							<BeatLoader />
+						</button>
+					) : isUserOnDifferentChain ? (
+						<button
+							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
+							onClick={openChainModal}
+						>
+							Switch Network
 						</button>
 					) : isApproved ? (
 						canUserBorrowETH ? (

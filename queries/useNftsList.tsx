@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useAccount, useNetwork } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { chainConfig } from '~/lib/constants'
 import { INftApiResponse, INftItem, ITransactionError } from '~/types'
 
@@ -36,14 +36,13 @@ export async function getOwnedNfts({
 	}
 }
 
-export function useGetNftsList(nftContractAddress?: string) {
+export function useGetNftsList({ nftContractAddress, chainId }: { nftContractAddress?: string; chainId?: number }) {
 	const { address: userAddress } = useAccount()
-	const { chain } = useNetwork()
 
-	const { alchemyNftUrl } = chainConfig(chain?.id)
+	const { alchemyNftUrl } = chainConfig(chainId)
 
 	return useQuery<Array<INftItem>, ITransactionError>(
-		['nftsList', userAddress, chain?.id, nftContractAddress],
+		['nftsList', userAddress, chainId, nftContractAddress],
 		() =>
 			getOwnedNfts({
 				userAddress,

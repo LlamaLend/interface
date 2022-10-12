@@ -14,9 +14,10 @@ import { chainConfig } from '~/lib/constants'
 interface IContractApprovalProps {
 	poolAddress: string
 	nftContractAddress: string
+	enabled: boolean
 }
 
-export function useSetContractApproval({ poolAddress, nftContractAddress }: IContractApprovalProps) {
+export function useSetContractApproval({ poolAddress, nftContractAddress, enabled }: IContractApprovalProps) {
 	const { chain } = useNetwork()
 	const queryClient = useQueryClient()
 
@@ -26,7 +27,8 @@ export function useSetContractApproval({ poolAddress, nftContractAddress }: ICon
 		addressOrName: nftContractAddress,
 		contractInterface: erc721ABI,
 		functionName: 'setApprovalForAll',
-		args: [poolAddress, true]
+		args: [poolAddress, true],
+		enabled
 	})
 
 	const contractWrite = useContractWrite(config)
@@ -44,13 +46,14 @@ export function useSetContractApproval({ poolAddress, nftContractAddress }: ICon
 	return { ...contractWrite, waitForTransaction }
 }
 
-export function useGetContractApproval({ poolAddress, nftContractAddress }: IContractApprovalProps) {
+export function useGetContractApproval({ poolAddress, nftContractAddress, enabled }: IContractApprovalProps) {
 	const { address } = useAccount()
 
 	return useContractRead({
 		addressOrName: nftContractAddress,
 		contractInterface: erc721ABI,
 		functionName: 'isApprovedForAll',
-		args: [address, poolAddress]
+		args: [address, poolAddress],
+		enabled
 	})
 }

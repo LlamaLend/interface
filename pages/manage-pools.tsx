@@ -87,7 +87,7 @@ const ManagePools: NextPage = () => {
 	const isInvalidInterests =
 		minInterest === null || maxInterest === null ? true : debouncedMaxInterest < debouncedMinInterest
 
-	const { data: oracle } = useGetOracle(debouncedPoolAddress)
+	const { data: oracle } = useGetOracle({ poolAddress: debouncedPoolAddress, chainId: chain?.id })
 
 	const maxPrice = getMaxPricePerNft(oracle?.price)
 

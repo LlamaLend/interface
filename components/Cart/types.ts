@@ -14,14 +14,12 @@ export interface IBorrowItemsProps {
 }
 
 export interface IRepayCartProps {
-	chainId?: number
-	loanPoolAddress?: string
-	loanPoolName?: string
+	chainId?: number | null
+	userAddress?: string
 	isLoading: boolean
 }
 
 export interface IRepayItemProps {
 	chainId: number
-	loanPoolAddress: string
-	loanPoolName: string
+	userAddress?: string
 }

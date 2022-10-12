@@ -1,17 +1,16 @@
 import * as React from 'react'
-import Image from 'next/future/image'
 import { useAccount } from 'wagmi'
 import BeatLoader from '~/components/BeatLoader'
 import ItemsPlaceholder from './Placeholder'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
-import { useGetLoansByPool } from '~/queries/useLoans'
 import type { IRepayItemProps } from '../types'
 import type { ILoan } from '~/types'
 import { useRepay } from '~/queries/useRepay'
 import type { ILoanToRepay } from '~/queries/useRepay'
 import BigNumber from 'bignumber.js'
+import { useGetUserLoans } from '~/queries/useLoans'
 
-export function RepayItems({ chainId, loanPoolAddress, loanPoolName }: IRepayItemProps) {
+export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 	const { address } = useAccount()
 
 	// query to get cart items from local storage
@@ -19,15 +18,14 @@ export function RepayItems({ chainId, loanPoolAddress, loanPoolName }: IRepayIte
 		data: cartTokenIds,
 		isLoading: fetchingCartItems,
 		isError: errorLoadingCartItems
-	} = useGetCartItems(loanPoolAddress)
+	} = useGetCartItems({ contractAddress: 'repay', userAddress, chainId })
 
 	const {
 		data: loans,
 		isLoading: fetchingLoans,
 		isError: errorFetchingLoans
-	} = useGetLoansByPool({
+	} = useGetUserLoans({
 		chainId,
-		poolAddress: loanPoolAddress,
 		userAddress: address
 	})
 
@@ -43,7 +41,7 @@ export function RepayItems({ chainId, loanPoolAddress, loanPoolName }: IRepayIte
 			.filter((item) => !!item) as Array<ILoan>) ?? []
 
 	// query to save/remove item to cart/localstorage
-	const { mutate: saveItemToCart } = useSaveItemToCart()
+	const { mutate: saveItemToCart } = useSaveItemToCart({ chainId })
 
 	const loansToRepay: Array<ILoanToRepay> = cartItems.map((item) => ({
 		nft: item.id,
@@ -63,7 +61,6 @@ export function RepayItems({ chainId, loanPoolAddress, loanPoolName }: IRepayIte
 		error: errorConfirmingRepay,
 		waitForTransaction: { data: repayTxOnChain, isLoading: checkingForRepayTxOnChain, error: txRepayErrorOnChain }
 	} = useRepay({
-		loanPoolAddress,
 		payableAmout: new BigNumber(totalToRepay).plus(buffer).times(1e18).toFixed(0),
 		loansToRepay,
 		enabled: loansToRepay.length > 0
@@ -102,7 +99,7 @@ export function RepayItems({ chainId, loanPoolAddress, loanPoolName }: IRepayIte
 						<ItemsPlaceholder />
 					) : (
 						<ul className="flex flex-col gap-4">
-							{cartItems?.map(({ id, tokenUri, toPay }) => (
+							{/* {cartItems?.map(({ id, tokenUri, toPay }) => (
 								<li key={id} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
 										className="absolute -top-2 -left-1.5 z-10 h-5 w-5 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
@@ -140,7 +137,7 @@ export function RepayItems({ chainId, loanPoolAddress, loanPoolName }: IRepayIte
 										<span>{(toPay / 1e18).toFixed(2)}</span>
 									</span>
 								</li>
-							))}
+							))} */}
 						</ul>
 					)}
 

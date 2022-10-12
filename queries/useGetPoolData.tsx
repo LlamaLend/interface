@@ -117,18 +117,21 @@ export function useGetPoolData({ chainId, poolAddress }: { chainId?: number | nu
 
 export function useGetPoolInterestInCart({
 	poolAddress,
-	totalReceived
+	totalReceived,
+	chainId
 }: {
 	poolAddress: string
 	totalReceived: string
+	chainId?: number
 }) {
 	const { chain } = useNetwork()
-	const config = chainConfig(chain?.id)
+	const config = chainConfig(chainId)
 
 	return useContractRead({
 		addressOrName: poolAddress,
 		contractInterface: config.poolABI,
 		functionName: 'currentAnnualInterest',
-		args: totalReceived
+		args: totalReceived,
+		enabled: chain?.id === chainId ? true : false
 	})
 }

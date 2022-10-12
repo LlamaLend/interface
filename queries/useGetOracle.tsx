@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { useNetwork } from 'wagmi'
 import { chainConfig } from '~/lib/constants'
 import { IOracleResponse, ITransactionError } from '~/types'
 
@@ -36,12 +35,11 @@ async function fetchOracle({ api, poolAddress, isTestnet }: IFetchOracleProps): 
 	}
 }
 
-const useGetOracle = (poolAddress?: string | null) => {
-	const { chain } = useNetwork()
-	const config = chainConfig(chain?.id)
+const useGetOracle = ({ poolAddress, chainId }: { poolAddress?: string | null; chainId?: number }) => {
+	const config = chainConfig(chainId)
 
 	return useQuery<IOracleResponse | null, ITransactionError>(
-		['quote', chain?.id, poolAddress],
+		['oracle', chainId, poolAddress],
 		() => fetchOracle({ api: config.quoteApi, poolAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000

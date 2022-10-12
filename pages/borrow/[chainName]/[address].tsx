@@ -26,15 +26,18 @@ interface IPageProps {
 	chainSymbol: string
 }
 
-const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }) => {
+const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, chainSymbol }) => {
 	const { isConnected } = useAccount()
 	const { openConnectModal } = useConnectModal()
 
 	const { data, isLoading } = useGetPoolData({ chainId, poolAddress })
 
-	const { data: oracle, isLoading: fetchingOracle } = useGetOracle(poolAddress)
+	const { data: oracle, isLoading: fetchingOracle } = useGetOracle({ poolAddress, chainId })
 
-	const { data: nftsList, isLoading: nftsListLoading } = useGetNftsList(data?.nftContract)
+	const { data: nftsList, isLoading: nftsListLoading } = useGetNftsList({
+		nftContractAddress: data?.nftContract,
+		chainId
+	})
 
 	const config = chainConfig(chainId)
 
@@ -150,7 +153,9 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 							) : !nftsList ? (
 								<p className="fallback-text">Something went wrong, couldn't fetch your NFTs.</p>
 							) : nftsList.length === 0 ? (
-								<p className="fallback-text">There are no {data.nftName} in this address.</p>
+								<p className="fallback-text">
+									There are no {data.nftName} in this address on {chainName}.
+								</p>
 							) : (
 								<GridWrapper className="xl:flex-1">
 									{nftsList.map((nftData) => (
@@ -160,6 +165,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, poolAddress, chainSymbol }
 											oraclePrice={oracle?.price ?? 0}
 											ltv={data.ltv}
 											contractAddress={data.nftContract}
+											chainId={chainId}
 										/>
 									))}
 								</GridWrapper>

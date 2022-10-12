@@ -61,12 +61,6 @@ export interface IBorrowPool {
 	address: string
 }
 
-export interface IRepayPool {
-	address: string
-	name: string
-	loans: number
-}
-
 export interface ILoan {
 	id: string
 	interest: string

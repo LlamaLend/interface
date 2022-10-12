@@ -8,14 +8,14 @@ import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 // @ts-ignore
 dayjs.extend(relativeTime)
 
-export function RepayNftItem({ data, poolAddress }: { data: ILoan; poolAddress: string }) {
-	const { data: cartItems } = useGetCartItems(poolAddress)
-	const { mutate } = useSaveItemToCart()
+export function RepayNftItem({ data }: { data: ILoan }) {
+	const { data: cartItems } = useGetCartItems({ contractAddress: 'repay' })
+	const { mutate } = useSaveItemToCart({ chainId: 1 })
 
 	const storeItem = () => {
 		if (!data.id) return
 
-		mutate({ tokenId: data.id, contractAddress: poolAddress })
+		mutate({ tokenId: data.id, contractAddress: 'repay' })
 	}
 
 	const isAddedToCart = cartItems?.includes(data.id)

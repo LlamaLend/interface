@@ -9,15 +9,17 @@ export const BorrowNftItem = ({
 	data,
 	oraclePrice,
 	ltv,
-	contractAddress
+	contractAddress,
+	chainId
 }: {
 	data: INftItem
 	oraclePrice: number
 	ltv: number
 	contractAddress: string
+	chainId?: number
 }) => {
-	const { data: cartItems } = useGetCartItems(contractAddress)
-	const { mutate } = useSaveItemToCart()
+	const { data: cartItems } = useGetCartItems({ contractAddress, chainId })
+	const { mutate } = useSaveItemToCart({ chainId })
 
 	const storeItem = () => {
 		if (!data.tokenId) return

@@ -12,10 +12,24 @@ interface IUseBorrowProps {
 	maxInterest?: number
 	totalReceived: string
 	enabled: boolean
+	chainId?: number
 }
 
-export function useBorrow({ poolAddress, cartTokenIds, maxInterest, totalReceived, enabled }: IUseBorrowProps) {
-	const { data: oracle, isLoading: fetchingOracle, isError: errorFetchingOracle } = useGetOracle(poolAddress)
+export function useBorrow({
+	poolAddress,
+	cartTokenIds,
+	maxInterest,
+	totalReceived,
+	enabled,
+	chainId
+}: IUseBorrowProps) {
+	const { chain } = useNetwork()
+
+	const {
+		data: oracle,
+		isLoading: fetchingOracle,
+		isError: errorFetchingOracle
+	} = useGetOracle({ poolAddress, chainId: chainId })
 	const router = useRouter()
 
 	const { cart, ...queries } = router.query
@@ -23,9 +37,8 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, totalReceive
 	const queryClient = useQueryClient()
 
 	const { address: userAddress } = useAccount()
-	const { chain } = useNetwork()
 
-	const config = chainConfig(chain?.id)
+	const config = chainConfig(chainId)
 
 	const txContext = useTxContext()
 
@@ -43,7 +56,7 @@ export function useBorrow({ poolAddress, cartTokenIds, maxInterest, totalReceive
 			oracle?.signature?.r,
 			oracle?.signature?.s
 		],
-		enabled: enabled || (oracle?.price ? true : false)
+		enabled: enabled || (oracle?.price ? true : false) || chain?.id === chainId
 	})
 
 	const contractWrite = useContractWrite({
