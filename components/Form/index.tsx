@@ -12,6 +12,7 @@ interface IInputProps {
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 	isError?: boolean
 	maxLength?: number
+	defaultValue?: string
 }
 
 export function InputText({ label, helperText, isError, ...props }: IInputProps) {

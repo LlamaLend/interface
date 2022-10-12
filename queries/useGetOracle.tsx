@@ -5,7 +5,7 @@ import { IOracleResponse, ITransactionError } from '~/types'
 
 interface IFetchOracleProps {
 	api: string
-	poolAddress?: string
+	poolAddress?: string | null
 	isTestnet?: boolean
 }
 
@@ -36,7 +36,7 @@ async function fetchOracle({ api, poolAddress, isTestnet }: IFetchOracleProps): 
 	}
 }
 
-const useGetOracle = (poolAddress?: string) => {
+const useGetOracle = (poolAddress?: string | null) => {
 	const { chain } = useNetwork()
 	const config = chainConfig(chain?.id)
 

@@ -67,6 +67,11 @@ export function formatCreatePoolFormInputs({
 	}
 }
 
+// returns 66% of an nft's oracle price that is populated in create pool form's maxPricePerNft input field
+export function getMaxPricePerNft(oraclePrice?: number | null) {
+	return oraclePrice ? ((oraclePrice / 1e18) * 0.66).toFixed(4) : ''
+}
+
 // returns maximum no.of nfts a user can borrow based on pool balance
 export function getMaxNftsToBorrow({
 	maxInstantBorrow,

@@ -11,7 +11,8 @@ import { formatMsgInToast } from '~/components/TxToast'
 import BeatLoader from '~/components/BeatLoader'
 import { FormNames, useCreatePool } from '~/queries/useCreatePool'
 import { useDebounce } from '~/hooks'
-import { formatCreatePoolFormInputs } from '~/utils'
+import { formatCreatePoolFormInputs, getMaxPricePerNft } from '~/utils'
+import { useGetOracle } from '~/queries/useGetOracle'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -28,6 +29,8 @@ const ManagePools: NextPage = () => {
 	const { openConnectModal } = useConnectModal()
 	const { openChainModal } = useChainModal()
 	const { mutate, isLoading, error } = useCreatePool()
+
+	const [poolAddress, setPoolAddress] = useState<string | null>(null)
 	const [minInterest, setMinInterest] = useState<number | null>(null)
 	const [maxInterest, setMaxInterest] = useState<number | null>(null)
 
@@ -75,11 +78,18 @@ const ManagePools: NextPage = () => {
 		}
 	}
 
+	const validPoolAddress = poolAddress ? new RegExp('^0x[a-fA-F0-9]{40}$').test(poolAddress) : null
+
+	const debouncedPoolAddress = useDebounce(validPoolAddress ? poolAddress : null, 200)
 	const debouncedMinInterest = useDebounce(!Number.isNaN(minInterest) ? Number(minInterest) : 0, 200)
 	const debouncedMaxInterest = useDebounce(!Number.isNaN(maxInterest) ? Number(maxInterest) : 0, 200)
 
 	const isInvalidInterests =
 		minInterest === null || maxInterest === null ? true : debouncedMaxInterest < debouncedMinInterest
+
+	const { data: oracle } = useGetOracle(debouncedPoolAddress)
+
+	const maxPrice = getMaxPricePerNft(oracle?.price)
 
 	return (
 		<div>
@@ -98,6 +108,7 @@ const ManagePools: NextPage = () => {
 						required
 						pattern="^0x[a-fA-F0-9]{40}$"
 						title="Enter valid address."
+						onChange={(e) => setPoolAddress(e.target.value)}
 					/>
 
 					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
@@ -109,6 +120,7 @@ const ManagePools: NextPage = () => {
 						placeholder="0.03"
 						label={'Maximum price per NFT'}
 						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards. We recommend setting it to current floor price * 0.66`}
+						defaultValue={maxPrice}
 						required
 					/>
 
