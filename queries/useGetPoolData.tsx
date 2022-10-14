@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
-import { IContractReadConfig, ITransactionError } from '~/types'
+import { IBorrowPoolData, IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
 import { fetchOracle } from './useGetOracle'
@@ -11,19 +11,6 @@ interface IGetPoolDataArgs {
 	chainId?: number | null
 	isTestnet: boolean
 	quoteApi: string
-}
-
-export interface IPoolData {
-	name: string
-	symbol: string
-	maxLoanLength: number
-	currentAnnualInterest: number
-	maxVariableInterestPerEthPerSecond: number
-	ltv: number
-	nftContract: string
-	nftName: string
-	owner: string
-	maxNftsToBorrow: string
 }
 
 export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IGetPoolDataArgs) {
@@ -106,7 +93,7 @@ export function useGetPoolData({ chainId, poolAddress }: { chainId?: number | nu
 		  }
 		: null
 
-	return useQuery<IPoolData | null, ITransactionError>(
+	return useQuery<IBorrowPoolData | null, ITransactionError>(
 		['pool', chainId, poolAddress],
 		() => getPool({ contractArgs, chainId, quoteApi: config.quoteApi, isTestnet: config.isTestnet }),
 		{

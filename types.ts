@@ -56,9 +56,24 @@ export interface IOracleResponse {
 export interface IBorrowPool {
 	name: string
 	symbol: string
+	address: string
+	maxLoanLength: number
+	ltv: number
+	currentAnnualInterest: number
+	maxNftsToBorrow: number
+}
+
+export interface IBorrowPoolData {
+	name: string
+	symbol: string
 	maxLoanLength: number
 	currentAnnualInterest: number
-	address: string
+	maxVariableInterestPerEthPerSecond: number
+	ltv: number
+	nftContract: string
+	nftName: string
+	owner: string
+	maxNftsToBorrow: number
 }
 
 export interface ILoan {

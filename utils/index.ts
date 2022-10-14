@@ -73,8 +73,14 @@ export function formatCreatePoolFormInputs({
 }
 
 // returns 66% of an nft's oracle price that is populated in create pool form's maxPricePerNft input field
-export function getMaxPricePerNft(oraclePrice?: number | null) {
-	return oraclePrice ? ((oraclePrice / 1e18) * 0.66).toFixed(4) : ''
+export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: number | null; ltv?: number | null }) {
+	if (!oraclePrice || !ltv) {
+		return ''
+	}
+
+	const formattedLtv = (ltv * 2 > 90 ? 90 : ltv * 2) / 100
+
+	return ((oraclePrice / 1e18) * formattedLtv).toFixed(4)
 }
 
 // returns maximum no.of nfts a user can borrow based on pool balance
@@ -87,7 +93,11 @@ export function getMaxNftsToBorrow({
 	oraclePrice: number
 	ltv: number
 }) {
-	return (maxInstantBorrow / (oraclePrice * (ltv / 1e18))).toFixed(0)
+	if (!maxInstantBorrow || !oraclePrice || !ltv) {
+		return 0
+	}
+
+	return Number((maxInstantBorrow / (oraclePrice * (ltv / 1e18))).toFixed(0))
 }
 
 export function formatLoanDeadline(deadline: number) {

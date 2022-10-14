@@ -21,18 +21,29 @@ export function BorrowPoolItem({ data, chainName }: IBorrowPoolItemProps) {
 				<span className="absolute -bottom-5 left-4 h-12 w-12 rounded-full bg-gradient-to-r from-[#141e30] to-[#243b55]"></span>
 			</div>
 			<h1>{data.name}</h1>
-			<p className="flex flex-col gap-1">
-				<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
-				{/* @ts-ignore */}
-				<span>{dayjs(new Date(new Date().getTime() + data.maxLoanLength * 1000)).toNow(true)}</span>
-			</p>
-			<p className="flex flex-col gap-1">
-				<span className="text-xs font-light text-gray-400">Current Annual Interest</span>
-				<span>{formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.</span>
-			</p>
+
+			<div className="grid grid-cols-2 gap-3">
+				<p className="col-span-1 flex flex-col gap-1">
+					<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
+					{/* @ts-ignore */}
+					<span>{dayjs(new Date(new Date().getTime() + data.maxLoanLength * 1000)).toNow(true)}</span>
+				</p>
+				<p className="col-span-1 flex flex-col items-end gap-1">
+					<span className="text-xs font-light text-gray-400">LTV</span>
+					<span>{data.ltv / 1e16}%</span>
+				</p>
+				<p className="col-span-1 flex flex-col gap-1">
+					<span className="text-xs font-light text-gray-400">Current Interest</span>
+					<span>{formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.</span>
+				</p>
+				<p className="col-span-1 flex flex-col items-end gap-1">
+					<span className="text-xs font-light text-gray-400">Max Borrows</span>
+					<span>{data.maxNftsToBorrow}</span>
+				</p>
+			</div>
 
 			<Link href={`/borrow/${chainName}/${data.address}`}>
-				<a className="rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pool</a>
+				<a className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pool</a>
 			</Link>
 		</ItemWrapper>
 	)
@@ -48,14 +59,25 @@ export function PlaceholderBorrowPoolItem() {
 				></span>
 			</div>
 			<h1 className="placeholder-box h-6 w-36"></h1>
-			<p className="flex flex-col gap-1">
-				<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
-				<span className="placeholder-box h-6 w-20"></span>
-			</p>
-			<p className="flex flex-col gap-1">
-				<span className="text-xs font-light text-gray-400">Current Annual Interest</span>
-				<span className="placeholder-box h-6 w-20"></span>
-			</p>
+
+			<div className="grid grid-cols-2 gap-3">
+				<p className="col-span-1 flex flex-col gap-1">
+					<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
+					<span className="placeholder-box h-6 w-20"></span>
+				</p>
+				<p className="col-span-1 flex flex-col items-end gap-1">
+					<span className="text-xs font-light text-gray-400">LTV</span>
+					<span className="placeholder-box h-6 w-20"></span>
+				</p>
+				<p className="col-span-1 flex flex-col gap-1">
+					<span className="text-xs font-light text-gray-400">Current Interest</span>
+					<span className="placeholder-box h-6 w-20"></span>
+				</p>
+				<p className="col-span-1 flex flex-col items-end gap-1">
+					<span className="text-xs font-light text-gray-400">Max Borrows</span>
+					<span className="placeholder-box h-6 w-20"></span>
+				</p>
+			</div>
 
 			<div className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm text-white text-opacity-40">
 				<div className="h-5"></div>

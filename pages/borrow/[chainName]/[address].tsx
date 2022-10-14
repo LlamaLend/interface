@@ -102,7 +102,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 						</div>
 
 						<div className="flex flex-1 flex-col items-center gap-4 rounded-xl bg-[#202020] px-8 py-4">
-							<h2 className="text-center font-medium md:whitespace-nowrap">Loan-to-Value(LTV) Ratio</h2>
+							<h2 className="text-center font-medium md:whitespace-nowrap">Loan-to-Value</h2>
 
 							<p
 								className={cx(
@@ -110,7 +110,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{data ? data.ltv / 1e18 : ''}
+								{data ? data.ltv / 1e16 + '%' : ''}
 							</p>
 						</div>
 

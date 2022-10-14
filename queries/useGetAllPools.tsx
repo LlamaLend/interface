@@ -4,7 +4,7 @@ import { request, gql } from 'graphql-request'
 import type { IBorrowPool, Provider, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { fetchOracle } from './useGetOracle'
-import { getTotalReceivedArg } from '~/utils'
+import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
 
 interface IGetAllPoolsArgs {
 	endpoint: string
@@ -33,14 +33,7 @@ interface IPoolsQueryResponse {
 	}>
 }
 
-async function getPoolInterestPerNft({
-	poolAddress,
-	quoteApi,
-	isTestnet,
-	poolAbi,
-	provider,
-	ltv
-}: IPoolInterestPerNft) {
+async function getPoolAddlInfo({ poolAddress, quoteApi, isTestnet, poolAbi, provider, ltv }: IPoolInterestPerNft) {
 	const contract = new ethers.Contract(poolAddress, poolAbi, provider)
 
 	const oracle = await fetchOracle({ api: quoteApi, isTestnet, poolAddress })
@@ -49,11 +42,16 @@ async function getPoolInterestPerNft({
 		throw new Error("Couldn't get oracle price")
 	}
 
-	const interest = await contract.currentAnnualInterest(
-		getTotalReceivedArg({ oraclePrice: oracle.price, noOfItems: 1, ltv: Number(ltv) })
-	)
+	const [interest, { maxInstantBorrow }] = await Promise.all([
+		contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: oracle.price, noOfItems: 1, ltv: Number(ltv) })),
+		contract.getDailyBorrows()
+	])
 
-	return Number(interest)
+	return {
+		currentAnnualInterest: Number(interest),
+		oraclePrice: Number(oracle.price),
+		maxInstantBorrow: Number(maxInstantBorrow)
+	}
 }
 
 export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poolAbi }: IGetAllPoolsArgs) {
@@ -82,18 +80,24 @@ export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poo
 			`
 		)
 
-		const allPoolCurrentAnnualInterests = await Promise.all(
+		const addlInfo = await Promise.all(
 			pools.map((pool) =>
-				getPoolInterestPerNft({ quoteApi, isTestnet, poolAddress: pool.address, ltv: pool.ltv, poolAbi, provider })
+				getPoolAddlInfo({ quoteApi, isTestnet, poolAddress: pool.address, ltv: pool.ltv, poolAbi, provider })
 			)
 		)
 
 		return pools.map((pool, index) => ({
 			name: pool.name,
 			symbol: pool.symbol,
+			address: pool.address,
 			maxLoanLength: Number(pool.maxLoanLength),
-			currentAnnualInterest: Number(allPoolCurrentAnnualInterests[index]),
-			address: pool.address
+			ltv: Number(pool.ltv),
+			currentAnnualInterest: addlInfo[index].currentAnnualInterest,
+			maxNftsToBorrow: getMaxNftsToBorrow({
+				maxInstantBorrow: addlInfo[index].maxInstantBorrow,
+				oraclePrice: addlInfo[index].oraclePrice,
+				ltv: Number(pool.ltv)
+			})
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pools"))

@@ -31,6 +31,7 @@ const ManagePools: NextPage = () => {
 	const { mutate, isLoading, error } = useCreatePool()
 
 	const [poolAddress, setPoolAddress] = useState<string | null>(null)
+	const [ltv, setLtv] = useState<number | null>(null)
 	const [minInterest, setMinInterest] = useState<number | null>(null)
 	const [maxInterest, setMaxInterest] = useState<number | null>(null)
 
@@ -89,7 +90,7 @@ const ManagePools: NextPage = () => {
 
 	const { data: oracle } = useGetOracle({ poolAddress: debouncedPoolAddress, chainId: chain?.id })
 
-	const maxPrice = getMaxPricePerNft(oracle?.price)
+	const maxPrice = getMaxPricePerNft({ oraclePrice: oracle?.price, ltv })
 
 	return (
 		<div>
@@ -116,10 +117,31 @@ const ManagePools: NextPage = () => {
 					<InputText name="symbol" placeholder="TL" label={'Symbol of the loans NFTs'} required />
 
 					<InputNumber
+						name="ltv"
+						placeholder="33"
+						label={`Loan to Value`}
+						helperText={
+							'Percentage of money to lend relative to the floor value. This can be changed afterwards. We recommend setting it to 33%.'
+						}
+						maxLength={2}
+						pattern="^(60|[1-5][0-9]?)$"
+						title="Enter numbers only. Must be less than or equal to 60"
+						onChange={(e) => {
+							const value = Number(e.target.value)
+
+							if (Number.isNaN(value)) {
+								setLtv(null)
+							} else {
+								setLtv(value)
+							}
+						}}
+					/>
+
+					<InputNumber
 						name="maxPrice"
 						placeholder="0.03"
-						label={'Maximum price per NFT'}
-						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT, can be changed afterwards. We recommend setting it to current floor price * 0.66`}
+						label={`Maximum ${chainSymbol} borrowable by NFT`}
+						helperText={`Maximum price people should be able to borrow per NFT. This can be changed afterwards. We recommend setting it to current floor price * 0.66`}
 						defaultValue={maxPrice}
 						required
 					/>
@@ -170,17 +192,6 @@ const ManagePools: NextPage = () => {
 								setMaxInterest(value)
 							}
 						}}
-					/>
-
-					<InputNumber
-						name="ltv"
-						placeholder="30"
-						label={`Loan to Value`}
-						helperText={
-							'Percentage of money to lend relative to the floor value. This can be changed afterwards. Must be less than or equal to 80%.'
-						}
-						maxLength={2}
-						pattern="^(80|[1-7][0-9]?)$"
 					/>
 
 					<PoolUtilisationChart
