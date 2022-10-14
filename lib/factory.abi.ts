@@ -105,4 +105,4 @@ export const FACTORY_ABI = [
 		type: 'function'
 	},
 	{ stateMutability: 'payable', type: 'receive' }
-]
+] as const

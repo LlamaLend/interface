@@ -497,4 +497,4 @@ export const POOL_ABI = [
 		stateMutability: 'nonpayable',
 		type: 'function'
 	}
-]
+] as const

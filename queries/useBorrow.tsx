@@ -5,6 +5,8 @@ import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
 import { useGetOracle } from './useGetOracle'
 import { txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'
+import { useGetPoolData } from './useGetPoolData'
+import { useGetNftsList } from './useNftsList'
 
 interface IUseBorrowProps {
 	poolAddress: string
@@ -23,6 +25,9 @@ export function useBorrow({
 	enabled,
 	chainId
 }: IUseBorrowProps) {
+	const router = useRouter()
+	const txContext = useTxContext()
+
 	const { chain } = useNetwork()
 
 	const {
@@ -30,7 +35,12 @@ export function useBorrow({
 		isLoading: fetchingOracle,
 		isError: errorFetchingOracle
 	} = useGetOracle({ poolAddress, chainId: chainId })
-	const router = useRouter()
+
+	const { data: poolData, refetch: refetchPoolData } = useGetPoolData({ chainId, poolAddress })
+	const { refetch: refetchNftsList } = useGetNftsList({
+		nftContractAddress: poolData?.nftContract,
+		chainId
+	})
 
 	const { cart, ...queries } = router.query
 
@@ -39,8 +49,6 @@ export function useBorrow({
 	const { address: userAddress } = useAccount()
 
 	const config = chainConfig(chainId)
-
-	const txContext = useTxContext()
 
 	const { config: contractConfig } = usePrepareContractWrite({
 		addressOrName: poolAddress,
@@ -108,6 +116,10 @@ export function useBorrow({
 					}
 				}
 
+				refetchPoolData()
+				refetchNftsList()
+
+				// hide cart
 				router.push({ pathname: router.pathname, query: { ...queries } })
 			} else {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: config.blockExplorer })

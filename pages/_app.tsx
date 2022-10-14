@@ -46,7 +46,9 @@ const connectors = connectorsForWallets([
 				name: 'Gnosis Safe',
 				iconUrl: '/assets/gnosis.png',
 				iconBackground: '#fff',
+				// @ts-ignore
 				createConnector: () => {
+					// @ts-ignore
 					return { connector: new SafeConnector({ chains }) }
 				}
 			}

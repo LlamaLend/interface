@@ -1,4 +1,4 @@
-import { ContractInterface, providers } from 'ethers'
+import { providers } from 'ethers'
 import { allChains } from 'wagmi'
 import { FACTORY_ABI } from './factory.abi'
 import { POOL_ABI } from './pool.abi'
@@ -43,8 +43,8 @@ export interface IChainConfig {
 		ankrUrl: string
 		alchemyNftUrl: string
 		factoryAddress: string
-		factoryABI: ContractInterface
-		poolABI: ContractInterface
+		factoryABI: typeof FACTORY_ABI
+		poolABI: typeof POOL_ABI
 		quoteApi: string
 		oracleAddress: string
 		chainProvider: providers.BaseProvider

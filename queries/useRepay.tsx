@@ -4,7 +4,7 @@ import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useW
 import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
 import { txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'
-import { gasLimitOverride } from '~/utils'
+import { useGetUserLoans } from './useLoans'
 
 export interface ILoanToRepay {
 	pool: string
@@ -28,18 +28,31 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 	const { address: userAddress } = useAccount()
 	const { chain } = useNetwork()
 
+	const { refetch } = useGetUserLoans({ chainId, userAddress })
+
 	const config = chainConfig(chainId)
 
 	const txContext = useTxContext()
 
+	const uniquePools = Array.from(
+		loansToRepay.reduce((acc, curr) => {
+			acc.add(curr.pool)
+			return acc
+		}, new Set<string>())
+	)
+
+	// Interact with repay() of LlamaLendFactory when there are multiple pools, or else use pools's repay() to pay off loans
+	const addressOrName = uniquePools.length > 1 ? config.factoryAddress : uniquePools[0]
+	const contractInterface = uniquePools.length > 1 ? config.factoryABI : config.poolABI
+	const args = uniquePools.length > 1 ? [loansToRepay] : [...loansToRepay.map((x) => x.loans), userAddress]
+
 	const { config: contractConfig } = usePrepareContractWrite({
-		addressOrName: config.factoryAddress,
-		contractInterface: config.factoryABI,
+		addressOrName,
+		contractInterface,
 		functionName: 'repay',
-		args: [loansToRepay],
+		args,
 		overrides: {
-			value: payableAmout,
-			gasLimit: gasLimitOverride
+			value: payableAmout
 		},
 		enabled: enabled && chain?.id === chainId
 	})
@@ -93,6 +106,10 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 					}
 				}
 
+				// refetch all loans
+				refetch()
+
+				// hide cart
 				router.push({ pathname: router.pathname, query: { ...queries } })
 			} else {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: config.blockExplorer })

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { getAddress } from 'ethers/lib/utils'
 import { request, gql } from 'graphql-request'
 import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
 import type { ILoan, ITransactionError } from '~/types'
@@ -88,7 +89,10 @@ async function getUserLoans({
 				toPay: infoToRepayLoan(loan),
 				deadline: Number(loan.deadline) * 1000,
 				tokenUri: isTestnet ? '' : loan.tokenUri,
-				pool: loan.pool
+				pool: {
+					...loan.pool,
+					address: getAddress(loan.pool.address)
+				}
 			}))
 			.sort((a, b) => Date.now() - b.deadline - (Date.now() - a.deadline))
 	} catch (error: any) {
