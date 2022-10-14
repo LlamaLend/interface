@@ -78,9 +78,9 @@ export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: number |
 		return ''
 	}
 
-	const formattedLtv = (ltv * 2 > 90 ? 90 : ltv * 2) / 100
+	const ltvRatio = ltv / 100
 
-	return ((oraclePrice / 1e18) * formattedLtv).toFixed(4)
+	return (((oraclePrice / 1e18) * (1 / ltvRatio + 1)) / 2).toFixed(4)
 }
 
 // returns maximum no.of nfts a user can borrow based on pool balance

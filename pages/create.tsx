@@ -140,8 +140,8 @@ const ManagePools: NextPage = () => {
 					<InputNumber
 						name="maxPrice"
 						placeholder="0.03"
-						label={`Maximum ${chainSymbol} borrowable by NFT`}
-						helperText={`Maximum price people should be able to borrow per NFT. This can be changed afterwards. We recommend setting it to current floor price * 0.66`}
+						label={`Maximum price per NFT`}
+						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT. This can be changed afterwards.`}
 						defaultValue={maxPrice}
 						required
 					/>
