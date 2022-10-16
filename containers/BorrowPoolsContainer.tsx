@@ -8,10 +8,11 @@ import { useGetAllPools } from '~/queries/useGetAllPools'
 interface IPoolsContainerProps {
 	chainId?: number | null
 	chainName?: string | null
+	collectionAddress?: string
 }
 
-const BorrowPoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
-	const { data, isError, isLoading } = useGetAllPools({ chainId })
+const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsContainerProps) => {
+	const { data, isError, isLoading } = useGetAllPools({ chainId, collectionAddress })
 
 	return (
 		<>
@@ -32,11 +33,17 @@ const BorrowPoolsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
 					</GridWrapper>
 				) : data.length === 0 ? (
 					<p className="fallback-text">
-						There are no pools on {chainName || 'this'} network. Click{' '}
-						<Link href="/create">
-							<a className="underline">here</a>
-						</Link>{' '}
-						to create a new pool.
+						{collectionAddress ? (
+							<>No pools available on collection {collectionAddress}</>
+						) : (
+							<>
+								There are no pools on {chainName || 'this'} network. Click{' '}
+								<Link href="/create">
+									<a className="underline">here</a>
+								</Link>{' '}
+								to create a new pool.
+							</>
+						)}
 					</p>
 				) : (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">

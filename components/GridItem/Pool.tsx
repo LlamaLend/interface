@@ -37,7 +37,7 @@ export function BorrowPoolItem({ data, chainName }: IBorrowPoolItemProps) {
 					<span>{formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.</span>
 				</p>
 				<p className="col-span-1 flex flex-col items-end gap-1">
-					<span className="text-xs font-light text-gray-400">Max Borrows</span>
+					<span className="text-xs font-light text-gray-400">Borrowable now</span>
 					<span>{data.maxNftsToBorrow}</span>
 				</p>
 			</div>
@@ -74,7 +74,7 @@ export function PlaceholderBorrowPoolItem() {
 					<span className="placeholder-box h-6 w-20"></span>
 				</p>
 				<p className="col-span-1 flex flex-col items-end gap-1">
-					<span className="text-xs font-light text-gray-400">Max Borrows</span>
+					<span className="text-xs font-light text-gray-400">Borrowable now</span>
 					<span className="placeholder-box h-6 w-20"></span>
 				</p>
 			</div>

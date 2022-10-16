@@ -12,6 +12,7 @@ interface IGetAllPoolsArgs {
 	quoteApi: string
 	isTestnet: boolean
 	provider: Provider
+	collectionAddress?: string
 }
 
 interface IPoolInterestPerNft {
@@ -54,7 +55,38 @@ async function getPoolAddlInfo({ poolAddress, quoteApi, isTestnet, poolAbi, prov
 	}
 }
 
-export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poolAbi }: IGetAllPoolsArgs) {
+const getAllPoolsQuery = () => gql`
+	query {
+		pools {
+			name
+			symbol
+			maxLoanLength
+			address
+			ltv
+		}
+	}
+`
+
+const getAllPoolsByCollectionQuery = (collectionAddress: string) => gql`
+	query {
+		pools (where: { nftContract: "${collectionAddress}" }) {
+			name
+			symbol
+			maxLoanLength
+			address
+			ltv
+		}
+	}
+`
+
+export async function getAllpools({
+	endpoint,
+	quoteApi,
+	isTestnet,
+	provider,
+	poolAbi,
+	collectionAddress
+}: IGetAllPoolsArgs) {
 	try {
 		// return empty array when no chainId, as there is no chainId returned on /borrow/[chainName] when chainName is not supported/invalid
 		if (!endpoint) {
@@ -67,17 +99,7 @@ export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poo
 
 		const { pools }: IPoolsQueryResponse = await request(
 			endpoint,
-			gql`
-				query {
-					pools {
-						name
-						symbol
-						maxLoanLength
-						address
-						ltv
-					}
-				}
-			`
+			collectionAddress ? getAllPoolsByCollectionQuery(collectionAddress) : getAllPoolsQuery()
 		)
 
 		const addlInfo = await Promise.all(
@@ -104,18 +126,25 @@ export async function getAllpools({ endpoint, quoteApi, isTestnet, provider, poo
 	}
 }
 
-export function useGetAllPools({ chainId }: { chainId?: number | null }) {
+export function useGetAllPools({
+	chainId,
+	collectionAddress
+}: {
+	chainId?: number | null
+	collectionAddress?: string
+}) {
 	const config = chainConfig(chainId)
 
 	return useQuery<Array<IBorrowPool>, ITransactionError>(
-		['allPools', chainId],
+		['allPools', chainId, collectionAddress],
 		() =>
 			getAllpools({
 				endpoint: config.subgraphUrl,
 				poolAbi: config.poolABI,
 				quoteApi: config.quoteApi,
 				isTestnet: config.isTestnet,
-				provider: config.chainProvider
+				provider: config.chainProvider,
+				collectionAddress
 			}),
 		{
 			refetchInterval: 30_000
