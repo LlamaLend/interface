@@ -75,6 +75,24 @@ export const formatMaxPrice = (maxPrice: string) => new BigNumber(maxPrice).time
 export const formatAmountToDepositOrWithdraw = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0)
 export const formatMaxDailyBorrows = (maxDailyBorrows: string) => new BigNumber(maxDailyBorrows).times(1e18).toFixed(0)
 export const formatMaxLoanLength = (maxLengthInDays: string) => (Number(maxLengthInDays) * SECONDS_IN_A_DAY).toFixed(0)
+export const formateInterestChange = (
+	minimumInterest: number,
+	maximumInterest: number,
+	isInvalidInterests: boolean
+) => {
+	if (isInvalidInterests) {
+		return [0, 0]
+	}
+
+	const maxInt = Number(new BigNumber(maximumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+
+	const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+
+	return [
+		(maxInt - minInt).toFixed(0),
+		new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+	]
+}
 
 // returns 66% of an nft's oracle price that is populated in create pool form's maxPricePerNft input field
 export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: number | null; ltv?: number | null }) {

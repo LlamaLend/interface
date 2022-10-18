@@ -1,12 +1,13 @@
 import { ContractInterface, ethers } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
+import { erc721ABI } from 'wagmi'
+import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
 import type { IBorrowPool, Provider, ITransactionError, IGetAdminPoolDataArgs } from '~/types'
-import { chainConfig } from '~/lib/constants'
+import { chainConfig, SECONDS_IN_A_YEAR } from '~/lib/constants'
 import { fetchOracle } from './useGetOracle'
 import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
-import { getAddress } from 'ethers/lib/utils'
-import { erc721ABI } from 'wagmi'
 
 interface IGetAllPoolsArgs {
 	endpoint: string
@@ -64,14 +65,31 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 		const poolContract = new ethers.Contract(poolAddress, poolAbi, provider)
 		const nftContract = new ethers.Contract(nftContractAddres, erc721ABI, provider)
 
-		const [nftName, poolBalance, maxPrice, { maxDailyBorrowsLimit }, maxLoanLength, oracle] = await Promise.all([
+		const [
+			nftName,
+			poolBalance,
+			maxPrice,
+			{ maxDailyBorrowsLimit },
+			maxLoanLength,
+			oracle,
+			minimumInterest,
+			maxVariableInterestPerEthPerSecond
+		] = await Promise.all([
 			nftContract.name(),
 			provider.getBalance(poolAddress),
 			poolContract.maxPrice(),
 			poolContract.getDailyBorrows(),
 			poolContract.maxLoanLength(),
-			poolContract.oracle()
+			poolContract.oracle(),
+			poolContract.minimumInterest(),
+			poolContract.maxVariableInterestPerEthPerSecond()
 		])
+
+		const minInt = new BigNumber(Number(minimumInterest)).div(1e16).times(SECONDS_IN_A_YEAR).toFixed(0)
+		const maxVariableInt = new BigNumber(Number(maxVariableInterestPerEthPerSecond))
+			.div(1e16)
+			.times(SECONDS_IN_A_YEAR)
+			.toFixed(0)
 
 		return {
 			nftName: nftName,
@@ -79,7 +97,9 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 			maxPrice: Number(maxPrice),
 			maxDailyBorrows: Number(maxDailyBorrowsLimit),
 			maxLoanLength: Number(maxLoanLength),
-			oracle
+			oracle,
+			minimumInterest: minInt,
+			maximumInterest: (Number(maxVariableInt) + Number(minInt)).toFixed(0)
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))

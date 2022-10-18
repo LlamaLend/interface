@@ -69,6 +69,8 @@ export interface IBorrowPool {
 		maxDailyBorrows: number
 		maxLoanLength: number
 		oracle: string
+		minimumInterest: string
+		maximumInterest: string
 	}
 }
 
