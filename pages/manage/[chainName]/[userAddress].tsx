@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { allChains } from 'wagmi'
-import RepayPoolsContainer from '~/containers/RepayPoolsContainer'
+import ManagePoolsContainer from '~/containers/ManagePoolsContainer'
 
 interface IPageProps {
 	chainId?: number
@@ -8,11 +8,9 @@ interface IPageProps {
 	userAddress?: string
 }
 
-const LoansByChain: NextPage<IPageProps> = (props) => {
-	return <RepayPoolsContainer {...props} />
+const Manage: NextPage<IPageProps> = (props) => {
+	return <ManagePoolsContainer {...props} />
 }
-
-export default LoansByChain
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
 	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
@@ -42,3 +40,5 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 		}
 	}
 }
+
+export default Manage

@@ -72,6 +72,12 @@ export function formatCreatePoolFormInputs({
 	}
 }
 
+export const formatLtv = (ltv: string) => new BigNumber(ltv).times(1e16).toFixed(0)
+export const formatMaxPrice = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0)
+export const formatAmountToDepositOrWithdraw = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0)
+export const formatMaxDailyBorrows = (maxDailyBorrows: string) => new BigNumber(maxDailyBorrows).times(1e18).toFixed(0)
+export const formatMaxLoanLength = (maxLengthInDays: string) => (Number(maxLengthInDays) * SECONDS_IN_A_DAY).toFixed(0)
+
 // returns 66% of an nft's oracle price that is populated in create pool form's maxPricePerNft input field
 export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: number | null; ltv?: number | null }) {
 	if (!oraclePrice || !ltv) {

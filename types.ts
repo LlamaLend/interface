@@ -61,6 +61,14 @@ export interface IBorrowPool {
 	ltv: number
 	currentAnnualInterest: number
 	maxNftsToBorrow: number
+	nftContract: string
+	adminPoolInfo: {
+		nftName: string
+		poolBalance: number
+		maxPrice: number
+		maxDailyBorrows: number
+		maxLoanLength: number
+	}
 }
 
 export interface IBorrowPoolData {
@@ -74,6 +82,13 @@ export interface IBorrowPoolData {
 	nftName: string
 	owner: string
 	maxNftsToBorrow: number
+}
+
+export interface IGetAdminPoolDataArgs {
+	poolAddress: string
+	poolAbi: ContractInterface
+	nftContractAddres: string
+	provider: Provider
 }
 
 export interface ILoan {

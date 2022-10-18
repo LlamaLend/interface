@@ -32,6 +32,12 @@ export default function Menu() {
 					</Link>
 				</MenuItem>
 
+				<MenuItem as="span" className="flex">
+					<Link href="/manage" passHref>
+						<a className="w-full px-4 py-2 hover:bg-[#292929]">Manage Pools</a>
+					</Link>
+				</MenuItem>
+
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-[#292929]"

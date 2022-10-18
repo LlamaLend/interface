@@ -5,7 +5,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 import Layout from '~/components/Layout'
 import { chainConfig } from '~/lib/constants'
-import { useGetUserLoans } from '~/queries/useLoans'
+import { useGetLoans } from '~/queries/useLoans'
 import { formatLoanDeadline } from '~/utils'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import { RepayCart } from '~/components/Cart'
@@ -23,7 +23,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 
 	const config = chainConfig(chainId)
 
-	const { data, isLoading, isError } = useGetUserLoans({ chainId, userAddress })
+	const { data, isLoading, isError } = useGetLoans({ chainId, userAddress })
 
 	const chainSymbol = chainConfig(chainId).nativeCurrency?.symbol
 

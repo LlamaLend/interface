@@ -36,13 +36,59 @@ function infoToRepayLoan(loan: IGraphLoanResponse) {
 	return Number(loan.borrowed) + interest + lateFees
 }
 
+const userLoansQuery = (userAddress: string) => gql`
+	query {
+		loans(where: { originalOwner: "${userAddress.toLowerCase()}", owner: "${userAddress.toLowerCase()}" }) {
+			id
+			loanId
+			nftId
+			interest
+			borrowed
+			startTime
+			deadline
+			tokenUri
+			owner
+			originalOwner
+			pool {
+				name
+				owner
+				address
+			}
+		}
+	}
+`
+
+const loansByPoolQuery = (poolAddress: string) => gql`
+	query {
+		loans(where: { pool: "${poolAddress.toLowerCase()}" }) {
+			id
+			loanId
+			nftId
+			interest
+			borrowed
+			startTime
+			deadline
+			tokenUri
+			owner
+			originalOwner
+			pool {
+				name
+				owner
+				address
+			}
+		}
+	}
+`
+
 async function getUserLoans({
 	endpoint,
 	userAddress,
+	poolAddress,
 	isTestnet
 }: {
 	endpoint: string
 	userAddress?: string
+	poolAddress?: string
 	isTestnet: boolean
 }) {
 	try {
@@ -56,27 +102,7 @@ async function getUserLoans({
 
 		const { loans }: { loans: Array<IGraphLoanResponse> } = await request(
 			endpoint,
-			gql`
-				query {
-					loans(where: { originalOwner: "${userAddress.toLowerCase()}", owner: "${userAddress.toLowerCase()}" }) {
-            id
-            loanId
-						nftId
-            interest
-            borrowed
-						startTime
-						deadline
-						tokenUri
-						owner
-						originalOwner
-						pool {
-							name
-							owner
-							address
-						}
-					}
-				}
-			`
+			poolAddress ? loansByPoolQuery(poolAddress) : userLoansQuery(userAddress)
 		)
 
 		return loans
@@ -100,11 +126,19 @@ async function getUserLoans({
 	}
 }
 
-export function useGetUserLoans({ chainId, userAddress }: { chainId?: number | null; userAddress?: string }) {
+export function useGetLoans({
+	chainId,
+	userAddress,
+	poolAddress
+}: {
+	chainId?: number | null
+	userAddress?: string
+	poolAddress?: string
+}) {
 	const config = chainConfig(chainId)
 
 	return useQuery<Array<ILoan>, ITransactionError>(
-		['userLoans', chainId, userAddress],
+		['userLoans', chainId, userAddress, poolAddress],
 		() => getUserLoans({ endpoint: config.subgraphUrl, userAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000

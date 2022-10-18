@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Link from 'next/link'
 import { BorrowCollectionItem } from '~/components/GridItem/Collection'
 import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'

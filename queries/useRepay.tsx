@@ -1,10 +1,12 @@
 import { useRouter } from 'next/router'
+import { useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
-import { txError, txSuccess } from '~/components/TxToast'
+import toast from 'react-hot-toast'
+import { txConfirming, txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'
-import { useGetUserLoans } from './useLoans'
+import { useGetLoans } from './useLoans'
+import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
 
 export interface ILoanToRepay {
 	pool: string
@@ -28,9 +30,11 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 	const { address: userAddress } = useAccount()
 	const { chain } = useNetwork()
 
-	const { refetch } = useGetUserLoans({ chainId, userAddress })
+	const { refetch } = useGetLoans({ chainId, userAddress })
 
 	const config = chainConfig(chainId)
+
+	const txConfirmingId = useRef<string>()
 
 	const txContext = useTxContext()
 
@@ -64,12 +68,16 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 			router.push({ pathname: router.pathname, query: { ...queries } })
 			txContext.hash!.current = data.hash
 			txContext.dialog?.toggle()
+
+			txConfirmingId.current = txConfirming({ txHash: data.hash, blockExplorer: config.blockExplorer })
 		}
 	})
 
 	const waitForTransaction = useWaitForTransaction({
 		hash: contractWrite.data?.hash,
 		onSettled: (data) => {
+			toast.dismiss(txConfirmingId.current)
+
 			if (data?.status === 1) {
 				txSuccess({
 					txHash: contractWrite.data?.hash ?? '',

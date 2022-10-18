@@ -6,7 +6,7 @@ import BeatLoader from '~/components/BeatLoader'
 import ItemsPlaceholder from './Placeholder'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import { useRepay } from '~/queries/useRepay'
-import { useGetUserLoans } from '~/queries/useLoans'
+import { useGetLoans } from '~/queries/useLoans'
 import { chainConfig } from '~/lib/constants'
 import { getLoansPayableAmount } from '~/utils'
 import type { IRepayItemProps } from '../types'
@@ -35,7 +35,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 		data: loans,
 		isLoading: fetchingLoans,
 		isError: errorFetchingLoans
-	} = useGetUserLoans({
+	} = useGetLoans({
 		chainId,
 		userAddress: address
 	})
