@@ -13,11 +13,13 @@ import useEmergencyShutdown from '~/queries/admin/useEmergencyShutdown'
 export default function AdminPool({
 	data,
 	chainId,
-	userAddress
+	userAddress,
+	disableActions
 }: {
 	data: IBorrowPool
 	chainId: number
 	userAddress: string
+	disableActions: boolean
 }) {
 	const config = chainConfig(chainId)
 
@@ -25,7 +27,7 @@ export default function AdminPool({
 
 	const [ltv, setLtv] = useState<string>((data.ltv / 1e16).toFixed(0))
 
-	const [newMaxPrice, setNewMaxPrice] = useState<string>(maxPrice ? (maxPrice / 1e18).toFixed(3) : '')
+	const [newMaxPrice, setNewMaxPrice] = useState<string>(maxPrice ? (maxPrice / 1e18).toFixed(3) : 0)
 
 	const [newMaxDailyBorrows, setNewMaxDailyBorrows] = useState<string>(
 		maxDailyBorrows ? (maxDailyBorrows / 1e18).toFixed(3) : ''
@@ -177,7 +179,7 @@ export default function AdminPool({
 				</label>
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!updateLtv || approvingLtvChange || confirmingLtvChange ? true : false}
+					disabled={!updateLtv || approvingLtvChange || confirmingLtvChange || disableActions ? true : false}
 				>
 					{approvingLtvChange || confirmingLtvChange ? <BeatLoader /> : 'Update'}
 				</button>
@@ -210,7 +212,9 @@ export default function AdminPool({
 				</label>
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!updateMaxPrice || approvingMaxPriceChange || confirmingMaxPriceChange ? true : false}
+					disabled={
+						!updateMaxPrice || approvingMaxPriceChange || confirmingMaxPriceChange || disableActions ? true : false
+					}
 				>
 					{approvingMaxPriceChange || confirmingMaxPriceChange ? <BeatLoader /> : 'Update'}
 				</button>
@@ -244,7 +248,9 @@ export default function AdminPool({
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
 					disabled={
-						!updateMaxDailyBorrows || approvingDailyBorrowsChange || confirmingDailyBorrowsChange ? true : false
+						!updateMaxDailyBorrows || approvingDailyBorrowsChange || confirmingDailyBorrowsChange || disableActions
+							? true
+							: false
 					}
 				>
 					{approvingDailyBorrowsChange || confirmingDailyBorrowsChange ? <BeatLoader /> : 'Update'}
@@ -277,7 +283,7 @@ export default function AdminPool({
 				</label>
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!updateMaxLoanLength || approvingLoanLengthChange || confirmingLoanLengthChange ? true : false}
+					disabled={!updateMaxLoanLength || approvingLoanLengthChange || confirmingLoanLengthChange || disableActions ? true : false}
 				>
 					{approvingLoanLengthChange || confirmingLoanLengthChange ? <BeatLoader /> : 'Update'}
 				</button>
@@ -310,7 +316,7 @@ export default function AdminPool({
 				</label>
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!deposit || approvingDeposit || confirmingDeposit ? true : false}
+					disabled={!deposit || approvingDeposit || confirmingDeposit || disableActions ? true : false}
 				>
 					{approvingDeposit || confirmingDeposit ? <BeatLoader /> : 'Deposit'}
 				</button>
@@ -343,7 +349,7 @@ export default function AdminPool({
 				</label>
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!withdraw || approvingWithdraw || confirmingWithdraw ? true : false}
+					disabled={!withdraw || approvingWithdraw || confirmingWithdraw || disableActions ? true : false}
 				>
 					{approvingWithdraw || confirmingWithdraw ? <BeatLoader /> : 'Withdraw'}
 				</button>
@@ -351,7 +357,7 @@ export default function AdminPool({
 
 			<button
 				className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-red-700 p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-				disabled={!emergencyShutdown || approvingShutdown || confirmingShutdown ? true : false}
+				disabled={!emergencyShutdown || approvingShutdown || confirmingShutdown || disableActions ? true : false}
 				onClick={() => emergencyShutdown?.()}
 			>
 				{approvingShutdown || confirmingShutdown ? <BeatLoader /> : 'Shutdown Borrows'}

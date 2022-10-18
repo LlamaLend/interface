@@ -16,7 +16,7 @@ export default function ManagePoolsContainer({ chainId, chainName, userAddress }
 
 	const { openConnectModal } = useConnectModal()
 
-	const { data, isLoading, isError } = useGetAllPools({ chainId, ownerAddress: userAddress })
+	const { data, isError } = useGetAllPools({ chainId, ownerAddress: userAddress })
 
 	const disableActions = !isConnected || address?.toLowerCase() !== userAddress?.toLowerCase()
 
@@ -41,7 +41,13 @@ export default function ManagePoolsContainer({ chainId, chainName, userAddress }
 			) : (
 				<div className="my-8 flex w-full flex-col items-center justify-center gap-8">
 					{data?.map((pool) => (
-						<AdminPool data={pool} key={pool.address} chainId={chainId} userAddress={userAddress} />
+						<AdminPool
+							data={pool}
+							key={JSON.stringify(pool)}
+							chainId={chainId}
+							userAddress={userAddress}
+							disableActions={disableActions}
+						/>
 					))}
 				</div>
 			)}

@@ -5,7 +5,6 @@ import toast from 'react-hot-toast'
 import { txConfirming, txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'
 import { chainConfig } from '~/lib/constants'
-import { gasLimitOverride } from '~/utils'
 
 interface IShutdownBorrows {
 	userAddress: string
@@ -29,7 +28,8 @@ export default function useEmergencyShutdown({ userAddress, chainId, poolAddress
 	const { config: contractConfig } = usePrepareContractWrite({
 		addressOrName: poolAddress,
 		contractInterface: config.poolABI,
-		functionName: 'emergencyShutdown',
+		functionName: 'setMaxPrice',
+		args: '0',
 		enabled: chain?.id === chainId && address?.toLowerCase() === userAddress?.toLowerCase()
 	})
 
