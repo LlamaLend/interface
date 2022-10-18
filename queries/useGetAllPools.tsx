@@ -64,12 +64,13 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 		const poolContract = new ethers.Contract(poolAddress, poolAbi, provider)
 		const nftContract = new ethers.Contract(nftContractAddres, erc721ABI, provider)
 
-		const [nftName, poolBalance, maxPrice, { maxDailyBorrowsLimit }, maxLoanLength] = await Promise.all([
+		const [nftName, poolBalance, maxPrice, { maxDailyBorrowsLimit }, maxLoanLength, oracle] = await Promise.all([
 			nftContract.name(),
 			provider.getBalance(poolAddress),
 			poolContract.maxPrice(),
 			poolContract.getDailyBorrows(),
-			poolContract.maxLoanLength()
+			poolContract.maxLoanLength(),
+			poolContract.oracle()
 		])
 
 		return {
@@ -77,7 +78,8 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 			poolBalance: Number(poolBalance),
 			maxPrice: Number(maxPrice),
 			maxDailyBorrows: Number(maxDailyBorrowsLimit),
-			maxLoanLength: Number(maxLoanLength)
+			maxLoanLength: Number(maxLoanLength),
+			oracle
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))

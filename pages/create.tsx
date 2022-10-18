@@ -46,7 +46,7 @@ const ManagePools: NextPage = () => {
 			const maxLengthInDays = Number(form.maxLengthInDays.value)
 			const maxPrice = Number(form.maxPrice.value)
 			const maxDailyBorrows = Number(form.maxDailyBorrows.value)
-			const maxVariableInterestPerEthPerSecond = Number(form.maxVariableInterestPerEthPerSecond.value)
+			const maximumInterest = Number(form.maximumInterest.value)
 			const minimumInterest = Number(form.minimumInterest.value)
 			const ltv = Number(form.ltv.value)
 
@@ -54,7 +54,7 @@ const ManagePools: NextPage = () => {
 				Number.isNaN(maxLengthInDays) ||
 				Number.isNaN(maxPrice) ||
 				Number.isNaN(maxDailyBorrows) ||
-				Number.isNaN(maxVariableInterestPerEthPerSecond) ||
+				Number.isNaN(maximumInterest) ||
 				Number.isNaN(minimumInterest) ||
 				Number.isNaN(ltv)
 			) {
@@ -69,7 +69,7 @@ const ManagePools: NextPage = () => {
 					maxPrice,
 					maxDailyBorrows,
 					maxLengthInDays,
-					maxVariableInterestPerEthPerSecond,
+					maximumInterest,
 					minimumInterest,
 					ltv
 				})
@@ -154,13 +154,7 @@ const ManagePools: NextPage = () => {
 						helperText={`This can be changed afterwards.`}
 					/>
 
-					<InputNumber
-						name="maxLengthInDays"
-						placeholder="14"
-						label={'Maximum duration of loans in days'}
-						required
-						helperText={`This can be changed afterwards.`}
-					/>
+					<InputNumber name="maxLengthInDays" placeholder="14" label={'Maximum duration of loans in days'} required />
 
 					<InputNumber
 						name="minimumInterest"
@@ -179,7 +173,7 @@ const ManagePools: NextPage = () => {
 					/>
 
 					<InputNumber
-						name="maxVariableInterestPerEthPerSecond"
+						name="maximumInterest"
 						placeholder="70"
 						label={`Maximum annual interest`}
 						helperText={'This can be changed afterwards. Must be higher than minimum annual interest.'}

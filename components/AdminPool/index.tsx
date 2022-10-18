@@ -8,7 +8,7 @@ import useSetMaxDailyBorrows from '~/queries/admin/useSetMaxDailyBorrows'
 import useDeposit from '~/queries/admin/useDeposit'
 import useWithdraw from '~/queries/admin/useWithdraw'
 import useEmergencyShutdown from '~/queries/admin/useEmergencyShutdown'
-// import useSetMaxLoanLength from '~/queries/admin/useSetMaxLoanLength'
+import useSetOracle from '~/queries/admin/useSetOracle'
 
 export default function AdminPool({
 	data,
@@ -23,11 +23,12 @@ export default function AdminPool({
 }) {
 	const config = chainConfig(chainId)
 
-	const { nftName, poolBalance, maxPrice, maxDailyBorrows } = data.adminPoolInfo
+	const { nftName, poolBalance, maxPrice, maxDailyBorrows, oracle } = data.adminPoolInfo
 
 	const [ltv, setLtv] = useState<string>((data.ltv / 1e16).toFixed(0))
 
-	const [newMaxPrice, setNewMaxPrice] = useState<string>(maxPrice ? (maxPrice / 1e18).toFixed(3) : 0)
+	const [newMaxPrice, setNewMaxPrice] = useState<string>(maxPrice ? (maxPrice / 1e18).toFixed(3) : '0')
+	const [newOracle, setNewOracle] = useState<string>(oracle || '')
 
 	const [newMaxDailyBorrows, setNewMaxDailyBorrows] = useState<string>(
 		maxDailyBorrows ? (maxDailyBorrows / 1e18).toFixed(3) : ''
@@ -35,10 +36,6 @@ export default function AdminPool({
 
 	const [amountToDeposit, setAmountToDeposit] = useState<string>('')
 	const [amountToWithdraw, setAmountToWithdraw] = useState<string>('')
-
-	// const [newMaxLoanLength, setNewMaxLoanLength] = useState<string>(
-	// 	maxLoanLength ? (maxLoanLength / SECONDS_IN_A_DAY).toString() : ''
-	// )
 
 	const {
 		write: updateLtv,
@@ -73,16 +70,16 @@ export default function AdminPool({
 		poolAddress: data.address
 	})
 
-	// const {
-	// 	write: updateMaxLoanLength,
-	// 	isLoading: approvingLoanLengthChange,
-	// 	waitForTransaction: { isLoading: confirmingLoanLengthChange }
-	// } = useSetMaxLoanLength({
-	// 	newMaxLoanLength,
-	// 	chainId,
-	// 	userAddress,
-	// 	poolAddress: data.address
-	// })
+	const {
+		write: updateOracle,
+		isLoading: approvingOracleChange,
+		waitForTransaction: { isLoading: confirmingOracleChange }
+	} = useSetOracle({
+		newOracle,
+		chainId,
+		userAddress,
+		poolAddress: data.address
+	})
 
 	const {
 		write: deposit,
@@ -256,38 +253,34 @@ export default function AdminPool({
 					{approvingDailyBorrowsChange || confirmingDailyBorrowsChange ? <BeatLoader /> : 'Update'}
 				</button>
 			</form>
-			{/* 
+
 			<form
 				onSubmit={(e) => {
 					e.preventDefault()
-					updateMaxLoanLength?.()
+					updateOracle?.()
 				}}
 				className="flex flex-col gap-2 sm:flex-row"
 			>
 				<label className="label flex-1">
-					<span className="text-xs font-light text-gray-400">Maximum duration of loans in days</span>
+					<span className="text-xs font-light text-gray-400">Oracle</span>
 					<input
-						name="maxLengthInDays"
+						name="oracle"
 						className="input-field bg-[#202020]"
 						autoComplete="off"
 						autoCorrect="off"
 						type="text"
 						spellCheck="false"
-						pattern="^[0-9]*[.,]?[0-9]*$"
-						minLength={1}
-						inputMode="decimal"
-						title="Enter numbers only."
-						value={newMaxLoanLength}
-						onChange={(e) => setNewMaxLoanLength(e.target.value)}
+						value={newOracle}
+						onChange={(e) => setNewOracle(e.target.value)}
 					/>
 				</label>
 				<button
 					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!updateMaxLoanLength || approvingLoanLengthChange || confirmingLoanLengthChange || disableActions ? true : false}
+					disabled={!updateOracle || approvingOracleChange || confirmingOracleChange || disableActions ? true : false}
 				>
-					{approvingLoanLengthChange || confirmingLoanLengthChange ? <BeatLoader /> : 'Update'}
+					{approvingOracleChange || confirmingOracleChange ? <BeatLoader /> : 'Update'}
 				</button>
-			</form> */}
+			</form>
 
 			<form
 				onSubmit={(e) => {

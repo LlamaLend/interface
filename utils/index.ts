@@ -36,7 +36,7 @@ interface IFormArgs {
 	maxPrice: number
 	maxDailyBorrows: number
 	maxLengthInDays: number
-	maxVariableInterestPerEthPerSecond: number
+	maximumInterest: number
 	minimumInterest: number
 	ltv: number
 }
@@ -49,13 +49,11 @@ export function formatCreatePoolFormInputs({
 	maxPrice,
 	maxDailyBorrows,
 	maxLengthInDays,
-	maxVariableInterestPerEthPerSecond,
+	maximumInterest,
 	minimumInterest,
 	ltv
 }: IFormArgs) {
-	const maxInt = Number(
-		new BigNumber(maxVariableInterestPerEthPerSecond / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
-	)
+	const maxInt = Number(new BigNumber(maximumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
 
 	const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
 
