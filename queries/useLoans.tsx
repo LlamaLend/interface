@@ -109,6 +109,7 @@ async function getLoans({
 		return loans
 			.map((loan) => ({
 				id: loan.id,
+				loanId: loan.loanId,
 				nftId: loan.nftId,
 				interest: loan.interest,
 				startTime: loan.startTime,

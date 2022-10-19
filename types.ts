@@ -99,6 +99,7 @@ export interface IGetAdminPoolDataArgs {
 
 export interface ILoan {
 	id: string
+	loanId: number | string
 	nftId: string
 	interest: string
 	startTime: string
