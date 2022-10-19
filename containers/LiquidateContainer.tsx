@@ -120,7 +120,7 @@ export default function LiquidateContainer({ chainId, chainName, userAddress }: 
 														<a
 															target="_blank"
 															rel="noreferrer noopener"
-															href={`${config.blockExplorer.url}/address/${loan.pool.owner}`}
+															href={`${config.blockExplorer.url}/address/${loan.owner}`}
 															className="underline"
 														>
 															{loan.owner.slice(0, 4) + '...' + loan.owner.slice(-4)}

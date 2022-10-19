@@ -188,7 +188,7 @@ async function getLoansToLiquidate({
 
 		loans.forEach((loan) => {
 			loan.forEach((pool) => {
-				if (pool.deadline - Date.now() <= 0) {
+				if (pool.deadline - Date.now() <= 0 && pool.owner !== '0x0000000000000000000000000000000000000000') {
 					liquidatableLoans.push(pool)
 				}
 			})
