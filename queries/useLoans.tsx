@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
+import { ethers } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { request, gql } from 'graphql-request'
 import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
-import type { ILoan, ITransactionError } from '~/types'
+import type { ILoan, ILoanValidity, ITransactionError } from '~/types'
 
 interface IGraphLoanResponse {
 	id: string
@@ -149,27 +150,32 @@ export function useGetLoans({
 	)
 }
 
+async function getLoanValidity({ poolAddress, loanId, provider, poolABI }: ILoanValidity) {
+	if (!poolAddress || !loanId || !provider) {
+		throw new Error('Error: Invalid arguments')
+	}
+
+	const contract = new ethers.Contract(poolAddress, poolABI, provider)
+
+	return await contract.ownerOf(loanId)
+}
+
 async function getLoansToLiquidate({
-	endpoint,
 	liquidatorAddress,
-	isTestnet
+	chainId
 }: {
-	endpoint: string
 	liquidatorAddress?: string
-	poolAddress?: string
-	isTestnet: boolean
+	chainId?: number | null
 }) {
 	try {
 		if (!liquidatorAddress) {
 			return []
 		}
 
-		if (!endpoint) {
-			throw new Error('Error: Invalid arguments')
-		}
+		const config = chainConfig(chainId)
 
 		const { liquidators }: { liquidators: Array<{ pool: { address: string } }> } = await request(
-			endpoint,
+			config.subgraphUrl,
 			gql`
 				query {
 					liquidators (where: { address: "${liquidatorAddress.toLowerCase()}" }) {
@@ -183,7 +189,9 @@ async function getLoansToLiquidate({
 
 		const pools = liquidators.map((liq) => liq.pool.address)
 
-		const loans = await Promise.all(pools.map((poolAddress) => getLoans({ poolAddress, endpoint, isTestnet })))
+		const loans = await Promise.all(
+			pools.map((poolAddress) => getLoans({ poolAddress, endpoint: config.subgraphUrl, isTestnet: config.isTestnet }))
+		)
 
 		const liquidatableLoans: Array<ILoan> = []
 
@@ -195,7 +203,18 @@ async function getLoansToLiquidate({
 			})
 		})
 
-		return liquidatableLoans
+		const validLoans = await Promise.allSettled(
+			liquidatableLoans.map((loan) =>
+				getLoanValidity({
+					poolAddress: loan.pool.address,
+					loanId: loan.loanId,
+					provider: config.chainProvider,
+					poolABI: config.poolABI
+				})
+			)
+		)
+
+		return liquidatableLoans.filter((_, index) => validLoans[index].status === 'fulfilled')
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
 	}
@@ -208,11 +227,9 @@ export function useGetLoansToLiquidate({
 	chainId?: number | null
 	liquidatorAddress?: string
 }) {
-	const config = chainConfig(chainId)
-
 	return useQuery<Array<ILoan>, ITransactionError>(
 		['loansToLiquidate', chainId, liquidatorAddress],
-		() => getLoansToLiquidate({ endpoint: config.subgraphUrl, liquidatorAddress, isTestnet: config.isTestnet }),
+		() => getLoansToLiquidate({ liquidatorAddress, chainId }),
 		{
 			refetchInterval: 30_000
 		}

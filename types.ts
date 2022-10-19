@@ -114,3 +114,10 @@ export interface ILoan {
 		address: string
 	}
 }
+
+export interface ILoanValidity {
+	poolAddress: string
+	loanId: number | string
+	provider: Provider
+	poolABI: ContractInterface
+}
