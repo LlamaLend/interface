@@ -60,7 +60,13 @@ async function getPoolAddlInfo({ poolAddress, quoteApi, isTestnet, poolAbi, prov
 	}
 }
 
-async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAddres }: IGetAdminPoolDataArgs) {
+async function getAdminPoolInfo({
+	poolAddress,
+	poolAbi,
+	provider,
+	nftContractAddres,
+	graphEndpoint
+}: IGetAdminPoolDataArgs) {
 	try {
 		const poolContract = new ethers.Contract(poolAddress, poolAbi, provider)
 		const nftContract = new ethers.Contract(nftContractAddres, erc721ABI, provider)
@@ -73,7 +79,8 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 			maxLoanLength,
 			oracle,
 			minimumInterest,
-			maxVariableInterestPerEthPerSecond
+			maxVariableInterestPerEthPerSecond,
+			{ liquidators }
 		] = await Promise.all([
 			nftContract.name(),
 			provider.getBalance(poolAddress),
@@ -82,7 +89,18 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 			poolContract.maxLoanLength(),
 			poolContract.oracle(),
 			poolContract.minimumInterest(),
-			poolContract.maxVariableInterestPerEthPerSecond()
+			poolContract.maxVariableInterestPerEthPerSecond(),
+			request(
+				graphEndpoint,
+				gql`
+					query {
+						liquidators (where: {pool: "${poolAddress.toLowerCase()}"}) {
+				
+							address
+						}
+					}
+				`
+			)
 		])
 
 		const minInt = new BigNumber(Number(minimumInterest)).div(1e16).times(SECONDS_IN_A_YEAR).toFixed(0)
@@ -91,7 +109,19 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 			.times(SECONDS_IN_A_YEAR)
 			.toFixed(0)
 
+		const liqAddresses = liquidators.map((l: { address: string }) => getAddress(l.address))
+
 		return {
+			key:
+				nftName +
+				poolBalance +
+				maxPrice +
+				maxDailyBorrowsLimit +
+				maxLoanLength +
+				maxLoanLength +
+				minInt +
+				maxVariableInt +
+				liqAddresses.join(''),
 			nftName: nftName,
 			poolBalance: Number(poolBalance),
 			maxPrice: Number(maxPrice),
@@ -99,7 +129,8 @@ async function getAdminPoolInfo({ poolAddress, poolAbi, provider, nftContractAdd
 			maxLoanLength: Number(maxLoanLength),
 			oracle,
 			minimumInterest: minInt,
-			maximumInterest: (Number(maxVariableInt) + Number(minInt)).toFixed(0)
+			maximumInterest: (Number(maxVariableInt) + Number(minInt)).toFixed(0),
+			liquidators: liqAddresses
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
@@ -182,7 +213,13 @@ export async function getAllpools({
 		const adminPoolInfo = ownerAddress
 			? await Promise.all(
 					pools.map((pool) =>
-						getAdminPoolInfo({ poolAbi, poolAddress: pool.address, nftContractAddres: pool.nftContract, provider })
+						getAdminPoolInfo({
+							poolAbi,
+							poolAddress: pool.address,
+							nftContractAddres: pool.nftContract,
+							provider,
+							graphEndpoint: endpoint
+						})
 					)
 			  )
 			: await Promise.resolve([])

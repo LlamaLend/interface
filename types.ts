@@ -63,6 +63,7 @@ export interface IBorrowPool {
 	maxNftsToBorrow: number
 	nftContract: string
 	adminPoolInfo: {
+		key: string
 		nftName: string
 		poolBalance: number
 		maxPrice: number
@@ -71,6 +72,7 @@ export interface IBorrowPool {
 		oracle: string
 		minimumInterest: string
 		maximumInterest: string
+		liquidators: Array<string>
 	}
 }
 
@@ -92,6 +94,7 @@ export interface IGetAdminPoolDataArgs {
 	poolAbi: ContractInterface
 	nftContractAddres: string
 	provider: Provider
+	graphEndpoint: string
 }
 
 export interface ILoan {

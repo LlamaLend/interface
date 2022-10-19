@@ -43,7 +43,7 @@ export default function ManagePoolsContainer({ chainId, chainName, userAddress }
 					{data?.map((pool) => (
 						<AdminPool
 							data={pool}
-							key={JSON.stringify(pool)}
+							key={pool.adminPoolInfo.key}
 							chainId={chainId}
 							userAddress={userAddress}
 							disableActions={disableActions}

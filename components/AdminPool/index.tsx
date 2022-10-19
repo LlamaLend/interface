@@ -13,6 +13,7 @@ import useEmergencyShutdown from '~/queries/admin/useEmergencyShutdown'
 import useSetOracle from '~/queries/admin/useSetOracle'
 import { IPoolUtilisationChartProps } from '~/components/Charts/PoolUtilisation'
 import useChangeInterest from '~/queries/admin/useChangeInterest'
+import { useAddLiquidator, useRemoveLiquidator } from '~/queries/admin/useLiquidator'
 
 const PoolUtilisationChart = dynamic<IPoolUtilisationChartProps>(() => import('~/components/Charts/PoolUtilisation'), {
 	ssr: false,
@@ -32,13 +33,14 @@ export default function AdminPool({
 }) {
 	const config = chainConfig(chainId)
 
-	const { nftName, poolBalance, maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest } =
+	const { nftName, poolBalance, maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest, liquidators } =
 		data.adminPoolInfo
 
 	const [ltv, setLtv] = useState<string>((data.ltv / 1e16).toFixed(0))
 
 	const [newMaxPrice, setNewMaxPrice] = useState<string>(maxPrice ? (maxPrice / 1e18).toFixed(3) : '0')
 	const [newOracle, setNewOracle] = useState<string>(oracle || '')
+	const [liquidatorAddress, setLiquidatorAddress] = useState<string>('')
 
 	const [newMaxDailyBorrows, setNewMaxDailyBorrows] = useState<string>(
 		maxDailyBorrows ? (maxDailyBorrows / 1e18).toFixed(3) : ''
@@ -136,6 +138,17 @@ export default function AdminPool({
 	})
 
 	const {
+		write: addLiquidator,
+		isLoading: approvingNewLiquidator,
+		waitForTransaction: { isLoading: confirmingNewLiquidator }
+	} = useAddLiquidator({
+		liquidatorAddress,
+		chainId,
+		userAddress,
+		poolAddress: data.address
+	})
+
+	const {
 		write: emergencyShutdown,
 		isLoading: approvingShutdown,
 		waitForTransaction: { isLoading: confirmingShutdown }
@@ -149,8 +162,8 @@ export default function AdminPool({
 
 	return (
 		<div className="flex w-full max-w-2xl flex-col gap-6 rounded-xl bg-[#191919] p-4 shadow">
-			<p className="text-xs font-light text-gray-400">Pool</p>
-			<h1 className="-my-6 text-lg">{`${data.name} (${data.symbol})`}</h1>
+			<h1 className="text-xs font-light text-gray-400">Pool</h1>
+			<p className="-my-6 text-lg">{`${data.name} (${data.symbol})`}</p>
 			<a
 				target="_blank"
 				rel="noreferrer noopener"
@@ -160,8 +173,8 @@ export default function AdminPool({
 				{data.address}
 			</a>
 
-			<p className="text-xs font-light text-gray-400">Collection</p>
-			<h2 className="-my-6 min-h-[1.75rem] text-lg">{nftName}</h2>
+			<h1 className="text-xs font-light text-gray-400">Collection</h1>
+			<p className="-my-6 min-h-[1.75rem] text-lg">{nftName}</p>
 			<a
 				target="_blank"
 				rel="noreferrer noopener"
@@ -171,17 +184,79 @@ export default function AdminPool({
 				{data.nftContract}
 			</a>
 
-			<p className="flex flex-col gap-1">
-				<span className="text-xs font-light text-gray-400">Balance</span>
-				<span className="min-h-[1.5rem] break-all">
-					{poolBalance && `${poolBalance / 1e18 < 1e-10 ? '~0' : poolBalance / 1e18} ${chainSymbol}`}
-				</span>
+			<h1 className="text-xs font-light text-gray-400">Balance</h1>
+			<p className="-mt-6 min-h-[1.5rem] break-all">
+				{poolBalance && `${poolBalance / 1e18 < 1e-10 ? '~0' : poolBalance / 1e18} ${chainSymbol}`}
 			</p>
 
-			<p className="flex flex-col gap-1">
-				<span className="text-xs font-light text-gray-400">Borrowable Now</span>
-				<span>{data.maxNftsToBorrow}</span>
-			</p>
+			<h1 className="text-xs font-light text-gray-400">Borrowable Now</h1>
+			<p className="-mt-6 min-h-[1.5rem] break-all">{data.maxNftsToBorrow}</p>
+
+			<form
+				onSubmit={(e) => {
+					e.preventDefault()
+					deposit?.()
+				}}
+				className="flex flex-col gap-2 sm:flex-row"
+			>
+				<label className="label flex-1">
+					<span className="text-xs font-light text-gray-400">Deposit {chainSymbol}</span>
+					<input
+						name="amountToDeposit"
+						className="input-field bg-[#202020]"
+						autoComplete="off"
+						autoCorrect="off"
+						type="text"
+						spellCheck="false"
+						pattern="^[0-9]*[.,]?[0-9]*$"
+						minLength={1}
+						maxLength={79}
+						inputMode="decimal"
+						title="Enter numbers only."
+						value={amountToDeposit}
+						onChange={(e) => setAmountToDeposit(e.target.value)}
+					/>
+				</label>
+				<button
+					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
+					disabled={!deposit || approvingDeposit || confirmingDeposit || disableActions ? true : false}
+				>
+					{approvingDeposit || confirmingDeposit ? <BeatLoader /> : 'Deposit'}
+				</button>
+			</form>
+
+			<form
+				onSubmit={(e) => {
+					e.preventDefault()
+					withdraw?.()
+				}}
+				className="flex flex-col gap-2 sm:flex-row"
+			>
+				<label className="label flex-1">
+					<span className="text-xs font-light text-gray-400">Withdraw {chainSymbol}</span>
+					<input
+						name="amountToWithdraw"
+						className="input-field bg-[#202020]"
+						autoComplete="off"
+						autoCorrect="off"
+						type="text"
+						spellCheck="false"
+						pattern="^[0-9]*[.,]?[0-9]*$"
+						minLength={1}
+						maxLength={79}
+						inputMode="decimal"
+						title="Enter numbers only."
+						value={amountToWithdraw}
+						onChange={(e) => setAmountToWithdraw(e.target.value)}
+					/>
+				</label>
+				<button
+					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
+					disabled={!withdraw || approvingWithdraw || confirmingWithdraw || disableActions ? true : false}
+				>
+					{approvingWithdraw || confirmingWithdraw ? <BeatLoader /> : 'Withdraw'}
+				</button>
+			</form>
 
 			<form
 				onSubmit={(e) => {
@@ -319,9 +394,57 @@ export default function AdminPool({
 			<form
 				onSubmit={(e) => {
 					e.preventDefault()
+					addLiquidator?.()
+					setLiquidatorAddress('')
+				}}
+				className="flex flex-col gap-2 sm:flex-row"
+			>
+				<label className="label flex-1">
+					<span className="text-xs font-light text-gray-400">Add Liquidator</span>
+					<input
+						name="liquidatorAddress"
+						className="input-field bg-[#202020]"
+						autoComplete="off"
+						autoCorrect="off"
+						type="text"
+						spellCheck="false"
+						value={liquidatorAddress}
+						onChange={(e) => setLiquidatorAddress(e.target.value)}
+					/>
+				</label>
+				<button
+					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
+					disabled={
+						!addLiquidator || approvingNewLiquidator || confirmingNewLiquidator || disableActions ? true : false
+					}
+				>
+					{approvingNewLiquidator || confirmingNewLiquidator ? <BeatLoader /> : 'Add'}
+				</button>
+			</form>
+
+			{liquidators && liquidators.length > 0 && (
+				<div className="flex flex-col gap-2">
+					<h2 className="-mb-2 text-xs font-light text-gray-400">Liquidators</h2>
+					{liquidators.map((liq) => (
+						<RemoveLiquidator
+							key={liq}
+							poolAddress={data.address}
+							userAddress={userAddress}
+							disableActions={disableActions}
+							address={liq}
+							blockExplorerUrl={config.blockExplorer.url}
+							chainId={chainId}
+						/>
+					))}
+				</div>
+			)}
+
+			<form
+				onSubmit={(e) => {
+					e.preventDefault()
 					updateInterest?.()
 				}}
-				className="flex flex-col gap-2"
+				className="flex flex-col gap-4"
 			>
 				<label className="label flex-1">
 					<span className="text-xs font-light text-gray-400">Minimum annual interest</span>
@@ -383,7 +506,7 @@ export default function AdminPool({
 				/>
 
 				<button
-					className="mt-4 min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
+					className="mt-2 min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
 					disabled={
 						!updateInterest || approvingInterestChange || confirmingInterestChange || disableActions ? true : false
 					}
@@ -392,78 +515,63 @@ export default function AdminPool({
 				</button>
 			</form>
 
-			<form
-				onSubmit={(e) => {
-					e.preventDefault()
-					deposit?.()
-				}}
-				className="flex flex-col gap-2 sm:flex-row"
-			>
-				<label className="label flex-1">
-					<span className="text-xs font-light text-gray-400">Deposit {chainSymbol}</span>
-					<input
-						name="amountToDeposit"
-						className="input-field bg-[#202020]"
-						autoComplete="off"
-						autoCorrect="off"
-						type="text"
-						spellCheck="false"
-						pattern="^[0-9]*[.,]?[0-9]*$"
-						minLength={1}
-						maxLength={79}
-						inputMode="decimal"
-						title="Enter numbers only."
-						value={amountToDeposit}
-						onChange={(e) => setAmountToDeposit(e.target.value)}
-					/>
-				</label>
-				<button
-					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!deposit || approvingDeposit || confirmingDeposit || disableActions ? true : false}
-				>
-					{approvingDeposit || confirmingDeposit ? <BeatLoader /> : 'Deposit'}
-				</button>
-			</form>
-
-			<form
-				onSubmit={(e) => {
-					e.preventDefault()
-					withdraw?.()
-				}}
-				className="flex flex-col gap-2 sm:flex-row"
-			>
-				<label className="label flex-1">
-					<span className="text-xs font-light text-gray-400">Withdraw {chainSymbol}</span>
-					<input
-						name="amountToWithdraw"
-						className="input-field bg-[#202020]"
-						autoComplete="off"
-						autoCorrect="off"
-						type="text"
-						spellCheck="false"
-						pattern="^[0-9]*[.,]?[0-9]*$"
-						minLength={1}
-						maxLength={79}
-						inputMode="decimal"
-						title="Enter numbers only."
-						value={amountToWithdraw}
-						onChange={(e) => setAmountToWithdraw(e.target.value)}
-					/>
-				</label>
-				<button
-					className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-[#243b55] p-2 text-center text-sm text-white disabled:cursor-not-allowed"
-					disabled={!withdraw || approvingWithdraw || confirmingWithdraw || disableActions ? true : false}
-				>
-					{approvingWithdraw || confirmingWithdraw ? <BeatLoader /> : 'Withdraw'}
-				</button>
-			</form>
-
 			<button
-				className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-red-700 p-2 text-center text-sm text-white disabled:cursor-not-allowed"
+				className="mt-4 min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-red-700 p-2 text-center text-sm text-white disabled:cursor-not-allowed"
 				disabled={!emergencyShutdown || approvingShutdown || confirmingShutdown || disableActions ? true : false}
 				onClick={() => emergencyShutdown?.()}
 			>
 				{approvingShutdown || confirmingShutdown ? <BeatLoader /> : 'Shutdown Borrows'}
+			</button>
+		</div>
+	)
+}
+
+const RemoveLiquidator = ({
+	address,
+	blockExplorerUrl,
+	chainId,
+	userAddress,
+	poolAddress,
+	disableActions
+}: {
+	address: string
+	blockExplorerUrl: string
+	chainId: number
+	userAddress: string
+	poolAddress: string
+	disableActions: boolean
+}) => {
+	const {
+		write: removeLiquidator,
+		isLoading: approvingLiquidatorRemoval,
+		waitForTransaction: { isLoading: confirmingLiquidatorRemoval }
+	} = useRemoveLiquidator({
+		liquidatorAddress: address,
+		chainId,
+		userAddress,
+		poolAddress: poolAddress
+	})
+
+	return (
+		<div className="flex flex-col gap-2 sm:flex-row">
+			<a
+				className="flex-1 py-2 text-base"
+				target="_blank"
+				rel="noreferrer noopener"
+				href={`${blockExplorerUrl}/address/${address}`}
+			>
+				{address}
+			</a>
+			<button
+				className="mt-auto min-h-[2.5rem] min-w-[7.5rem] rounded-lg bg-red-700 p-2 text-center text-sm text-white disabled:cursor-not-allowed"
+				onClick={() => removeLiquidator?.()}
+				disabled={
+					!removeLiquidator || approvingLiquidatorRemoval || confirmingLiquidatorRemoval || disableActions
+						? true
+						: false
+				}
+			>
+				{approvingLiquidatorRemoval || confirmingLiquidatorRemoval ? <BeatLoader /> : 'Remove'}
 			</button>
 		</div>
 	)
