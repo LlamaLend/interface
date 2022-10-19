@@ -1,4 +1,3 @@
-import { cx } from 'cva'
 import { ChangeEvent, ReactNode } from 'react'
 
 interface IInputProps {
