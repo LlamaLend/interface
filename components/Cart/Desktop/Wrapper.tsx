@@ -26,11 +26,12 @@ export default function Wrapper({ className, children }: { className?: string; c
 	return (
 		<m.div
 			className={cx(
-				'sticky top-0 flex max-h-screen w-full max-w-[22.5rem] flex-col gap-6 overflow-auto rounded-xl bg-black px-5 py-4',
+				'sticky top-3 bottom-3 flex w-full max-w-[22.5rem] flex-col gap-6 overflow-auto rounded-xl bg-black px-5 py-4',
 				className
 			)}
 			animate={isOpen ? 'open' : 'closed'}
 			variants={variants}
+			style={{ maxHeight: 'calc(100vh - 48px' }}
 		>
 			<span className="flex items-center justify-between gap-4">
 				<h1 className="m-0 text-2xl font-medium">Checkout</h1>

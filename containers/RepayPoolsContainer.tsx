@@ -162,7 +162,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 														<button
 															className="ml-auto flex h-4 min-w-[10rem] items-center justify-center gap-1 rounded-lg border border-[#243b55] bg-[#243b55] p-4 text-sm text-white disabled:cursor-not-allowed disabled:text-opacity-50"
 															onClick={() => addToCart({ contractAddress: 'repay', tokenId: loan.id })}
-															disabled={!isConnected || address !== userAddress}
+															disabled={!isConnected || address?.toLowerCase() !== userAddress?.toLowerCase()}
 														>
 															Add to cart
 														</button>

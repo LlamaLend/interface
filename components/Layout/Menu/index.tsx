@@ -38,6 +38,12 @@ export default function Menu() {
 					</Link>
 				</MenuItem>
 
+				<MenuItem as="span" className="flex">
+					<Link href="/liquidate" passHref>
+						<a className="w-full px-4 py-2 hover:bg-[#292929]">Liquidate</a>
+					</Link>
+				</MenuItem>
+
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-[#292929]"

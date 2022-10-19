@@ -95,7 +95,6 @@ async function getAdminPoolInfo({
 				gql`
 					query {
 						liquidators (where: {pool: "${poolAddress.toLowerCase()}"}) {
-				
 							address
 						}
 					}

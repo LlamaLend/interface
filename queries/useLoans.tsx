@@ -13,6 +13,7 @@ interface IGraphLoanResponse {
 	startTime: string
 	deadline: string
 	tokenUri: string
+	owner: string
 	pool: {
 		name: string
 		owner: string
@@ -36,9 +37,9 @@ function infoToRepayLoan(loan: IGraphLoanResponse) {
 	return Number(loan.borrowed) + interest + lateFees
 }
 
-const userLoansQuery = (userAddress: string) => gql`
+const userLoansQuery = (userAddress?: string) => gql`
 	query {
-		loans(where: { originalOwner: "${userAddress.toLowerCase()}", owner: "${userAddress.toLowerCase()}" }) {
+		loans(where: { originalOwner: "${userAddress?.toLowerCase()}", owner: "${userAddress?.toLowerCase()}" }) {
 			id
 			loanId
 			nftId
@@ -80,7 +81,7 @@ const loansByPoolQuery = (poolAddress: string) => gql`
 	}
 `
 
-async function getUserLoans({
+async function getLoans({
 	endpoint,
 	userAddress,
 	poolAddress,
@@ -92,7 +93,7 @@ async function getUserLoans({
 	isTestnet: boolean
 }) {
 	try {
-		if (!userAddress) {
+		if (poolAddress ? false : !userAddress) {
 			return []
 		}
 
@@ -115,6 +116,7 @@ async function getUserLoans({
 				toPay: infoToRepayLoan(loan),
 				deadline: Number(loan.deadline) * 1000,
 				tokenUri: isTestnet ? '' : loan.tokenUri,
+				owner: loan.owner,
 				pool: {
 					...loan.pool,
 					address: getAddress(loan.pool.address)
@@ -139,7 +141,77 @@ export function useGetLoans({
 
 	return useQuery<Array<ILoan>, ITransactionError>(
 		['userLoans', chainId, userAddress, poolAddress],
-		() => getUserLoans({ endpoint: config.subgraphUrl, userAddress, isTestnet: config.isTestnet }),
+		() => getLoans({ endpoint: config.subgraphUrl, userAddress, isTestnet: config.isTestnet }),
+		{
+			refetchInterval: 30_000
+		}
+	)
+}
+
+async function getLoansToLiquidate({
+	endpoint,
+	liquidatorAddress,
+	isTestnet
+}: {
+	endpoint: string
+	liquidatorAddress?: string
+	poolAddress?: string
+	isTestnet: boolean
+}) {
+	try {
+		if (!liquidatorAddress) {
+			return []
+		}
+
+		if (!endpoint) {
+			throw new Error('Error: Invalid arguments')
+		}
+
+		const { liquidators }: { liquidators: Array<{ pool: { address: string } }> } = await request(
+			endpoint,
+			gql`
+				query {
+					liquidators (where: { address: "${liquidatorAddress.toLowerCase()}" }) {
+						pool {
+							address
+						}
+					}
+				}
+			`
+		)
+
+		const pools = liquidators.map((liq) => liq.pool.address)
+
+		const loans = await Promise.all(pools.map((poolAddress) => getLoans({ poolAddress, endpoint, isTestnet })))
+
+		const liquidatableLoans: Array<ILoan> = []
+
+		loans.forEach((loan) => {
+			loan.forEach((pool) => {
+				if (pool.deadline - Date.now() <= 0) {
+					liquidatableLoans.push(pool)
+				}
+			})
+		})
+
+		return liquidatableLoans
+	} catch (error: any) {
+		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))
+	}
+}
+
+export function useGetLoansToLiquidate({
+	chainId,
+	liquidatorAddress
+}: {
+	chainId?: number | null
+	liquidatorAddress?: string
+}) {
+	const config = chainConfig(chainId)
+
+	return useQuery<Array<ILoan>, ITransactionError>(
+		['loansToLiquidate', chainId, liquidatorAddress],
+		() => getLoansToLiquidate({ endpoint: config.subgraphUrl, liquidatorAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}

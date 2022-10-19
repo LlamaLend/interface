@@ -106,6 +106,7 @@ export interface ILoan {
 	toPay: number
 	deadline: number
 	tokenUri: string
+	owner: string
 	pool: {
 		name: string
 		owner: string
