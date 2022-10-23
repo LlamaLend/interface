@@ -5,6 +5,7 @@ import { cx } from 'cva'
 import AppLink from './AppLink'
 import Menu from './Menu'
 import { CartLink } from './CartLink'
+import useAutoConnect from '~/hooks/useAutoConnect'
 
 interface ILayoutProps {
 	children?: React.ReactNode
@@ -13,6 +14,8 @@ interface ILayoutProps {
 }
 
 export default function Layout({ children, className, ...props }: ILayoutProps) {
+	useAutoConnect()
+
 	return (
 		<>
 			<header className="mx-auto flex w-full max-w-8xl flex-col flex-wrap gap-4 p-3 sm:flex-row sm:items-center sm:justify-between">

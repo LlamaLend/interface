@@ -37,27 +37,24 @@ const connectors = connectorsForWallets([
 	{
 		groupName: 'Popular',
 		wallets: [
-			injectedWallet({ chains }),
-			metaMaskWallet({ chains }),
-			rainbowWallet({ chains }),
-			walletConnectWallet({ chains }),
 			{
 				id: 'safe',
 				name: 'Gnosis Safe',
 				iconUrl: '/assets/gnosis.png',
 				iconBackground: '#fff',
-				// @ts-ignore
 				createConnector: () => {
-					// @ts-ignore
 					return { connector: new SafeConnector({ chains }) }
 				}
-			}
+			},
+			injectedWallet({ chains }),
+			metaMaskWallet({ chains }),
+			rainbowWallet({ chains }),
+			walletConnectWallet({ chains })
 		]
 	}
 ])
 
 const wagmiClient = createClient({
-	autoConnect: process.env.NEXT_PUBLIC_SAFE === 'true' ? false : true,
 	connectors,
 	provider
 })
