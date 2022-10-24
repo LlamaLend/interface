@@ -21,6 +21,7 @@ interface IGetAllPoolsArgs {
 
 interface IPoolInterestPerNft {
 	poolAddress: string
+	nftContractAddress: string
 	quoteApi: string
 	isTestnet: boolean
 	poolAbi: ContractInterface
@@ -39,10 +40,18 @@ interface IPoolsQueryResponse {
 	}>
 }
 
-async function getPoolAddlInfo({ poolAddress, quoteApi, isTestnet, poolAbi, provider, ltv }: IPoolInterestPerNft) {
+async function getPoolAddlInfo({
+	poolAddress,
+	nftContractAddress,
+	quoteApi,
+	isTestnet,
+	poolAbi,
+	provider,
+	ltv
+}: IPoolInterestPerNft) {
 	const contract = new ethers.Contract(poolAddress, poolAbi, provider)
 
-	const oracle = await fetchOracle({ api: quoteApi, isTestnet, poolAddress })
+	const oracle = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
 
 	if (!oracle?.price) {
 		throw new Error("Couldn't get oracle price")
@@ -64,12 +73,12 @@ async function getAdminPoolInfo({
 	poolAddress,
 	poolAbi,
 	provider,
-	nftContractAddres,
+	nftContractAddress,
 	graphEndpoint
 }: IGetAdminPoolDataArgs) {
 	try {
 		const poolContract = new ethers.Contract(poolAddress, poolAbi, provider)
-		const nftContract = new ethers.Contract(nftContractAddres, erc721ABI, provider)
+		const nftContract = new ethers.Contract(nftContractAddress, erc721ABI, provider)
 
 		const [
 			nftName,
@@ -205,7 +214,15 @@ export async function getAllpools({
 
 		const addlInfo = await Promise.all(
 			pools.map((pool) =>
-				getPoolAddlInfo({ quoteApi, isTestnet, poolAddress: pool.address, ltv: pool.ltv, poolAbi, provider })
+				getPoolAddlInfo({
+					quoteApi,
+					isTestnet,
+					poolAddress: pool.address,
+					nftContractAddress: pool.nftContract,
+					ltv: pool.ltv,
+					poolAbi,
+					provider
+				})
 			)
 		)
 
@@ -215,7 +232,7 @@ export async function getAllpools({
 						getAdminPoolInfo({
 							poolAbi,
 							poolAddress: pool.address,
-							nftContractAddres: pool.nftContract,
+							nftContractAddress: pool.nftContract,
 							provider,
 							graphEndpoint: endpoint
 						})

@@ -32,7 +32,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 
 	const { data, isLoading } = useGetPoolData({ chainId, poolAddress })
 
-	const { data: oracle, isLoading: fetchingOracle } = useGetOracle({ poolAddress, chainId })
+	const { data: oracle, isLoading: fetchingOracle } = useGetOracle({ nftContractAddress: data?.nftContract, chainId })
 
 	const { data: nftsList, isLoading: nftsListLoading } = useGetNftsList({
 		nftContractAddress: data?.nftContract,

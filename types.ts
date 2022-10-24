@@ -91,8 +91,8 @@ export interface IBorrowPoolData {
 
 export interface IGetAdminPoolDataArgs {
 	poolAddress: string
+	nftContractAddress: string
 	poolAbi: ContractInterface
-	nftContractAddres: string
 	provider: Provider
 	graphEndpoint: string
 }

@@ -39,7 +39,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		data: oracle,
 		isLoading: fetchingOracle,
 		isError: errorFetchingOracle
-	} = useGetOracle({ poolAddress, chainId })
+	} = useGetOracle({ nftContractAddress, chainId })
 
 	// query to get interest rates
 	const {

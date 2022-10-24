@@ -32,13 +32,14 @@ export function useBorrow({
 
 	const { chain } = useNetwork()
 
+	const { data: poolData, refetch: refetchPoolData } = useGetPoolData({ chainId, poolAddress })
+
 	const {
 		data: oracle,
 		isLoading: fetchingOracle,
 		isError: errorFetchingOracle
-	} = useGetOracle({ poolAddress, chainId: chainId })
+	} = useGetOracle({ nftContractAddress: poolData?.nftContract, chainId: chainId })
 
-	const { data: poolData, refetch: refetchPoolData } = useGetPoolData({ chainId, poolAddress })
 	const { refetch: refetchNftsList } = useGetNftsList({
 		nftContractAddress: poolData?.nftContract,
 		chainId

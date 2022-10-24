@@ -25,12 +25,6 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			throw new Error('Invalid arguments')
 		}
 
-		const quote = await fetchOracle({ api: quoteApi, isTestnet, poolAddress: address })
-
-		if (!quote?.price) {
-			throw new Error("Couldn't get oracle price")
-		}
-
 		const contract = new ethers.Contract(address, abi, provider)
 
 		const [
@@ -54,6 +48,12 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 		])
 
 		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
+
+		const quote = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress: nftContract })
+
+		if (!quote?.price) {
+			throw new Error("Couldn't get oracle price")
+		}
 
 		const [currentAnnualInterest, { maxInstantBorrow }, nftName] = await Promise.all([
 			contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote.price, noOfItems: 1, ltv: Number(ltv) })),

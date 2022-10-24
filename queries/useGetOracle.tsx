@@ -4,13 +4,13 @@ import { IOracleResponse, ITransactionError } from '~/types'
 
 interface IFetchOracleProps {
 	api: string
-	poolAddress?: string | null
+	nftContractAddress?: string | null
 	isTestnet?: boolean
 }
 
-async function fetchOracle({ api, poolAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
+async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
 	try {
-		if (!poolAddress) {
+		if (!nftContractAddress) {
 			return null
 		}
 
@@ -27,7 +27,7 @@ async function fetchOracle({ api, poolAddress, isTestnet }: IFetchOracleProps): 
 			}
 		}
 
-		const res = await fetch(`${api}/pool/${poolAddress}`).then((res) => res.json())
+		const res = await fetch(`${api}/${nftContractAddress}`).then((res) => res.json())
 
 		return { ...res, price: Number(res.price) }
 	} catch (error: any) {
@@ -35,12 +35,12 @@ async function fetchOracle({ api, poolAddress, isTestnet }: IFetchOracleProps): 
 	}
 }
 
-const useGetOracle = ({ poolAddress, chainId }: { poolAddress?: string | null; chainId?: number }) => {
+const useGetOracle = ({ nftContractAddress, chainId }: { nftContractAddress?: string | null; chainId?: number }) => {
 	const config = chainConfig(chainId)
 
 	return useQuery<IOracleResponse | null, ITransactionError>(
-		['oracle', chainId, poolAddress],
-		() => fetchOracle({ api: config.quoteApi, poolAddress, isTestnet: config.isTestnet }),
+		['oracle', chainId, nftContractAddress],
+		() => fetchOracle({ api: config.quoteApi, nftContractAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}

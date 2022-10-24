@@ -30,7 +30,7 @@ const ManagePools: NextPage = () => {
 	const { openChainModal } = useChainModal()
 	const { mutate, isLoading, error } = useCreatePool()
 
-	const [poolAddress, setPoolAddress] = useState<string | null>(null)
+	const [nftContractAddress, setNftContractAddress] = useState<string | null>(null)
 	const [ltv, setLtv] = useState<number | null>(null)
 	const [minInterest, setMinInterest] = useState<number | null>(null)
 	const [maxInterest, setMaxInterest] = useState<number | null>(null)
@@ -79,16 +79,16 @@ const ManagePools: NextPage = () => {
 		}
 	}
 
-	const validPoolAddress = poolAddress ? new RegExp('^0x[a-fA-F0-9]{40}$').test(poolAddress) : null
+	const validPoolAddress = nftContractAddress ? new RegExp('^0x[a-fA-F0-9]{40}$').test(nftContractAddress) : null
 
-	const debouncedPoolAddress = useDebounce(validPoolAddress ? poolAddress : null, 200)
+	const debouncedNftContractAddress = useDebounce(validPoolAddress ? nftContractAddress : null, 200)
 	const debouncedMinInterest = useDebounce(!Number.isNaN(minInterest) ? Number(minInterest) : 0, 200)
 	const debouncedMaxInterest = useDebounce(!Number.isNaN(maxInterest) ? Number(maxInterest) : 0, 200)
 
 	const isInvalidInterests =
 		minInterest === null || maxInterest === null ? true : debouncedMaxInterest < debouncedMinInterest
 
-	const { data: oracle } = useGetOracle({ poolAddress: debouncedPoolAddress, chainId: chain?.id })
+	const { data: oracle } = useGetOracle({ nftContractAddress: debouncedNftContractAddress, chainId: chain?.id })
 
 	const maxPrice = getMaxPricePerNft({ oraclePrice: oracle?.price, ltv })
 
@@ -109,7 +109,7 @@ const ManagePools: NextPage = () => {
 						required
 						pattern="^0x[a-fA-F0-9]{40}$"
 						title="Enter valid address."
-						onChange={(e) => setPoolAddress(e.target.value)}
+						onChange={(e) => setNftContractAddress(e.target.value)}
 					/>
 
 					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />

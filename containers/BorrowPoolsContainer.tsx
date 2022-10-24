@@ -24,7 +24,7 @@ const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsC
 				{!chainId || !chainName ? (
 					<p className="fallback-text">Network not supported. No pools on {chainName || 'this network'}.</p>
 				) : isError ? (
-					<p className="fallback-text">Something went wrong, couldn't get pools on this network.</p>
+					<p className="fallback-text">Something went wrong, couldn't get pools on this networkk.</p>
 				) : isLoading ? (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{new Array(10).fill(1).map((_, index) => (
