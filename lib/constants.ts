@@ -3,7 +3,7 @@ import { allChains } from 'wagmi'
 import { FACTORY_ABI } from './factory.abi'
 import { POOL_ABI } from './pool.abi'
 
-const FACTORY_MAINNET = '0x4da4d56B1fe6716A055A7D3a8AD323DC321f9C75'
+const FACTORY_MAINNET = '0x55F9F26b3d7a4459205c70994c11775629530eA5'
 const FACTORY_GOERLI = '0x664885D29933c48728E85F5728808DffC40cb577'
 
 const ORACLE_MAINNET = '0x4096b3f0e89c06e98d1095da7aefdd4b38eeb1e0'
@@ -22,7 +22,7 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 		oracleAddress: ORACLE_MAINNET,
 		chainProvider: new providers.JsonRpcProvider('https://rpc.ankr.com/eth'),
 		isTestnet: false,
-		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend-mainnet'
+		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend'
 	},
 	5: {
 		ankrUrl: 'https://rpc.ankr.com/eth_goerli',
