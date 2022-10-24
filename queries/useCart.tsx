@@ -83,7 +83,11 @@ async function fetchCartItems({
 	chainId?: number | null
 }) {
 	try {
-		if (!contractAddress || !userAddress || !chainId) {
+		if (!userAddress) {
+			return []
+		}
+
+		if (!contractAddress || !chainId) {
 			throw new Error('Error: Invalid arguments')
 		}
 
