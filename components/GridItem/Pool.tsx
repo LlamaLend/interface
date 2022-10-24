@@ -5,22 +5,28 @@ import * as relativeTime from 'dayjs/plugin/relativeTime'
 import ItemWrapper from './ItemWrapper'
 import type { IBorrowPool } from '~/types'
 import { formatCurrentAnnualInterest } from '~/utils'
+import pools from '~/lib/pools'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
 
 interface IBorrowPoolItemProps {
 	data: IBorrowPool
+	chainId?: number | null
 	chainName: string
 }
 
-export function BorrowPoolItem({ data, chainName }: IBorrowPoolItemProps) {
+export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProps) {
+	const poolDeployer = pools[chainId || 1]?.find(
+		(pool) => pool.poolAddress.toLowerCase() === data.address.toLowerCase()
+	)?.deployerName
+
 	return (
 		<ItemWrapper>
 			<div className="relative -mx-4 -mt-4 mb-4 h-20 rounded-t-xl bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364]">
 				<span className="absolute -bottom-5 left-4 h-12 w-12 rounded-full bg-gradient-to-r from-[#141e30] to-[#243b55]"></span>
 			</div>
-			<h1>{data.name}</h1>
+			<h1>{data.name + (poolDeployer ? ` by ${poolDeployer}` : '')}</h1>
 
 			<div className="grid grid-cols-2 gap-3">
 				<p className="col-span-1 flex flex-col gap-1">

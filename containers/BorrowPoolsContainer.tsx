@@ -48,7 +48,7 @@ const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsC
 				) : (
 					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
 						{data.map((item) => (
-							<BorrowPoolItem key={item.address} data={item} chainName={chainName} />
+							<BorrowPoolItem key={item.address} data={item} chainName={chainName} chainId={chainId} />
 						))}
 					</GridWrapper>
 				)}

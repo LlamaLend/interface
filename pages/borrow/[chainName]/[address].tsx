@@ -15,6 +15,7 @@ import { useGetNftsList } from '~/queries/useNftsList'
 import { chainConfig } from '~/lib/constants'
 import { formatCurrentAnnualInterest } from '~/utils'
 import { useGetOracle } from '~/queries/useGetOracle'
+import pools from '~/lib/pools'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -40,6 +41,10 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 	})
 
 	const config = chainConfig(chainId)
+
+	const poolOwner = pools[chainId || 1].find(
+		(pool) => pool.deployerAddress.toLowerCase() === data?.owner?.toLowerCase()
+	)?.deployerName
 
 	return (
 		<>
@@ -72,7 +77,11 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 						rel="noreferrer noopener"
 						href={`${config.blockExplorer.url}/address/${data?.owner}`}
 					>
-						{data ? <span className="rounded bg-[#202020] px-1 py-0.5">{`${data.name} by ${data.owner}`}</span> : ''}
+						{data ? (
+							<span className="rounded bg-[#202020] px-1 py-0.5">{`${data.name} by ${poolOwner || data.owner}`}</span>
+						) : (
+							''
+						)}
 					</a>
 
 					<div className="mx-auto flex max-w-xl flex-col flex-wrap justify-center gap-4 md:flex-row  xl:max-w-7xl xl:items-center">
