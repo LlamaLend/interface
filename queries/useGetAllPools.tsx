@@ -53,7 +53,7 @@ async function getPoolAddlInfo({
 
 	const oracle = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
 
-	if (!oracle?.price) {
+	if (!oracle) {
 		throw new Error("Couldn't get oracle price")
 	}
 

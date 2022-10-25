@@ -45,7 +45,7 @@ export interface INftItem {
 export interface IOracleResponse {
 	deadline: number
 	normalizedNftContract: string
-	price: number | null
+	price: number
 	signature: {
 		r: string
 		s: string

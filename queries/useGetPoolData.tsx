@@ -51,7 +51,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 
 		const quote = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress: nftContract })
 
-		if (!quote?.price) {
+		if (!quote) {
 			throw new Error("Couldn't get oracle price")
 		}
 
