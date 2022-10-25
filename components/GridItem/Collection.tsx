@@ -11,7 +11,7 @@ export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemP
 	return (
 		<ItemWrapper>
 			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#202020]">
-				<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" />
+				<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" priority />
 			</div>
 
 			<h1>{data.name}</h1>
