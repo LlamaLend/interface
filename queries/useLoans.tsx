@@ -83,12 +83,7 @@ const loansByPoolQuery = (poolAddress: string) => gql`
 `
 
 const getImgUrls = async (url: string) => {
-	const data = await fetch(url, {
-		headers: {
-			'Content-Type': 'application/json',
-			'Access-Control-Allow-Origin': '*'
-		}
-	}).then((res) => res.json())
+	const data = await fetch(url).then((res) => res.json())
 
 	return data.image
 }
