@@ -19,7 +19,7 @@ interface IBorrowPoolItemProps {
 export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProps) {
 	const poolDeployer = pools[chainId || 1]?.find(
 		(pool) => pool.poolAddress.toLowerCase() === data.address.toLowerCase()
-	)?.deployerName
+	)?.ownerName
 
 	return (
 		<ItemWrapper>
