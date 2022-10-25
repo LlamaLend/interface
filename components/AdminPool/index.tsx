@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDebounce } from '~/hooks'
 import dynamic from 'next/dynamic'
+import { cx } from 'cva'
 import BeatLoader from '~/components/BeatLoader'
 import type { IBorrowPool } from '~/types'
 import { chainConfig } from '~/lib/constants'
@@ -14,6 +15,7 @@ import useSetOracle from '~/queries/admin/useSetOracle'
 import { IPoolUtilisationChartProps } from '~/components/Charts/PoolUtilisation'
 import useChangeInterest from '~/queries/admin/useChangeInterest'
 import { useAddLiquidator, useRemoveLiquidator } from '~/queries/admin/useLiquidator'
+import { useGetPoolData } from '~/queries/useGetPoolData'
 
 const PoolUtilisationChart = dynamic<IPoolUtilisationChartProps>(() => import('~/components/Charts/PoolUtilisation'), {
 	ssr: false,
@@ -32,6 +34,8 @@ export default function AdminPool({
 	disableActions: boolean
 }) {
 	const config = chainConfig(chainId)
+
+	const { data: poolAddlInfo, isLoading } = useGetPoolData({ chainId, poolAddress: data.address })
 
 	const { nftName, poolBalance, maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest, liquidators } =
 		data.adminPoolInfo
@@ -190,7 +194,9 @@ export default function AdminPool({
 			</p>
 
 			<h1 className="text-xs font-light text-gray-400">Borrowable Now</h1>
-			<p className="-mt-6 min-h-[1.5rem] break-all">{data.maxNftsToBorrow}</p>
+			<p className={cx('-mt-6 min-h-[1.5rem] break-all', isLoading ? 'placeholder-box w-20' : '')}>
+				{poolAddlInfo?.maxNftsToBorrow}
+			</p>
 
 			<form
 				onSubmit={(e) => {
