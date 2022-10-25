@@ -27,7 +27,12 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 			}
 		}
 
-		const res = await fetch(`${api}/${nftContractAddress}`).then((res) => res.json())
+		const res = await fetch(`${api}/${nftContractAddress}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*'
+			}
+		}).then((res) => res.json())
 
 		return { ...res, price: Number(res.price) }
 	} catch (error: any) {
