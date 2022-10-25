@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { useQuery } from '@tanstack/react-query'
+import { request, gql } from 'graphql-request'
 import { IBorrowPoolData, IContractReadConfig, ITransactionError } from '~/types'
 import { chainConfig } from '~/lib/constants'
 import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
@@ -11,9 +12,10 @@ interface IGetPoolDataArgs {
 	chainId?: number | null
 	isTestnet: boolean
 	quoteApi: string
+	graphEndpoint: string
 }
 
-export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IGetPoolDataArgs) {
+export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, graphEndpoint }: IGetPoolDataArgs) {
 	try {
 		if (!chainId || !contractArgs) {
 			return null
@@ -27,7 +29,25 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 
 		const contract = new ethers.Contract(address, abi, provider)
 
-		const [
+		const { pools } = await request(
+			graphEndpoint,
+			gql`
+					query {
+						pools (where: { address: "${address.toLowerCase()}" }) {
+							name
+							symbol
+							maxLoanLength
+							minimumInterest
+							maxVariableInterestPerEthPerSecond
+							ltv
+							nftContract
+							owner
+						}
+					}
+				`
+		)
+
+		const {
 			name,
 			symbol,
 			maxLoanLength,
@@ -36,16 +56,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet }: IG
 			ltv,
 			nftContract,
 			owner
-		]: Array<string> = await Promise.all([
-			contract.name(),
-			contract.symbol(),
-			contract.maxLoanLength(),
-			contract.minimumInterest(),
-			contract.maxVariableInterestPerEthPerSecond(),
-			contract.ltv(),
-			contract.nftContract(),
-			contract.owner()
-		])
+		} = pools[0]
 
 		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
 
@@ -95,7 +106,14 @@ export function useGetPoolData({ chainId, poolAddress }: { chainId?: number | nu
 
 	return useQuery<IBorrowPoolData | null, ITransactionError>(
 		['pool', chainId, poolAddress],
-		() => getPool({ contractArgs, chainId, quoteApi: config.quoteApi, isTestnet: config.isTestnet }),
+		() =>
+			getPool({
+				contractArgs,
+				chainId,
+				quoteApi: config.quoteApi,
+				isTestnet: config.isTestnet,
+				graphEndpoint: config.subgraphUrl
+			}),
 		{
 			refetchInterval: 30_000
 		}

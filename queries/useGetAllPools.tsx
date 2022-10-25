@@ -6,27 +6,14 @@ import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
 import type { IBorrowPool, Provider, ITransactionError, IGetAdminPoolDataArgs } from '~/types'
 import { chainConfig, SECONDS_IN_A_YEAR } from '~/lib/constants'
-import { fetchOracle } from './useGetOracle'
-import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
 
 interface IGetAllPoolsArgs {
 	endpoint: string
 	poolAbi: ContractInterface
 	quoteApi: string
-	isTestnet: boolean
 	provider: Provider
 	collectionAddress?: string
 	ownerAddress?: string
-}
-
-interface IPoolInterestPerNft {
-	poolAddress: string
-	nftContractAddress: string
-	quoteApi: string
-	isTestnet: boolean
-	poolAbi: ContractInterface
-	provider: Provider
-	ltv: string
 }
 
 interface IPoolsQueryResponse {
@@ -40,35 +27,7 @@ interface IPoolsQueryResponse {
 	}>
 }
 
-async function getPoolAddlInfo({
-	poolAddress,
-	nftContractAddress,
-	quoteApi,
-	isTestnet,
-	poolAbi,
-	provider,
-	ltv
-}: IPoolInterestPerNft) {
-	const contract = new ethers.Contract(poolAddress, poolAbi, provider)
-
-	const oracle = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
-
-	if (!oracle) {
-		throw new Error("Couldn't get oracle price")
-	}
-
-	const [interest, { maxInstantBorrow }] = await Promise.all([
-		contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: oracle.price, noOfItems: 1, ltv: Number(ltv) })),
-		contract.getDailyBorrows()
-	])
-
-	return {
-		currentAnnualInterest: Number(interest),
-		oraclePrice: Number(oracle.price),
-		maxInstantBorrow: Number(maxInstantBorrow)
-	}
-}
-
+// TODO fetch this inside useGetPoolData
 async function getAdminPoolInfo({
 	poolAddress,
 	poolAbi,
@@ -187,7 +146,6 @@ const getAllPoolsByOwner = (ownerAddress: string) => gql`
 export async function getAllpools({
 	endpoint,
 	quoteApi,
-	isTestnet,
 	provider,
 	poolAbi,
 	collectionAddress,
@@ -258,7 +216,6 @@ export function useGetAllPools({
 				endpoint: config.subgraphUrl,
 				poolAbi: config.poolABI,
 				quoteApi: config.quoteApi,
-				isTestnet: config.isTestnet,
 				provider: config.chainProvider,
 				collectionAddress,
 				ownerAddress
