@@ -103,7 +103,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 													<span className="flex items-center gap-4">
 														<div className="relative aspect-square h-10 rounded bg-[#111111]">
 															{loan.imgUrl !== '' && (
-																<Image src={loan.imgUrl} fill alt="" className="aspect-square rounded-t-xl" />
+																<Image src={loan.imgUrl} fill alt="" className="aspect-square rounded" />
 															)}
 														</div>
 
