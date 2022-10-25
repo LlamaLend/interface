@@ -212,20 +212,6 @@ export async function getAllpools({
 				: getAllPoolsQuery()
 		)
 
-		const addlInfo = await Promise.all(
-			pools.map((pool) =>
-				getPoolAddlInfo({
-					quoteApi,
-					isTestnet,
-					poolAddress: pool.address,
-					nftContractAddress: pool.nftContract,
-					ltv: pool.ltv,
-					poolAbi,
-					provider
-				})
-			)
-		)
-
 		const adminPoolInfo = ownerAddress
 			? await Promise.all(
 					pools.map((pool) =>
@@ -240,23 +226,15 @@ export async function getAllpools({
 			  )
 			: await Promise.resolve([])
 
-		return pools
-			.map((pool, index) => ({
-				name: pool.name,
-				symbol: pool.symbol,
-				address: getAddress(pool.address),
-				nftContract: getAddress(pool.nftContract),
-				maxLoanLength: Number(pool.maxLoanLength),
-				ltv: Number(pool.ltv),
-				currentAnnualInterest: addlInfo[index].currentAnnualInterest,
-				maxNftsToBorrow: getMaxNftsToBorrow({
-					maxInstantBorrow: addlInfo[index].maxInstantBorrow,
-					oraclePrice: addlInfo[index].oraclePrice,
-					ltv: Number(pool.ltv)
-				}),
-				adminPoolInfo: adminPoolInfo?.[index] ?? {}
-			}))
-			.sort((a, b) => b.maxNftsToBorrow - a.maxNftsToBorrow)
+		return pools.map((pool, index) => ({
+			name: pool.name,
+			symbol: pool.symbol,
+			address: getAddress(pool.address),
+			nftContract: getAddress(pool.nftContract),
+			maxLoanLength: Number(pool.maxLoanLength),
+			ltv: Number(pool.ltv),
+			adminPoolInfo: adminPoolInfo?.[index] ?? {}
+		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pools"))
 	}

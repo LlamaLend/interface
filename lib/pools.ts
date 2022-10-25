@@ -19,12 +19,12 @@ const pools: IPools = {
 			poolAddress: '0x4a71de77dC7B269e942ab2fE5539605f3a2ab61A'
 		},
 		{
-			ownerName: 'deepname99',
+			ownerName: 'janitooor',
 			ownerAddress: '0xe822ecac55a3a20bb4b24cdd83401eaa73dd3bb4',
 			poolAddress: '0x5bdbb7c0669e67760c19f26e67afc95569157f09'
 		},
 		{
-			ownerName: 'deepname99',
+			ownerName: 'janitooor',
 			ownerAddress: '0xe822ecac55a3a20bb4b24cdd83401eaa73dd3bb4',
 			poolAddress: '0x5ca32c8bc7ddb96c87b844f7204a74659448f446'
 		}

@@ -59,8 +59,6 @@ export interface IBorrowPool {
 	address: string
 	maxLoanLength: number
 	ltv: number
-	currentAnnualInterest: number
-	maxNftsToBorrow: number
 	nftContract: string
 	adminPoolInfo: {
 		key: string

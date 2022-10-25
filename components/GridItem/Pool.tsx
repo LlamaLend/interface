@@ -4,6 +4,7 @@ import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import ItemWrapper from './ItemWrapper'
 import type { IBorrowPool } from '~/types'
+import { useGetPoolData } from '~/queries/useGetPoolData'
 import { formatCurrentAnnualInterest } from '~/utils'
 import pools from '~/lib/pools'
 
@@ -20,6 +21,8 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 	const poolDeployer = pools[chainId || 1]?.find(
 		(pool) => pool.poolAddress.toLowerCase() === data.address.toLowerCase()
 	)?.ownerName
+
+	const { data: poolAddlInfo, isLoading } = useGetPoolData({ chainId, poolAddress: data.address })
 
 	return (
 		<ItemWrapper>
@@ -40,11 +43,13 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 				</p>
 				<p className="col-span-1 flex flex-col gap-1">
 					<span className="text-xs font-light text-gray-400">Current Interest</span>
-					<span>{formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.</span>
+					<span className={isLoading ? 'placeholder-box h-6 w-20' : ''}>
+						{poolAddlInfo ? `${formatCurrentAnnualInterest(poolAddlInfo.currentAnnualInterest)}% p.a.` : ''}
+					</span>
 				</p>
 				<p className="col-span-1 flex flex-col items-end gap-1">
 					<span className="text-xs font-light text-gray-400">Borrowable Now</span>
-					<span>{data.maxNftsToBorrow}</span>
+					<span className={isLoading ? 'placeholder-box h-6 w-20' : ''}>{poolAddlInfo?.maxNftsToBorrow}</span>
 				</p>
 			</div>
 
