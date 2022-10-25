@@ -102,8 +102,8 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 												<td className="whitespace-nowrap px-4 py-2">
 													<span className="flex items-center gap-4">
 														<div className="relative aspect-square h-10 rounded bg-[#111111]">
-															{loan.tokenUri !== '' && (
-																<Image src={loan.tokenUri} fill alt="" className="aspect-square rounded-t-xl" />
+															{loan.imgUrl !== '' && (
+																<Image src={loan.imgUrl} fill alt="" className="aspect-square rounded-t-xl" />
 															)}
 														</div>
 

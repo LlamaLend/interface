@@ -122,7 +122,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 						<ItemsPlaceholder />
 					) : (
 						<ul className="flex flex-col gap-4">
-							{cartItems?.map(({ id, tokenUri, toPay, pool }) => (
+							{cartItems?.map(({ id, imgUrl, toPay, pool }) => (
 								<li key={id} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
 										className="absolute -top-2 -left-1.5 z-10 h-5 w-5 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
@@ -141,7 +141,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 									</button>
 
 									<div className="relative aspect-square h-10 w-10 rounded bg-[#202020]">
-										{tokenUri !== '' && <Image src={tokenUri} fill alt="" className="aspect-square rounded-t-xl" />}
+										{imgUrl !== '' && <Image src={imgUrl} fill alt="" className="aspect-square rounded-t-xl" />}
 									</div>
 
 									<span className="flex flex-col flex-wrap justify-between gap-1">

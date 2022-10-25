@@ -55,6 +55,7 @@ const connectors = connectorsForWallets([
 ])
 
 const wagmiClient = createClient({
+	autoConnect: process.env.NEXT_PUBLIC_SAFE === 'true' ? false : true,
 	connectors,
 	provider
 })

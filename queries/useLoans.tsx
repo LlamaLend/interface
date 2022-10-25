@@ -82,6 +82,17 @@ const loansByPoolQuery = (poolAddress: string) => gql`
 	}
 `
 
+const getImgUrls = async (url: string) => {
+	const data = await fetch(url, {
+		headers: {
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*'
+		}
+	}).then((res) => res.json())
+
+	return data.image
+}
+
 async function getLoans({
 	endpoint,
 	userAddress,
@@ -107,8 +118,10 @@ async function getLoans({
 			poolAddress ? loansByPoolQuery(poolAddress) : userLoansQuery(userAddress)
 		)
 
+		const loanImgUrls = await Promise.all(loans.map(({ tokenUri }) => getImgUrls(tokenUri)))
+
 		return loans
-			.map((loan) => ({
+			.map((loan, index) => ({
 				id: loan.id,
 				loanId: loan.loanId,
 				nftId: loan.nftId,
@@ -117,7 +130,7 @@ async function getLoans({
 				borrowed: loan.borrowed,
 				toPay: infoToRepayLoan(loan),
 				deadline: Number(loan.deadline) * 1000,
-				tokenUri: isTestnet ? '' : loan.tokenUri,
+				imgUrl: isTestnet ? '' : loanImgUrls[index],
 				owner: loan.owner,
 				pool: {
 					...loan.pool,

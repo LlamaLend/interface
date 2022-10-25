@@ -106,7 +106,7 @@ export interface ILoan {
 	borrowed: string
 	toPay: number
 	deadline: number
-	tokenUri: string
+	imgUrl: string
 	owner: string
 	pool: {
 		name: string
