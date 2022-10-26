@@ -3,7 +3,7 @@ import { FormEvent, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
-import { erc721ABI, useAccount, useContractRead, useNetwork } from 'wagmi'
+import { useAccount, useContractRead, useNetwork } from 'wagmi'
 import { InputNumber, InputText } from '~/components/Form'
 import Layout from '~/components/Layout'
 import { IPoolUtilisationChartProps } from '~/components/Charts/PoolUtilisation'
@@ -13,6 +13,7 @@ import { FormNames, useCreatePool } from '~/queries/useCreatePool'
 import { useDebounce } from '~/hooks'
 import { formatCreatePoolFormInputs, getMaxPricePerNft } from '~/utils'
 import { useGetOracle } from '~/queries/useGetOracle'
+import { ERC721_ABI } from '~/lib/constants'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -97,10 +98,10 @@ const ManagePools: NextPage = () => {
 		isLoading: checkingSupportedContract,
 		isError: errorCheckingSupportedContract
 	} = useContractRead({
-		contractInterface: erc721ABI,
+		contractInterface: ERC721_ABI,
 		addressOrName: nftContractAddress as string,
 		functionName: 'supportsInterface',
-		args: ['0x80ac58cd'],
+		args: '0x80ac58cd',
 		enabled: validCollectionAddress && isConnected && !chain?.unsupported ? true : false
 	})
 

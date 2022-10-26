@@ -2,6 +2,7 @@ import { providers } from 'ethers'
 import { allChains } from 'wagmi'
 import { FACTORY_ABI } from './factory.abi'
 import { POOL_ABI } from './pool.abi'
+import { ERC721_ABI } from './erc721.abi'
 
 const FACTORY_MAINNET = '0x55F9F26b3d7a4459205c70994c11775629530eA5'
 const FACTORY_GOERLI = '0x664885D29933c48728E85F5728808DffC40cb577'
@@ -54,6 +55,7 @@ export interface IChainConfig {
 }
 
 export const LOCAL_STORAGE_KEY = 'llamalend'
+export { POOL_ABI, FACTORY_ABI, ERC721_ABI }
 
 export const SECONDS_IN_A_YEAR = 365 * 24 * 60 * 60
 export const SECONDS_IN_A_DAY = 24 * 60 * 60
