@@ -61,7 +61,7 @@ export function useBorrow({
 		functionName: 'borrow',
 		args: [
 			[...cartTokenIds],
-			(oracle?.price ?? 0).toFixed(0),
+			oracle?.price,
 			oracle?.deadline,
 			maxInterest,
 			totalReceived,
