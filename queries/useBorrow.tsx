@@ -55,6 +55,8 @@ export function useBorrow({
 
 	const txConfirmingId = useRef<string>()
 
+	console.log(oracle?.price, oracle?.price.toFixed(0))
+
 	const { config: contractConfig } = usePrepareContractWrite({
 		addressOrName: poolAddress,
 		contractInterface: config.poolABI,
