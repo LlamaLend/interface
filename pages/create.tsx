@@ -161,8 +161,8 @@ const ManagePools: NextPage = () => {
 					<InputNumber
 						name="maxPrice"
 						placeholder="0.03"
-						label={`Maximum price per NFT`}
-						helperText={`Maximum ${chainSymbol} people should be able to borrow per NFT. This can be changed afterwards.`}
+						label={`Maximum floor price`}
+						helperText={`Maximum floor price (in ${chainSymbol}) that will be allowed in the oracle. If oracle returns a higher price than this borrows will be disabled. This can be changed afterwards.`}
 						defaultValue={maxPrice}
 						required
 					/>
