@@ -124,9 +124,9 @@ export function getMaxNftsToBorrow({
 		return '0'
 	}
 
-	const formattedLtv = new BigNumber(ltv).div(1e18).toString()
+	const formattedLtv = new BigNumber(ltv).div(1e18)
 
-	const price = new BigNumber(oraclePrice).multipliedBy(formattedLtv).toString()
+	const price = new BigNumber(oraclePrice).times(formattedLtv)
 
 	return new BigNumber(maxInstantBorrow).div(price).toFixed(0)
 }
