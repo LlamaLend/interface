@@ -13,7 +13,7 @@ export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: string; ltv: 
 
 // returns currentAnnualInterest
 export function formatCurrentAnnualInterest(currentAnnualInterest: string) {
-	return new BigNumber(currentAnnualInterest).div(1e16).toFixed(2)
+	return new BigNumber(currentAnnualInterest.toString()).div(1e16).toFixed(2)
 }
 
 // returns currentAnnualInterest arg that is passed in a contracts method
@@ -128,7 +128,7 @@ export function getMaxNftsToBorrow({
 
 	const price = new BigNumber(oraclePrice).times(formattedLtv)
 
-	return new BigNumber(maxInstantBorrow).div(price).toFixed(0)
+	return new BigNumber(maxInstantBorrow.toString()).div(price).toFixed(0)
 }
 
 export function formatLoanDeadline(deadline: number) {
