@@ -1,6 +1,9 @@
 import * as React from 'react'
 import Image from 'next/future/image'
+import { useNetwork } from 'wagmi'
+import { useChainModal } from '@rainbow-me/rainbowkit'
 import BeatLoader from '~/components/BeatLoader'
+import Tooltip from '~/components/Tooltip'
 import ItemsPlaceholder from './Placeholder'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
@@ -11,10 +14,8 @@ import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
 import { formatErrorMsg } from './utils'
 import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from '~/utils'
-import { useNetwork } from 'wagmi'
-import { useChainModal } from '@rainbow-me/rainbowkit'
+
 import { chainConfig } from '~/lib/constants'
-import Tooltip from '~/components/Tooltip'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
 	const { chain } = useNetwork()
@@ -218,7 +219,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 									) : (
 										<span>
-											{Number(totalReceived) / 1e18} {chainSymbol}
+											{(Number(totalReceived) / 1e18).toFixed(4)} {chainSymbol}
 										</span>
 									)}
 								</span>
