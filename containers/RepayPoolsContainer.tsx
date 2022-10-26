@@ -9,6 +9,7 @@ import { useGetLoans } from '~/queries/useLoans'
 import { formatLoanDeadline } from '~/utils'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import { RepayCart } from '~/components/Cart'
+import Tooltip from '~/components/Tooltip'
 
 interface ILoansContainerProps {
 	chainId?: number | null
@@ -64,7 +65,29 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 								<tr>
 									<th className="rounded-tl-xl p-4 pl-[4.5rem] text-left font-normal text-[#989898]">Token Id</th>
 									<th className="p-4 text-left font-normal text-[#989898]">Pool</th>
-									<th className="p-4 text-left font-normal text-[#989898]">To Pay</th>
+									<th className="relative flex flex-col gap-1 p-4 text-left font-normal text-[#989898]">
+										<span>To Pay</span>
+										<span className="flex flex-nowrap items-center gap-[2px] text-xs">
+											<span className="whitespace-nowrap">(Initial Borrowed</span> <span>+</span>
+											<span className="whitespace-nowrap">Interest Accrued</span> <span>+</span>
+											<Tooltip content="We add a small buffer to account for the interest accrued from the time when transaction is sent to when it is included on-chain (eg: if tx stays for 1 hour in the mempool it will need to pay interest for 1 extra hour). All excess ETH is returned automatically in the repayment tx.">
+												Buffer
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+													className="h-4 w-4"
+												>
+													<path
+														fillRule="evenodd"
+														d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 11-1.061-1.061 3 3 0 112.871 5.026v.345a.75.75 0 01-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 108.94 6.94zM10 15a1 1 0 100-2 1 1 0 000 2z"
+														clipRule="evenodd"
+													/>
+												</svg>
+												)
+											</Tooltip>
+										</span>
+									</th>
 									<th className="p-4 text-left font-normal text-[#989898]">Deadline</th>
 									<th className="rounded-tr-xl p-4 text-left font-normal text-[#989898]"></th>
 								</tr>

@@ -6,7 +6,6 @@ import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query
 import type { DehydratedState } from '@tanstack/react-query'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
-import { publicProvider } from 'wagmi/providers/public'
 import { connectorsForWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { injectedWallet, rainbowWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
@@ -28,8 +27,7 @@ const { chains, provider } = configureChains(
 					return { http: CHAINS_CONFIGURATION[5].ankrUrl }
 				} else return { http: chain.rpcUrls.default }
 			}
-		}),
-		publicProvider()
+		})
 	]
 )
 
