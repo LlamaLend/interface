@@ -207,8 +207,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 					<h2 className="-mt-1.5 -mb-3 text-sm font-medium">Loan Details</h2>
 
-					{/* These values are always truth as error and loading states are handles, but adding a check satisfy typescript compiler  */}
-					{cartItemsList && oracle && cartItemsList?.length > 0 && oracle?.price && (
+					{/* These values are always truth as error and loading states are handled, but adding a check satisfy typescript compiler  */}
+					{cartItemsList && oracle && cartItemsList?.length > 0 && oracle && (
 						<ul className="flex flex-col gap-4">
 							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 								<span className="font-base text-[#989898]">You Receive</span>

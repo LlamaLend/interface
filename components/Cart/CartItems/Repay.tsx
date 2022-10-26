@@ -141,7 +141,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 									</button>
 
 									<div className="relative aspect-square h-10 w-10 rounded bg-[#202020]">
-										{imgUrl !== '' && <Image src={imgUrl} fill alt="" className="aspect-square rounded-t-xl" />}
+										{imgUrl !== '' && <Image src={imgUrl} fill alt="" className="aspect-square rounded" />}
 									</div>
 
 									<span className="flex flex-col flex-wrap justify-between gap-1">
