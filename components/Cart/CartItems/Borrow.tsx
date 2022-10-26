@@ -236,7 +236,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
 										<span>
-											{currentAnnualInterest && `${formatCurrentAnnualInterest(Number(currentAnnualInterest))}% p.a.`}
+											{currentAnnualInterest && `${formatCurrentAnnualInterest(Number(currentAnnualInterest))}% APR`}
 										</span>
 									)}
 								</span>

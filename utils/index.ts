@@ -126,7 +126,7 @@ export function formatLoanDeadline(deadline: number) {
 	const isExpired = deadline - Date.now() <= 0 ? true : false
 
 	// @ts-ignore
-	return isExpired ? 'Expired' : dayjs(deadline).toNow(true)
+	return isExpired ? 'Expired' : dayjs(deadline).toNow(true) + ' left'
 }
 
 export function getLoansPayableAmount(totalToRepay: number) {

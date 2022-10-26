@@ -44,7 +44,7 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 				<p className="col-span-1 flex flex-col gap-1">
 					<span className="text-xs font-light text-gray-400">Current Interest</span>
 					<span className={isLoading ? 'placeholder-box h-6 w-20' : ''}>
-						{poolAddlInfo ? `${formatCurrentAnnualInterest(poolAddlInfo.currentAnnualInterest)}% p.a.` : ''}
+						{poolAddlInfo ? `${formatCurrentAnnualInterest(poolAddlInfo.currentAnnualInterest)}% APR` : ''}
 					</span>
 				</p>
 				<p className="col-span-1 flex flex-col items-end gap-1">

@@ -93,7 +93,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{data ? `${formatCurrentAnnualInterest(data.currentAnnualInterest)}% p.a.` : ''}
+								{data ? `${formatCurrentAnnualInterest(data.currentAnnualInterest)}% APR` : ''}
 							</p>
 						</div>
 
