@@ -3,7 +3,7 @@ import { FormEvent, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
-import { useAccount, useNetwork } from 'wagmi'
+import { erc721ABI, useAccount, useContractRead, useNetwork } from 'wagmi'
 import { InputNumber, InputText } from '~/components/Form'
 import Layout from '~/components/Layout'
 import { IPoolUtilisationChartProps } from '~/components/Charts/PoolUtilisation'
@@ -79,9 +79,9 @@ const ManagePools: NextPage = () => {
 		}
 	}
 
-	const validPoolAddress = nftContractAddress ? new RegExp('^0x[a-fA-F0-9]{40}$').test(nftContractAddress) : null
+	const validCollectionAddress = nftContractAddress ? new RegExp('^0x[a-fA-F0-9]{40}$').test(nftContractAddress) : null
 
-	const debouncedNftContractAddress = useDebounce(validPoolAddress ? nftContractAddress : null, 200)
+	const debouncedNftContractAddress = useDebounce(validCollectionAddress ? nftContractAddress : null, 200)
 	const debouncedMinInterest = useDebounce(!Number.isNaN(minInterest) ? Number(minInterest) : 0, 200)
 	const debouncedMaxInterest = useDebounce(!Number.isNaN(maxInterest) ? Number(maxInterest) : 0, 200)
 
@@ -91,6 +91,18 @@ const ManagePools: NextPage = () => {
 	const { data: oracle } = useGetOracle({ nftContractAddress: debouncedNftContractAddress, chainId: chain?.id })
 
 	const maxPrice = getMaxPricePerNft({ oraclePrice: oracle?.price, ltv })
+
+	const {
+		data: supportsInterface,
+		isLoading: checkingSupportedContract,
+		isError: errorCheckingSupportedContract
+	} = useContractRead({
+		contractInterface: erc721ABI,
+		addressOrName: nftContractAddress as string,
+		functionName: 'supportsInterface',
+		args: ['0x80ac58cd'],
+		enabled: validCollectionAddress && isConnected && !chain?.unsupported ? true : false
+	})
 
 	return (
 		<div>
@@ -111,6 +123,15 @@ const ManagePools: NextPage = () => {
 						title="Enter valid address."
 						onChange={(e) => setNftContractAddress(e.target.value)}
 					/>
+
+					{!errorCheckingSupportedContract &&
+						!checkingSupportedContract &&
+						!supportsInterface &&
+						validCollectionAddress && (
+							<small className="-mt-6 text-left text-red-500">
+								Creating a pool on ERC1155 contract is not supported.
+							</small>
+						)}
 
 					<InputText name="name" placeholder="TubbyLoans" label={'Name of the loan NFTs'} required />
 
@@ -206,7 +227,7 @@ const ManagePools: NextPage = () => {
 					) : (
 						<button
 							className="rounded-lg bg-[#243b55] p-2 text-white disabled:cursor-not-allowed"
-							disabled={isLoading || !isConnected || chain?.unsupported || isInvalidInterests}
+							disabled={isLoading || !isConnected || chain?.unsupported || isInvalidInterests || !supportsInterface}
 						>
 							{isLoading ? <BeatLoader color="white" /> : 'Create'}
 						</button>

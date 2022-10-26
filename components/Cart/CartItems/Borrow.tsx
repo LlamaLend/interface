@@ -14,6 +14,7 @@ import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from 
 import { useNetwork } from 'wagmi'
 import { useChainModal } from '@rainbow-me/rainbowkit'
 import { chainConfig } from '~/lib/constants'
+import Tooltip from '~/components/Tooltip'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
 	const { chain } = useNetwork()
@@ -224,7 +225,10 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							</li>
 
 							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-								<span className="font-base text-[#989898]">Interest</span>
+								<span className="font-base flex items-center gap-1 text-[#989898]">
+									<span>Interest</span>
+									<Tooltip />
+								</span>
 								<span className="ml-auto flex gap-1.5">
 									{/* Show placeholder when fetching interest rates */}
 									{fetchingPoolData ? (
@@ -238,13 +242,13 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							</li>
 
 							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-								<span className="font-base text-[#989898]">Deadline</span>
+								<span className="font-base text-[#989898]">Repay Deadline</span>
 								<span className="ml-auto flex gap-1.5">
 									{/* Show placeholder when fetching quotation */}
-									{fetchingOracle ? (
+									{fetchingPoolData ? (
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
-										<span>{new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleString()}</span>
+										<span>{poolData && new Date(Date.now() + poolData.maxLoanLength * 1000).toLocaleString()}</span>
 									)}
 								</span>
 							</li>
