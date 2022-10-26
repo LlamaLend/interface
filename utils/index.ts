@@ -7,7 +7,7 @@ import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
 dayjs.extend(relativeTime)
 
 // returns item quote price in 'ether'
-export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: number; ltv: number }) {
+export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: string; ltv: number }) {
 	return new BigNumber(oraclePrice).times(ltv).div(1e18).div(1e18).toFixed(4)
 }
 
@@ -22,7 +22,7 @@ export function getTotalReceivedArg({
 	noOfItems,
 	ltv
 }: {
-	oraclePrice: number
+	oraclePrice: string
 	noOfItems: number
 	ltv: number
 }) {

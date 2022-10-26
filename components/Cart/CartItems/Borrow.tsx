@@ -78,7 +78,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	const isApproved = isApprovedForAll || approvalTxOnChain?.status === 1 ? true : false
 
 	const totalReceived = getTotalReceivedArg({
-		oraclePrice: oracle?.price ?? 0,
+		oraclePrice: oracle?.price ?? '0',
 		noOfItems: cartTokenIds.length,
 		ltv: poolData?.ltv ?? 0
 	})
@@ -196,7 +196,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 											className="object-contain"
 											alt="ethereum"
 										/>
-										<span>{getQuotePrice({ oraclePrice: oracle?.price ?? 0, ltv: poolData?.ltv ?? 0 })}</span>
+										<span>{getQuotePrice({ oraclePrice: oracle?.price ?? '0', ltv: poolData?.ltv ?? 0 })}</span>
 									</span>
 								</li>
 							))}

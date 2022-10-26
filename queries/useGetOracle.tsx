@@ -17,7 +17,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 
 		if (isTestnet) {
 			return {
-				price: 10000000000000000,
+				price: '10000000000000000',
 				deadline: 1667412882,
 				normalizedNftContract: '0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b',
 				signature: {
