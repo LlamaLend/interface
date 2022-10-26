@@ -30,8 +30,6 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
-		console.log({ res })
-
 		return { ...res, price: Number(res.price) }
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't fetch quote"))
