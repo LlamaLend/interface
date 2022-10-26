@@ -13,7 +13,7 @@ import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
 interface IUseBorrowProps {
 	poolAddress: string
 	cartTokenIds: Array<number>
-	maxInterest?: number
+	maxInterest?: string
 	totalReceived: string
 	enabled: boolean
 	chainId?: number

@@ -13,8 +13,8 @@ export const BorrowNftItem = ({
 	chainId
 }: {
 	data: INftItem
-	oraclePrice: number
-	ltv: number
+	oraclePrice: string
+	ltv: string
 	contractAddress: string
 	chainId?: number
 }) => {

@@ -78,14 +78,14 @@ export interface IBorrowPool {
 export interface IBorrowPoolData {
 	name: string
 	symbol: string
-	maxLoanLength: number
-	currentAnnualInterest: number
-	maxVariableInterestPerEthPerSecond: number
-	ltv: number
+	maxLoanLength: string
+	currentAnnualInterest: string
+	maxVariableInterestPerEthPerSecond: string
+	ltv: string
 	nftContract: string
 	nftName: string
 	owner: string
-	maxNftsToBorrow: number
+	maxNftsToBorrow: string
 }
 
 export interface IGetAdminPoolDataArgs {

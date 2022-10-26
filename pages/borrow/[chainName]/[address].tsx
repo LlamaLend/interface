@@ -16,6 +16,7 @@ import { chainConfig } from '~/lib/constants'
 import { formatCurrentAnnualInterest } from '~/utils'
 import { useGetOracle } from '~/queries/useGetOracle'
 import pools from '~/lib/pools'
+import BigNumber from 'bignumber.js'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -119,7 +120,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 									isLoading ? 'placeholder-box w-full max-w-[100px]' : ''
 								)}
 							>
-								{data ? data.ltv / 1e16 + '%' : ''}
+								{data ? new BigNumber(data.ltv).div(1e16) + '%' : ''}
 							</p>
 						</div>
 
@@ -171,7 +172,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 										<BorrowNftItem
 											key={nftData.tokenId}
 											data={nftData}
-											oraclePrice={oracle?.price ?? 0}
+											oraclePrice={oracle?.price ?? '0'}
 											ltv={data.ltv}
 											contractAddress={data.nftContract}
 											chainId={chainId}

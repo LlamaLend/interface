@@ -6,6 +6,7 @@ import { chainConfig } from '~/lib/constants'
 import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
 import { fetchOracle } from './useGetOracle'
 import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
+import BigNumber from 'bignumber.js'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
@@ -67,7 +68,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 		}
 
 		const [currentAnnualInterest, { maxInstantBorrow }, nftName] = await Promise.all([
-			contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote.price, noOfItems: 1, ltv: Number(ltv) })),
+			contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote.price, noOfItems: 1, ltv })),
 			contract.getDailyBorrows(),
 			nftContractInterface.name()
 		])
@@ -75,17 +76,19 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 		return {
 			name,
 			symbol,
-			maxLoanLength: Number(maxLoanLength),
-			currentAnnualInterest: Number(currentAnnualInterest),
-			maxVariableInterestPerEthPerSecond: Number(maxVariableInterestPerEthPerSecond) + Number(minimumInterest),
-			ltv: Number(ltv),
+			maxLoanLength,
+			currentAnnualInterest,
+			maxVariableInterestPerEthPerSecond: new BigNumber(maxVariableInterestPerEthPerSecond)
+				.plus(minimumInterest)
+				.toString(),
+			ltv,
 			nftContract,
 			nftName,
 			owner,
 			maxNftsToBorrow: getMaxNftsToBorrow({
-				maxInstantBorrow: Number(maxInstantBorrow),
+				maxInstantBorrow,
 				oraclePrice: quote.price,
-				ltv: Number(ltv)
+				ltv
 			})
 		}
 	} catch (error: any) {

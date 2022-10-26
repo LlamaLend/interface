@@ -7,13 +7,13 @@ import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
 dayjs.extend(relativeTime)
 
 // returns item quote price in 'ether'
-export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: string; ltv: number }) {
+export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: string; ltv: string }) {
 	return new BigNumber(oraclePrice).times(ltv).div(1e18).div(1e18).toFixed(4)
 }
 
 // returns currentAnnualInterest
-export function formatCurrentAnnualInterest(currentAnnualInterest: number) {
-	return (currentAnnualInterest / 1e16).toFixed(2)
+export function formatCurrentAnnualInterest(currentAnnualInterest: string) {
+	return new BigNumber(currentAnnualInterest).div(1e16).toFixed(2)
 }
 
 // returns currentAnnualInterest arg that is passed in a contracts method
@@ -24,7 +24,7 @@ export function getTotalReceivedArg({
 }: {
 	oraclePrice: string
 	noOfItems: number
-	ltv: number
+	ltv: string
 }) {
 	return new BigNumber(oraclePrice).times(noOfItems).times(ltv).div(1e18).toFixed(0)
 }
@@ -95,14 +95,19 @@ export const formateInterestChange = (
 }
 
 // returns 66% of an nft's oracle price that is populated in create pool form's maxPricePerNft input field
-export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: number | null; ltv?: number | null }) {
+export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: string | null; ltv?: number | null }) {
 	if (!oraclePrice || !ltv) {
 		return ''
 	}
 
+	const formattedOraclePrice = new BigNumber(oraclePrice).div(1e18).toString()
+
 	const ltvRatio = ltv / 100
 
-	return (((oraclePrice / 1e18) * (1 / ltvRatio + 1)) / 2).toFixed(4)
+	return new BigNumber(formattedOraclePrice)
+		.multipliedBy(1 / ltvRatio + 1)
+		.div(2)
+		.toFixed(4)
 }
 
 // returns maximum no.of nfts a user can borrow based on pool balance
@@ -111,15 +116,19 @@ export function getMaxNftsToBorrow({
 	oraclePrice,
 	ltv
 }: {
-	maxInstantBorrow: number
-	oraclePrice: number
-	ltv: number
+	maxInstantBorrow: string
+	oraclePrice: string
+	ltv: string
 }) {
 	if (!maxInstantBorrow || !oraclePrice || !ltv) {
-		return 0
+		return '0'
 	}
 
-	return Number((maxInstantBorrow / (oraclePrice * (ltv / 1e18))).toFixed(0))
+	const formattedLtv = new BigNumber(ltv).div(1e18).toString()
+
+	const price = new BigNumber(oraclePrice).multipliedBy(formattedLtv).toString()
+
+	return new BigNumber(maxInstantBorrow).div(price).toFixed(0)
 }
 
 export function formatLoanDeadline(deadline: number) {

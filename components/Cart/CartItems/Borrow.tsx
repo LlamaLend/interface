@@ -80,7 +80,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	const totalReceived = getTotalReceivedArg({
 		oraclePrice: oracle?.price ?? '0',
 		noOfItems: cartTokenIds.length,
-		ltv: poolData?.ltv ?? 0
+		ltv: poolData?.ltv ?? '0'
 	})
 
 	//query to borrow eth using nfts
@@ -99,7 +99,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		chainId
 	})
 
-	const { data: currentAnnualInterest } = useGetPoolInterestInCart({ poolAddress, totalReceived, chainId })
+	const { data: currentAPR } = useGetPoolInterestInCart({ poolAddress, totalReceived, chainId })
+	const currentAnnualInterest = currentAPR?.toString()
 
 	// construct error messages
 	// Failed queries, but user can't retry with data of these queries
@@ -196,7 +197,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 											className="object-contain"
 											alt="ethereum"
 										/>
-										<span>{getQuotePrice({ oraclePrice: oracle?.price ?? '0', ltv: poolData?.ltv ?? 0 })}</span>
+										<span>{getQuotePrice({ oraclePrice: oracle?.price ?? '0', ltv: poolData?.ltv ?? '0' })}</span>
 									</span>
 								</li>
 							))}
@@ -243,9 +244,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingPoolData ? (
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
-										<span>
-											{currentAnnualInterest && `${formatCurrentAnnualInterest(Number(currentAnnualInterest))}% APR`}
-										</span>
+										<span>{currentAnnualInterest && `${formatCurrentAnnualInterest(currentAnnualInterest)}% APR`}</span>
 									)}
 								</span>
 							</li>
@@ -257,7 +256,9 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									{fetchingPoolData ? (
 										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
 									) : (
-										<span>{poolData && new Date(Date.now() + poolData.maxLoanLength * 1000).toLocaleString()}</span>
+										<span>
+											{poolData && new Date(Date.now() + Number(poolData.maxLoanLength) * 1000).toLocaleString()}
+										</span>
 									)}
 								</span>
 							</li>
