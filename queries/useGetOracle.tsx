@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { getAddress } from 'ethers/lib/utils'
 import { chainConfig } from '~/lib/constants'
 import { IOracleResponse, ITransactionError } from '~/types'
 
@@ -27,7 +28,9 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 			}
 		}
 
-		const res = await fetch(`${api}/${nftContractAddress}`).then((res) => res.json())
+		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
+
+		console.log({ res })
 
 		return { ...res, price: Number(res.price) }
 	} catch (error: any) {
