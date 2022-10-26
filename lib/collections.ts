@@ -19,14 +19,24 @@ const collections: ICollection = {
 			imgUrl: '/assets/collection/basedghouls.avif'
 		},
 		{
+			name: 'Bond Bears',
+			address: '0xf17bb82b6e9cc0075ae308e406e5198ba7320545',
+			imgUrl: '/assets/collection/bondbears.avif'
+		},
+		{
 			name: 'Boo Bears',
 			address: '0x2c889A24AF0d0eC6337DB8fEB589fa6368491146',
 			imgUrl: '/assets/collection/boobears.avif'
 		},
 		{
-			name: 'Bond Bears',
-			address: '0xf17bb82b6e9cc0075ae308e406e5198ba7320545',
-			imgUrl: '/assets/collection/bondbears.avif'
+			name: 'Baby Bears',
+			address: '0x9E629D779bE89783263D4c4A765c38Eb3f18671C',
+			imgUrl: '/assets/collection/babybears.avif'
+		},
+		{
+			name: 'Band Bears',
+			address: '0xB4E570232D3E55D2ee850047639DC74DA83C7067',
+			imgUrl: '/assets/collection/bandbears.avif'
 		},
 		{
 			name: 'Bit Bears',
