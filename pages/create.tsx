@@ -173,7 +173,7 @@ const ManagePools: NextPage = () => {
 						placeholder="1"
 						label={`Maximum amount of borrowed ${chainSymbol} each day`}
 						required
-						helperText={`This can be changed afterwards.`}
+						helperText={`This works like a rate-limit on the pool, so if oracle is hacked, or NFT price suddenly drops to zero due to a hack, this limits the maximum damange that can be done. This can be changed afterwards. Must be higher than price * LTV, otherwise borrows will be blocked.`}
 					/>
 
 					<InputNumber name="maxLengthInDays" placeholder="14" label={'Maximum duration of loans in days'} required />
