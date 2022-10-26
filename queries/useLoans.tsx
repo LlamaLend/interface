@@ -113,7 +113,7 @@ async function getLoans({
 			poolAddress ? loansByPoolQuery(poolAddress) : userLoansQuery(userAddress)
 		)
 
-		const loanImgUrls = await Promise.all(loans.map(({ tokenUri }) => getImgUrls(tokenUri)))
+		const loanImgUrls = await Promise.all(loans.map(({ tokenUri }) => (isTestnet ? '' : getImgUrls(tokenUri))))
 
 		return loans
 			.map((loan, index) => ({
