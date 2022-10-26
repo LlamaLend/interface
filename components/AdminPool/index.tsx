@@ -305,7 +305,7 @@ export default function AdminPool({
 				className="flex flex-col gap-2 sm:flex-row"
 			>
 				<label className="label flex-1">
-					<span className="text-xs font-light text-gray-400">Maximum {chainSymbol} per NFT</span>
+					<span className="text-xs font-light text-gray-400">Maximum floor price ({chainSymbol})</span>
 					<input
 						name="maxPrice"
 						className="input-field bg-[#202020]"
