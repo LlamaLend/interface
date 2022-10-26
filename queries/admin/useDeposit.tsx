@@ -8,13 +8,14 @@ import { chainConfig } from '~/lib/constants'
 import { formatAmountToDepositOrWithdraw } from '~/utils'
 
 interface IDeposit {
-	userAddress: string
-	chainId: number
-	poolAddress: string
+	userAddress?: string
+	chainId?: number
+	poolAddress?: string
 	amountToDeposit: string
+	redirectFn?: () => void
 }
 
-export default function useDeposit({ userAddress, chainId, poolAddress, amountToDeposit }: IDeposit) {
+export default function useDeposit({ userAddress, chainId, poolAddress, amountToDeposit, redirectFn }: IDeposit) {
 	const txContext = useTxContext()
 
 	const { chain } = useNetwork()
@@ -30,14 +31,24 @@ export default function useDeposit({ userAddress, chainId, poolAddress, amountTo
 	const validAmount =
 		amountToDeposit && amountToDeposit !== '' ? new RegExp('^[0-9]*[.,]?[0-9]*$').test(amountToDeposit) : false
 
+	const isEnabled =
+		userAddress &&
+		chainId &&
+		poolAddress &&
+		validAmount &&
+		chain?.id === chainId &&
+		address?.toLowerCase() === userAddress?.toLowerCase()
+			? true
+			: false
+
 	const { config: contractConfig } = usePrepareContractWrite({
-		addressOrName: poolAddress,
+		addressOrName: poolAddress as string,
 		contractInterface: config.poolABI,
 		functionName: 'deposit',
 		overrides: {
 			value: validAmount ? formatAmountToDepositOrWithdraw(amountToDeposit) : '0'
 		},
-		enabled: chain?.id === chainId && address?.toLowerCase() === userAddress?.toLowerCase() && validAmount
+		enabled: isEnabled
 	})
 
 	const contractWrite = useContractWrite({
@@ -61,6 +72,8 @@ export default function useDeposit({ userAddress, chainId, poolAddress, amountTo
 					blockExplorer: config.blockExplorer,
 					content: 'Transaction Success'
 				})
+
+				redirectFn?.()
 			} else {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: config.blockExplorer })
 			}

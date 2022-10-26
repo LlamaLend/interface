@@ -42,7 +42,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 
 	const config = chainConfig(chainId)
 
-	const poolOwner = pools[chainId || 1].find(
+	const poolOwner = pools[chainId || 1]?.find(
 		(pool) => pool.poolAddress.toLowerCase() === poolAddress?.toLowerCase()
 	)?.ownerName
 

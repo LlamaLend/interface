@@ -100,8 +100,8 @@ export function useCreatePool() {
 						// refetch all pools query before redirecting
 						refetch()
 
-						// redirect user to home page
-						router.push('/')
+						// redirect user to deposit page
+						router.push(`/deposit/${res.events[0].address}`)
 					} else {
 						txError({ txHash: data.hash, blockExplorer })
 					}

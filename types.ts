@@ -6,6 +6,7 @@ export interface ITransactionSuccess {
 	hash: string
 	wait: () => Promise<{
 		status?: number | undefined
+		events: Array<{ address: string }>
 	}>
 }
 
