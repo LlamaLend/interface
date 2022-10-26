@@ -29,6 +29,11 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 		}
 
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
+		const res1 = await fetch(`${api}/${'0xB4E570232D3E55D2ee850047639DC74DA83C7067'.toLowerCase()}`).then((res) =>
+			res.json()
+		)
+
+		console.log({ res: res?.signature?.r, res1: res1?.signature?.r })
 
 		return { ...res, price: Number(res.price) }
 	} catch (error: any) {
