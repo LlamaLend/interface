@@ -140,7 +140,7 @@ const ManagePools: NextPage = () => {
 					<InputNumber
 						name="ltv"
 						placeholder="33"
-						label={`Loan to Value`}
+						label={`Loan to Value (%)`}
 						helperText={
 							'Percentage of money to lend relative to the floor value. This can be changed afterwards. We recommend setting it to 33%.'
 						}
