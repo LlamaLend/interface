@@ -120,7 +120,7 @@ export function getMaxNftsToBorrow({
 	oraclePrice: string
 	ltv: string
 }) {
-	if (!maxInstantBorrow || !oraclePrice || !ltv) {
+	if (maxInstantBorrow === '0' || oraclePrice === '0' || ltv === '0') {
 		return '0'
 	}
 

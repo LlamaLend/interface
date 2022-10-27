@@ -86,7 +86,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 			nftName,
 			owner,
 			maxNftsToBorrow: getMaxNftsToBorrow({
-				maxInstantBorrow,
+				maxInstantBorrow: maxInstantBorrow.toString(),
 				oraclePrice: quote.price,
 				ltv
 			})
