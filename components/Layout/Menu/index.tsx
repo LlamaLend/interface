@@ -47,12 +47,23 @@ export default function Menu() {
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-[#292929]"
+					href="https://github.com/LlamaLend/contracts/blob/master/README.md"
+					target="_blank"
+					rel="noreferrer noopener"
+				>
+					<span>Docs</span>
+				</MenuItem>
+
+				<MenuItem
+					as="a"
+					className="w-full px-4 py-2 hover:bg-[#292929]"
 					href="https://twitter.com/llamalend"
 					target="_blank"
 					rel="noreferrer noopener"
 				>
 					<span>Twitter</span>
 				</MenuItem>
+
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-[#292929]"
