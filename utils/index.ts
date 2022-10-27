@@ -26,7 +26,7 @@ export function getTotalReceivedArg({
 	noOfItems: number
 	ltv: string
 }) {
-	return new BigNumber(oraclePrice).times(noOfItems).times(ltv).div(1e18).toFixed(0)
+	return new BigNumber(new BigNumber(oraclePrice).times(ltv).div(1e18).toFixed(0, 1)).times(noOfItems).toFixed(0, 1)
 }
 
 interface IFormArgs {
