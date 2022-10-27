@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
+import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { request, gql } from 'graphql-request'
-import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
+import { chainConfig, SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
 import type { ILoan, ILoanValidity, ITransactionError } from '~/types'
+import { getLoansPayableAmount } from '~/utils'
 
 interface IGraphLoanResponse {
 	id: string
@@ -27,7 +29,8 @@ function infoToRepayLoan(loan: IGraphLoanResponse) {
 
 	const deadline = Number(loan.deadline)
 
-	const interest = ((blockTimestamp - Number(loan.startTime)) * Number(loan.interest) * Number(loan.borrowed)) / 1e18
+	const interestAccrued =
+		((blockTimestamp - Number(loan.startTime)) * Number(loan.interest) * Number(loan.borrowed)) / 1e18
 
 	let lateFees = 0
 
@@ -35,7 +38,20 @@ function infoToRepayLoan(loan: IGraphLoanResponse) {
 		lateFees = ((blockTimestamp - deadline) * Number(loan.borrowed)) / SECONDS_IN_A_DAY
 	}
 
-	return Number(loan.borrowed) + interest + lateFees
+	const total = Number(loan.borrowed) + interestAccrued + lateFees
+
+	// 5%
+	const buffer = new BigNumber(total).times(0.05).div(1e18).toFixed(4)
+
+	return {
+		initialBorrowed: Number(loan.borrowed),
+		apr: (Number(loan.interest) * SECONDS_IN_A_YEAR) / 1e18,
+		interestAccrued,
+		lateFees,
+		buffer,
+		total,
+		totalPayable: new BigNumber(getLoansPayableAmount(total)).div(1e18).toFixed(4)
+	}
 }
 
 const userLoansQuery = (userAddress?: string) => gql`
@@ -124,6 +140,9 @@ async function getLoans({
 				startTime: loan.startTime,
 				borrowed: loan.borrowed,
 				toPay: infoToRepayLoan(loan),
+				toPaayBreakdown: {
+					initialBorrowed: loan.interest
+				},
 				deadline: Number(loan.deadline) * 1000,
 				imgUrl: isTestnet ? '' : loanImgUrls[index],
 				owner: loan.owner,

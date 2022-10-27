@@ -12,6 +12,7 @@ import { getLoansPayableAmount } from '~/utils'
 import type { IRepayItemProps } from '../types'
 import type { ILoan } from '~/types'
 import { formatErrorMsg } from './utils'
+import BigNumber from 'bignumber.js'
 
 export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 	const { chain } = useNetwork()
@@ -71,7 +72,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 			}))
 	}))
 
-	const totalToRepay = cartItems.reduce((acc, curr) => (acc += curr.toPay), 0)
+	const payableAmout = getLoansPayableAmount(cartItems.reduce((acc, curr) => (acc += curr.toPay.total), 0))
 
 	//query to repay loans
 	const {
@@ -80,7 +81,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 		error: errorConfirmingRepay,
 		waitForTransaction: { data: repayTxOnChain, isLoading: checkingForRepayTxOnChain, error: txRepayErrorOnChain }
 	} = useRepay({
-		payableAmout: getLoansPayableAmount(totalToRepay),
+		payableAmout,
 		loansToRepay,
 		enabled: loansToRepay.length > 0,
 		chainId
@@ -158,7 +159,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 											className="object-contain"
 											alt="ethereum"
 										/>
-										<span>{(toPay / 1e18).toFixed(4)}</span>
+										<span>{toPay.totalPayable}</span>
 									</span>
 								</li>
 							))}
@@ -176,7 +177,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 								<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
 							) : (
 								<span>
-									{(totalToRepay / 1e18).toFixed(4)} {chainSymbol}
+									{new BigNumber(payableAmout).div(1e18).toFixed(4)} {chainSymbol}
 								</span>
 							)}
 						</span>

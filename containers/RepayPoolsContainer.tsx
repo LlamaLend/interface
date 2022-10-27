@@ -63,15 +63,37 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 						<table className="mx-auto w-full table-auto border-collapse rounded-xl bg-[#010101] text-base">
 							<thead className="bg-[#111111]">
 								<tr>
-									<th className="rounded-tl-xl p-4 pl-[4.5rem] text-left font-normal text-[#989898]">Token Id</th>
-									<th className="p-4 text-left font-normal text-[#989898]">Pool</th>
-									<th className="relative flex flex-col gap-1 p-4 text-left font-normal text-[#989898]">
-										<span>To Pay</span>
-										<span className="flex flex-nowrap items-center gap-[2px] text-xs">
-											<span className="whitespace-nowrap">(Initial Borrowed</span> <span>+</span>
-											<span className="whitespace-nowrap">Interest Accrued</span> <span>+</span>
-											<Tooltip content="We add a small buffer to account for the interest accrued from the time when transaction is sent to when it is included on-chain (eg: if tx stays for 1 hour in the mempool it will need to pay interest for 1 extra hour). All excess ETH is returned automatically in the repayment tx.">
-												Buffer
+									<th className="rounded-tl-xl border border-[#252525] p-4 font-normal text-[#989898]" rowSpan={2}>
+										Token Id
+									</th>
+									<th className="border border-[#252525] p-4 font-normal text-[#989898]" rowSpan={2}>
+										Pool
+									</th>
+									<th className="border border-[#252525] p-4 py-1 text-center font-normal text-[#989898]" colSpan={6}>
+										To Pay
+									</th>
+									<th className="border border-[#252525] p-4 font-normal text-[#989898]" rowSpan={2}>
+										Deadline
+									</th>
+									<th className="rounded-tr-xl border border-[#252525] p-4 font-normal text-[#989898]" rowSpan={2}></th>
+								</tr>
+								<tr>
+									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+										Initial Borrowed
+									</th>
+									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+										APR
+									</th>
+									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+										Interest Accrued
+									</th>
+									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+										Late Fees
+									</th>
+									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+										<Tooltip content="We add a small buffer to account for the interest accrued from the time when transaction is sent to when it is included on-chain (eg: if tx stays for 1 hour in the mempool it will need to pay interest for 1 extra hour). All excess ETH is returned automatically in the repayment tx.">
+											<span className="flex w-full items-center justify-center gap-1">
+												<span>Buffer</span>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
 													viewBox="0 0 20 20"
@@ -84,12 +106,12 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 														clipRule="evenodd"
 													/>
 												</svg>
-												)
-											</Tooltip>
-										</span>
+											</span>
+										</Tooltip>
 									</th>
-									<th className="p-4 text-left font-normal text-[#989898]">Deadline</th>
-									<th className="rounded-tr-xl p-4 text-left font-normal text-[#989898]"></th>
+									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+										Total
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -97,22 +119,37 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 									<>
 										{new Array(5).fill('x').map((_, index) => (
 											<tr key={'pl' + index}>
-												<td className="px-4 py-2">
+												<td className="border border-[#252525] px-4 py-2">
 													<span className="flex items-center gap-4">
 														<div className="relative aspect-square h-10 rounded bg-[#111111]"></div>
 														<div className="placeholder-box h-5 w-[93px]"></div>
 													</span>
 												</td>
-												<td className="px-4 py-2">
+												<td className="border border-[#252525] px-4 py-2">
 													<div className="placeholder-box h-5 w-[197px]"></div>
 												</td>
-												<td className="px-4 py-2">
+												<td className="border border-[#252525] px-4 py-2">
 													<div className="placeholder-box h-5 w-[90px]"></div>
 												</td>
-												<td className="px-4 py-2">
+												<td className="border border-[#252525] px-4 py-2">
+													<div className="placeholder-box h-5 w-[90px]"></div>
+												</td>
+												<td className="border border-[#252525] px-4 py-2">
+													<div className="placeholder-box h-5 w-[90px]"></div>
+												</td>
+												<td className="border border-[#252525] px-4 py-2">
+													<div className="placeholder-box h-5 w-[90px]"></div>
+												</td>
+												<td className="border border-[#252525] px-4 py-2">
+													<div className="placeholder-box h-5 w-[90px]"></div>
+												</td>
+												<td className="border border-[#252525] px-4 py-2">
+													<div className="placeholder-box h-5 w-[90px]"></div>
+												</td>
+												<td className="border border-[#252525] px-4 py-2">
 													<div className="placeholder-box h-5 w-[72px]"></div>
 												</td>
-												<td className="px-4 py-2">
+												<td className="border border-[#252525] px-4 py-2">
 													<div className="ml-auto h-[34px] w-[10rem] rounded-lg border border-[#243b55] bg-[#243b55]"></div>
 												</td>
 											</tr>
@@ -122,7 +159,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 									<>
 										{data.map((loan) => (
 											<tr key={loan.id}>
-												<td className="whitespace-nowrap px-4 py-2">
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													<span className="flex items-center gap-4">
 														<div className="relative aspect-square h-10 rounded bg-[#111111]">
 															{loan.imgUrl !== '' && (
@@ -140,7 +177,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 														</a>
 													</span>
 												</td>
-												<td className="whitespace-nowrap px-4 py-2">
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													<a
 														target="_blank"
 														rel="noreferrer noopener"
@@ -159,11 +196,28 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 														{loan.pool.owner.slice(0, 4) + '...' + loan.pool.owner.slice(-4)}
 													</a>
 												</td>
-												<td className="whitespace-nowrap px-4 py-2">
-													{(loan.toPay / 1e18).toFixed(4) + ' ' + chainSymbol}
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{(loan.toPay.initialBorrowed / 1e18).toFixed(4) + ' ' + chainSymbol}
 												</td>
-												<td className="whitespace-nowrap px-4 py-2">{formatLoanDeadline(loan.deadline)}</td>
-												<td className="whitespace-nowrap px-4 py-2">
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{(loan.toPay.apr * 100).toFixed(2) + ' %'}
+												</td>
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{(loan.toPay.interestAccrued / 1e18).toFixed(4) + ' ' + chainSymbol}
+												</td>
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{(loan.toPay.lateFees / 1e18).toFixed(4) + ' ' + chainSymbol}
+												</td>
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{loan.toPay.buffer + ' ' + chainSymbol}
+												</td>
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{loan.toPay.totalPayable + ' ' + chainSymbol}
+												</td>
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+													{formatLoanDeadline(loan.deadline)}
+												</td>
+												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													{itemsInCart?.includes(loan.id) ? (
 														<button
 															className="ml-auto flex h-4 min-w-[10rem] items-center justify-center gap-1 rounded-lg border border-[#243b55] p-4 text-sm text-white"

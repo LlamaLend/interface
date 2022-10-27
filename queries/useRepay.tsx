@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { useAccount, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi'
 import toast from 'react-hot-toast'
 import { txConfirming, txError, txSuccess } from '~/components/TxToast'
 import { useTxContext } from '~/contexts'

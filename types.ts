@@ -103,7 +103,15 @@ export interface ILoan {
 	interest: string
 	startTime: string
 	borrowed: string
-	toPay: number
+	toPay: {
+		initialBorrowed: number
+		apr: number
+		interestAccrued: number
+		lateFees: number
+		total: number
+		buffer: string
+		totalPayable: string
+	}
 	deadline: number
 	imgUrl: string
 	owner: string
