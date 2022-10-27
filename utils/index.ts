@@ -53,27 +53,28 @@ export function formatCreatePoolFormInputs({
 	minimumInterest,
 	ltv
 }: IFormArgs) {
-	const maxInt = Number(new BigNumber(maximumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+	const maxInt = Number(new BigNumber(maximumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0, 1))
 
-	const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+	const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0, 1))
 
 	return {
-		maxPrice: new BigNumber(maxPrice).times(1e18).toFixed(0),
+		maxPrice: new BigNumber(maxPrice).times(1e18).toFixed(0, 1),
 		nftAddress,
-		maxDailyBorrows: new BigNumber(maxDailyBorrows).times(1e18).toFixed(0),
+		maxDailyBorrows: new BigNumber(maxDailyBorrows).times(1e18).toFixed(0, 1),
 		name,
 		symbol,
 		maxLength: (maxLengthInDays * SECONDS_IN_A_DAY).toFixed(0),
 		maxVariableInterestPerEthPerSecond: (maxInt - minInt).toFixed(0),
-		minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0),
-		ltv: new BigNumber(ltv).times(1e16).toFixed(0)
+		minimumInterest: new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0, 1),
+		ltv: new BigNumber(ltv).times(1e16).toFixed(0, 1)
 	}
 }
 
-export const formatLtv = (ltv: string) => new BigNumber(ltv).times(1e16).toFixed(0)
-export const formatMaxPrice = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0)
-export const formatAmountToDepositOrWithdraw = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0)
-export const formatMaxDailyBorrows = (maxDailyBorrows: string) => new BigNumber(maxDailyBorrows).times(1e18).toFixed(0)
+export const formatLtv = (ltv: string) => new BigNumber(ltv).times(1e16).toFixed(0, 1)
+export const formatMaxPrice = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0, 1)
+export const formatAmountToDepositOrWithdraw = (maxPrice: string) => new BigNumber(maxPrice).times(1e18).toFixed(0, 1)
+export const formatMaxDailyBorrows = (maxDailyBorrows: string) =>
+	new BigNumber(maxDailyBorrows).times(1e18).toFixed(0, 1)
 export const formatMaxLoanLength = (maxLengthInDays: string) => (Number(maxLengthInDays) * SECONDS_IN_A_DAY).toFixed(0)
 export const formateInterestChange = (
 	minimumInterest: number,
@@ -84,13 +85,13 @@ export const formateInterestChange = (
 		return [0, 0]
 	}
 
-	const maxInt = Number(new BigNumber(maximumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+	const maxInt = Number(new BigNumber(maximumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0, 1))
 
-	const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0))
+	const minInt = Number(new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0, 1))
 
 	return [
 		(maxInt - minInt).toFixed(0),
-		new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0)
+		new BigNumber(minimumInterest / 100).times(1e18).div(SECONDS_IN_A_YEAR).toFixed(0, 1)
 	]
 }
 
@@ -128,7 +129,7 @@ export function getMaxNftsToBorrow({
 
 	const price = new BigNumber(oraclePrice).times(formattedLtv)
 
-	return new BigNumber(maxInstantBorrow.toString()).div(price).toFixed(0)
+	return new BigNumber(maxInstantBorrow.toString()).div(price).toFixed(0, 1)
 }
 
 export function formatLoanDeadline(deadline: number) {
@@ -140,9 +141,9 @@ export function formatLoanDeadline(deadline: number) {
 
 export function getLoansPayableAmount(totalToRepay: number) {
 	// add 5% buffer to totalToRepay
-	const buffer = new BigNumber(totalToRepay).times(0.05).toFixed(0)
+	const buffer = new BigNumber(totalToRepay).times(0.05).toFixed(0, 1)
 
-	return new BigNumber(totalToRepay).plus(buffer).toFixed(0)
+	return new BigNumber(totalToRepay).plus(buffer).toFixed(0, 1)
 }
 
-export const gasLimitOverride = new BigNumber(0.0005).times(1e9).toFixed(0)
+export const gasLimitOverride = new BigNumber(0.0005).times(1e9).toFixed(0, 1)

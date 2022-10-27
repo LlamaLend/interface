@@ -70,11 +70,11 @@ async function getAdminPoolInfo({
 			)
 		])
 
-		const minInt = new BigNumber(Number(minimumInterest)).div(1e16).times(SECONDS_IN_A_YEAR).toFixed(0)
+		const minInt = new BigNumber(Number(minimumInterest)).div(1e16).times(SECONDS_IN_A_YEAR).toFixed(0, 1)
 		const maxVariableInt = new BigNumber(Number(maxVariableInterestPerEthPerSecond))
 			.div(1e16)
 			.times(SECONDS_IN_A_YEAR)
-			.toFixed(0)
+			.toFixed(0, 1)
 
 		const liqAddresses = liquidators.map((l: { address: string }) => getAddress(l.address))
 
