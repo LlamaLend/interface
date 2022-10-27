@@ -190,7 +190,7 @@ export default function AdminPool({
 
 			<h1 className="text-xs font-light text-gray-400">Balance</h1>
 			<p className="-mt-6 min-h-[1.5rem] break-all">
-				{poolBalance && `${poolBalance / 1e18 < 1e-10 ? '~0' : poolBalance / 1e18} ${chainSymbol}`}
+				{poolBalance ? `${poolBalance / 1e18 < 1e-10 ? '~0' : poolBalance / 1e18} ${chainSymbol}` : `0 ${chainSymbol}`}
 			</p>
 
 			<h1 className="text-xs font-light text-gray-400">Borrowable Now</h1>

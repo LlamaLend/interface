@@ -132,6 +132,7 @@ async function getLoans({
 		const loanImgUrls = await Promise.all(loans.map(({ tokenUri }) => (isTestnet ? '' : getImgUrls(tokenUri))))
 
 		return loans
+			.filter((pool) => pool.owner !== '0x0000000000000000000000000000000000000000')
 			.map((loan, index) => ({
 				id: loan.id,
 				loanId: loan.loanId,
@@ -170,7 +171,7 @@ export function useGetLoans({
 
 	return useQuery<Array<ILoan>, ITransactionError>(
 		['userLoans', chainId, userAddress, poolAddress],
-		() => getLoans({ endpoint: config.subgraphUrl, userAddress, isTestnet: config.isTestnet }),
+		() => getLoans({ endpoint: config.subgraphUrl, userAddress, poolAddress, isTestnet: config.isTestnet }),
 		{
 			refetchInterval: 30_000
 		}

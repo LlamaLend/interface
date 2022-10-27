@@ -71,6 +71,7 @@ export interface IBorrowPool {
 		oracle: string
 		minimumInterest: string
 		maximumInterest: string
+		totalBorrowed: string
 		liquidators: Array<string>
 	}
 }

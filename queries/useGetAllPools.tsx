@@ -48,6 +48,7 @@ async function getAdminPoolInfo({
 			oracle,
 			minimumInterest,
 			maxVariableInterestPerEthPerSecond,
+			totalBorrowed,
 			{ liquidators }
 		] = await Promise.all([
 			nftContract.name(),
@@ -58,6 +59,7 @@ async function getAdminPoolInfo({
 			poolContract.oracle(),
 			poolContract.minimumInterest(),
 			poolContract.maxVariableInterestPerEthPerSecond(),
+			poolContract.totalBorrowed(),
 			request(
 				graphEndpoint,
 				gql`
@@ -97,6 +99,7 @@ async function getAdminPoolInfo({
 			oracle,
 			minimumInterest: minInt,
 			maximumInterest: (Number(maxVariableInt) + Number(minInt)).toFixed(0),
+			totalBorrowed: new BigNumber(totalBorrowed.toString()).div(1e18).toString(),
 			liquidators: liqAddresses
 		}
 	} catch (error: any) {
