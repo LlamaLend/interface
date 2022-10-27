@@ -16,7 +16,7 @@ export function formatCurrentAnnualInterest(currentAnnualInterest: string) {
 	return new BigNumber(currentAnnualInterest.toString()).div(1e16).toFixed(2)
 }
 
-// returns currentAnnualInterest arg that is passed in a contracts method
+// returns totalToBorrow arg that is passed in a contracts method
 export function getTotalReceivedArg({
 	oraclePrice,
 	noOfItems,
