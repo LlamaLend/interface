@@ -37,7 +37,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 					<h1 className="text-xs font-light text-gray-400">Balance</h1>
 					<p className="min-h-[1.5rem] break-all">
 						{poolBalance
-							? `${poolBalance / 1e18 < 1e-10 ? '~0' : poolBalance / 1e18} ${chainSymbol}`
+							? `${poolBalance / 1e18 < 1e-10 ? '~0' : (poolBalance / 1e18).toFixed(4)} ${chainSymbol}`
 							: `0 ${chainSymbol}`}
 					</p>
 				</div>
@@ -45,7 +45,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 				<div>
 					<h1 className="text-xs font-light text-gray-400">Total Lent</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed || 0} {chainSymbol}
+						{totalBorrowed ? Number(totalBorrowed).toFixed(4) : 0} {chainSymbol}
 					</p>
 				</div>
 			</div>
