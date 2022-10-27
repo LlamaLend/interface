@@ -50,7 +50,19 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 	const contractInterface = uniquePools.length > 1 ? config.factoryABI : config.poolABI
 	const args = uniquePools.length > 1 ? [loansToRepay] : [...loansToRepay.map((x) => x.loans), userAddress]
 
-	const { config: contractConfig } = usePrepareContractWrite({
+	// const { config: contractConfig } = usePrepareContractWrite({
+	// 	addressOrName,
+	// 	contractInterface,
+	// 	functionName: 'repay',
+	// 	args,
+	// 	overrides: {
+	// 		value: payableAmout
+	// 	},
+	// 	enabled: enabled && chain?.id === chainId
+	// })
+
+	const contractWrite = useContractWrite({
+		mode: 'recklesslyUnprepared',
 		addressOrName,
 		contractInterface,
 		functionName: 'repay',
@@ -58,11 +70,7 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 		overrides: {
 			value: payableAmout
 		},
-		enabled: enabled && chain?.id === chainId
-	})
-
-	const contractWrite = useContractWrite({
-		...contractConfig,
+		enabled: enabled && chain?.id === chainId,
 		onSuccess: (data) => {
 			// hide cart after tx is submitted
 			router.push({ pathname: router.pathname, query: { ...queries } })

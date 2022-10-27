@@ -50,7 +50,7 @@ export function RepayCart(props: IRepayCartProps) {
 			state={dialog}
 			portal={typeof window !== 'undefined'}
 			className="dialog xl:mr-3 xl:h-screen xl:max-w-[22.5rem]"
-			data-slideleft
+			data-repaycart
 		>
 			<header className="flex items-center justify-between">
 				<DialogHeading className="m-0 text-2xl font-medium">Checkout</DialogHeading>

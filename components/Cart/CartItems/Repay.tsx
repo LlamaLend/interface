@@ -11,6 +11,7 @@ import { chainConfig } from '~/lib/constants'
 import { getLoansPayableAmount } from '~/utils'
 import type { IRepayItemProps } from '../types'
 import type { ILoan } from '~/types'
+import { formatErrorMsg } from './utils'
 
 export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 	const { chain } = useNetwork()
@@ -95,7 +96,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 
 	// Failed queries, but user can retry
 	const errorMsgOfEthersQueries: string | null = errorConfirmingRepay
-		? errorConfirmingRepay.message
+		? formatErrorMsg(errorConfirmingRepay.message)
 		: repayTxOnChain?.status === 0
 		? 'Transaction failed, please try again'
 		: txRepayErrorOnChain

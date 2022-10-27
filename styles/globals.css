@@ -70,10 +70,6 @@
 		animation: slideUp 350ms cubic-bezier(0.15, 1.15, 0.6, 1);
 	}
 
-	.dialog[data-slideleft] {
-		animation: slideLeft 350ms cubic-bezier(0.15, 1.15, 0.6, 1);
-	}
-
 	.dialog > * {
 		animation: fadeIn 150ms ease;
 	}
@@ -162,6 +158,12 @@
 			@apply top-0 mb-auto h-fit min-h-[initial] rounded-xl p-6;
 			max-width: min(calc(100% - 32px), 560px);
 			max-height: calc(100% - 32px);
+		}
+	}
+
+	@media (min-width: 80rem) {
+		.dialog[data-repaycart] {
+			animation: slideLeft 350ms cubic-bezier(0.15, 1.15, 0.6, 1);
 		}
 	}
 }
