@@ -6,10 +6,11 @@ import { useAccount } from 'wagmi'
 import Layout from '~/components/Layout'
 import { chainConfig } from '~/lib/constants'
 import { useGetLoans } from '~/queries/useLoans'
-import { formatLoanDeadline } from '~/utils'
+import { formatLoanDeadline, getLoansPayableAmount } from '~/utils'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import { RepayCart } from '~/components/Cart'
 import Tooltip from '~/components/Tooltip'
+import BigNumber from 'bignumber.js'
 
 interface ILoansContainerProps {
 	chainId?: number | null
@@ -34,6 +35,8 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 
 	// query to save items to cart
 	const { mutate: addToCart } = useSaveItemToCart({ chainId })
+
+	const payableAmout = data && getLoansPayableAmount(data.reduce((acc, curr) => (acc += curr.toPay.total), 0))
 
 	return (
 		<>
@@ -249,6 +252,11 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 										))}
 									</>
 								)}
+								<tr className="border border-[#252525]">
+									<td colSpan={8} className="whitespace-nowrap px-4 py-2 text-right">
+										Total: {payableAmout && new BigNumber(payableAmout).div(1e18).toFixed(4)} {chainSymbol}
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
