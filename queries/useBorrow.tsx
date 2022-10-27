@@ -8,7 +8,7 @@ import { useGetOracle } from './useGetOracle'
 import { useTxContext } from '~/contexts'
 import { useGetPoolData } from './useGetPoolData'
 import { useGetNftsList } from './useNftsList'
-import { chainConfig, LOCAL_STORAGE_KEY } from '~/lib/constants'
+import { chainConfig, EMAIL_SERVER_API, LOCAL_STORAGE_KEY } from '~/lib/constants'
 
 interface IUseBorrowProps {
 	poolAddress: string
@@ -17,6 +17,7 @@ interface IUseBorrowProps {
 	totalReceived: string
 	enabled: boolean
 	chainId?: number
+	email?: string
 }
 
 export function useBorrow({
@@ -25,8 +26,10 @@ export function useBorrow({
 	maxInterest,
 	totalReceived,
 	enabled,
-	chainId
+	chainId,
+	email
 }: IUseBorrowProps) {
+	const { address } = useAccount()
 	const router = useRouter()
 	const txContext = useTxContext()
 
@@ -89,6 +92,16 @@ export function useBorrow({
 		],
 		enabled: enabled && (oracle?.price ? true : false) && chain?.id === chainId,
 		onSuccess: (data) => {
+			if (email && email !== '') {
+				fetch(EMAIL_SERVER_API, {
+					method: 'POST',
+					headers: {
+						'content-type': 'application/json'
+					},
+					body: JSON.stringify({ email, address })
+				})
+			}
+
 			txContext.hash!.current = data.hash
 			txContext.dialog?.toggle()
 

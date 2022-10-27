@@ -12,6 +12,8 @@ const ORACLE_GOERLI = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 
 const ORACLE_SERVER_API = 'https://oracle.llamalend.com/quote'
 
+export const EMAIL_SERVER_API = 'https://nft.llamalend.com/email'
+
 export const CHAINS_CONFIGURATION: IChainConfig = {
 	1: {
 		ankrUrl: 'https://rpc.ankr.com/eth',

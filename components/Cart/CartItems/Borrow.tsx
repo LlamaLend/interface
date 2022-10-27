@@ -18,6 +18,7 @@ import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from 
 import { chainConfig } from '~/lib/constants'
 
 export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
+	const [email, setEmail] = React.useState('')
 	const { chain } = useNetwork()
 
 	const config = chainConfig(chainId)
@@ -96,7 +97,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		enabled: isApproved && oracle && poolData && !isUserOnDifferentChain ? true : false,
 		maxInterest: poolData?.maxVariableInterestPerEthPerSecond,
 		totalReceived,
-		chainId
+		chainId,
+		email
 	})
 
 	const { data: currentAPR } = useGetPoolInterestInCart({ poolAddress, totalReceived, chainId })
@@ -264,6 +266,18 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 							</li>
 						</ul>
 					)}
+
+					<label className="label text-sm">
+						<span>Email (optional)</span>
+						<input
+							name="email"
+							className="input-field"
+							type="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+						/>
+						<small>We use this email to notify you when your loan is about to expire.</small>
+					</label>
 
 					{/* Show error message of txs/queries initiated with wallet */}
 					{errorMsgOfEthersQueries && !errorMsgOfEthersQueries.startsWith('user rejected transaction') && (
