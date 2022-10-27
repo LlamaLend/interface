@@ -154,7 +154,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 													href={`${config.blockExplorer.url}/address/${loan.owner}`}
 													className="underline"
 												>
-													{loan.owner}
+													{loan.owner.slice(0, 4) + '...' + loan.owner.slice(-4)}
 												</a>
 											</td>
 											<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
