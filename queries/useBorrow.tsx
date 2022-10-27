@@ -55,7 +55,25 @@ export function useBorrow({
 
 	const txConfirmingId = useRef<string>()
 
-	const { config: contractConfig } = usePrepareContractWrite({
+	// const { config: contractConfig } = usePrepareContractWrite({
+	// 	addressOrName: poolAddress,
+	// 	contractInterface: config.poolABI,
+	// 	functionName: 'borrow',
+	// 	args: [
+	// 		[...cartTokenIds],
+	// 		oracle?.price,
+	// 		oracle?.deadline,
+	// 		maxInterest,
+	// 		totalReceived,
+	// 		oracle?.signature?.v,
+	// 		oracle?.signature?.r,
+	// 		oracle?.signature?.s
+	// 	],
+	// 	enabled: enabled && (oracle?.price ? true : false) && chain?.id === chainId
+	// })
+
+	const contractWrite = useContractWrite({
+		mode: 'recklesslyUnprepared',
 		addressOrName: poolAddress,
 		contractInterface: config.poolABI,
 		functionName: 'borrow',
@@ -69,11 +87,7 @@ export function useBorrow({
 			oracle?.signature?.r,
 			oracle?.signature?.s
 		],
-		enabled: enabled && (oracle?.price ? true : false) && chain?.id === chainId
-	})
-
-	const contractWrite = useContractWrite({
-		...contractConfig,
+		enabled: enabled && (oracle?.price ? true : false) && chain?.id === chainId,
 		onSuccess: (data) => {
 			txContext.hash!.current = data.hash
 			txContext.dialog?.toggle()

@@ -122,7 +122,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		: approvalTxOnChain?.status === 0
 		? 'Transaction failed, please try again'
 		: errorConfirmingBorrow
-		? errorConfirmingBorrow?.message
+		? formatErrorMsg(errorConfirmingBorrow)
 		: txBorrowErrorOnChain
 		? txBorrowErrorOnChain?.message
 		: borrowTxOnChain?.status === 0
