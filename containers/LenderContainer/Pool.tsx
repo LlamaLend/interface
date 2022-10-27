@@ -43,7 +43,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 				</div>
 
 				<div>
-					<h1 className="text-xs font-light text-gray-400">Total Borrowed</h1>
+					<h1 className="text-xs font-light text-gray-400">Total Lent</h1>
 					<p className="min-h-[1.5rem] break-all">
 						{totalBorrowed || 0} {chainSymbol}
 					</p>
