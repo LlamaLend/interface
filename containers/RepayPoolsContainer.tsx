@@ -59,7 +59,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 						to borrow {chainSymbol}.
 					</p>
 				) : (
-					<div className="relative mx-auto mt-8 mb-auto w-full overflow-x-auto sm:my-9">
+					<div className="relative mx-auto mt-8 mb-auto w-full overflow-x-auto rounded-xl sm:my-9">
 						<table className="mx-auto w-full table-auto border-collapse rounded-xl bg-[#010101] text-base">
 							<thead className="bg-[#111111]">
 								<tr>
