@@ -14,6 +14,7 @@ import { useDebounce } from '~/hooks'
 import { formatCreatePoolFormInputs, getMaxPricePerNft } from '~/utils'
 import { useGetOracle } from '~/queries/useGetOracle'
 import { ERC721_ABI } from '~/lib/constants'
+import BigNumber from 'bignumber.js'
 
 type IFormElements = HTMLFormElement & {
 	[key in FormNames]: { value: string }
@@ -36,7 +37,7 @@ const ManagePools: NextPage = () => {
 	const [minInterest, setMinInterest] = useState<number | null>(null)
 	const [maxInterest, setMaxInterest] = useState<number | null>(null)
 
-	const chainSymbol = (!chain?.unsupported && chain?.nativeCurrency?.symbol) ?? 'ETH'
+	const chainSymbol: string = (!chain?.unsupported ? chain?.nativeCurrency?.symbol : 'ETH') ?? 'ETH'
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		try {
@@ -91,7 +92,7 @@ const ManagePools: NextPage = () => {
 
 	const { data: oracle } = useGetOracle({ nftContractAddress: debouncedNftContractAddress, chainId: chain?.id })
 
-	const maxPrice = getMaxPricePerNft({ oraclePrice: oracle?.price, ltv })
+	const defaultMaxPrice = getMaxPricePerNft({ oraclePrice: oracle?.price, ltv })
 
 	const {
 		data: supportsInterface,
@@ -159,13 +160,11 @@ const ManagePools: NextPage = () => {
 						}}
 					/>
 
-					<InputNumber
-						name="maxPrice"
-						placeholder="0.03"
-						label={`Maximum floor price`}
-						helperText={`Maximum floor price (in ${chainSymbol}) that will be allowed in the oracle. If oracle returns a higher price than this borrows will be disabled. This can be changed afterwards.`}
-						defaultValue={maxPrice}
-						required
+					<MaxPrice
+						chainSymbol={chainSymbol}
+						oraclePrice={oracle?.price}
+						defaultMaxPrice={defaultMaxPrice}
+						key={defaultMaxPrice}
 					/>
 
 					<InputNumber
@@ -236,6 +235,52 @@ const ManagePools: NextPage = () => {
 				</form>
 			</Layout>
 		</div>
+	)
+}
+
+const MaxPrice = ({
+	defaultMaxPrice,
+	chainSymbol,
+	oraclePrice
+}: {
+	defaultMaxPrice?: string
+	chainSymbol: string
+	oraclePrice?: string
+}) => {
+	const [value, setValue] = useState(defaultMaxPrice || '')
+
+	const isInvalidMaxPrice =
+		oraclePrice && value !== '' && new BigNumber(value).times(1e18).minus(oraclePrice).toString()?.startsWith('-')
+
+	return (
+		<label className="label">
+			<span>Maximum floor price</span>
+			<input
+				className="input-field"
+				autoComplete="off"
+				autoCorrect="off"
+				type="text"
+				spellCheck="false"
+				pattern="^[0-9]*[.,]?[0-9]*$"
+				minLength={1}
+				maxLength={79}
+				inputMode="decimal"
+				title="Enter numbers only."
+				name="maxPrice"
+				value={value}
+				onChange={(e) => setValue(e.target.value)}
+				placeholder="0.03"
+				required
+			/>
+			{oraclePrice && value !== '' && isInvalidMaxPrice ? (
+				<small className="text-red-500">Maximum floor price is less that oracle price. Borrows will be disabled.</small>
+			) : (
+				<small className="text-[#708cbf]">
+					Maximum floor price (in ${chainSymbol}) that will be allowed in the oracle. If oracle returns a higher price
+					than this borrows will be disabled. This can be changed afterwards.
+				</small>
+			)}
+		</label>
 	)
 }
 
