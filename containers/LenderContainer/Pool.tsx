@@ -18,9 +18,22 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 
 	const chainSymbol = config.nativeCurrency?.symbol
 
+	const weightedSum =
+		data &&
+		data.reduce((total, pool) => {
+			return (total += pool.toPay.apr * pool.toPay.initialBorrowed)
+		}, 0)
+
+	const aprOnLentEth =
+		poolBalance && totalBorrowed && weightedSum ? ((weightedSum / totalBorrowed) * 100).toFixed(2) : 0
+	const aprOnAllEthDeposited =
+		poolBalance && totalBorrowed && weightedSum ? ((weightedSum / (totalBorrowed + poolBalance)) * 100).toFixed(2) : 0
+
+	const totalDeposited = poolBalance + totalBorrowed
+
 	return (
 		<div className="my-4 flex w-full flex-col gap-6 rounded-xl bg-[#191919] p-4 shadow">
-			<div className="flex flex-col flex-wrap gap-4 sm:flex-row sm:gap-12">
+			<div className="flex flex-col flex-wrap gap-4 lg:flex-row lg:gap-12">
 				<div>
 					<h1 className="text-xs font-light text-gray-400">Pool</h1>
 					<a
@@ -31,6 +44,15 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 					>
 						{`${pool.name} (${pool.symbol})`}
 					</a>
+				</div>
+
+				<div>
+					<h1 className="text-xs font-light text-gray-400">Total Deposited</h1>
+					<p className="min-h-[1.5rem] break-all">
+						{totalDeposited
+							? `${totalDeposited / 1e18 < 1e-10 ? '~0' : (totalDeposited / 1e18).toFixed(4)} ${chainSymbol}`
+							: `0 ${chainSymbol}`}
+					</p>
 				</div>
 
 				<div>
@@ -45,8 +67,23 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 				<div>
 					<h1 className="text-xs font-light text-gray-400">Total Lent</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed ? Number(totalBorrowed).toFixed(4) : 0} {chainSymbol}
+						{totalBorrowed ? (totalBorrowed / 1e18).toFixed(4) : 0} {chainSymbol}
 					</p>
+				</div>
+
+				<div>
+					<h1 className="text-xs font-light text-gray-400">% Borrowed</h1>
+					<p className="min-h-[1.5rem] break-all">
+						{totalBorrowed && poolBalance ? ((totalBorrowed / poolBalance) * 100).toFixed(2) : 0} %
+					</p>
+				</div>
+				<div>
+					<h1 className="text-xs font-light text-gray-400">APR on lent {chainSymbol}</h1>
+					<p className="min-h-[1.5rem] break-all">{aprOnLentEth}%</p>
+				</div>
+				<div>
+					<h1 className="text-xs font-light text-gray-400">APR on all {chainSymbol} deposited</h1>
+					<p className="min-h-[1.5rem] break-all">{aprOnAllEthDeposited}%</p>
 				</div>
 			</div>
 
@@ -121,7 +158,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 								</>
 							) : isError || data?.length === 0 ? (
 								<tr>
-									<td className="border border-[#252525] px-4 py-2 text-center text-center" colSpan={8}>
+									<td className="border border-[#252525] px-4 py-2 text-center" colSpan={8}>
 										{isError ? "Something went wrong, couldn't fetch pools" : 'No Active Loans'}
 									</td>
 								</tr>

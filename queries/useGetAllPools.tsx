@@ -99,7 +99,7 @@ async function getAdminPoolInfo({
 			oracle,
 			minimumInterest: minInt,
 			maximumInterest: (Number(maxVariableInt) + Number(minInt)).toFixed(0),
-			totalBorrowed: new BigNumber(totalBorrowed.toString()).div(1e18).toString(),
+			totalBorrowed: Number(totalBorrowed),
 			liquidators: liqAddresses
 		}
 	} catch (error: any) {
