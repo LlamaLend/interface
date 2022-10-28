@@ -74,7 +74,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 				<div>
 					<h1 className="text-xs font-light text-gray-400">% Borrowed</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed && poolBalance ? ((totalBorrowed / poolBalance) * 100).toFixed(2) : 0} %
+						{totalBorrowed && totalDeposited ? ((totalBorrowed / totalDeposited) * 100).toFixed(2) : 0} %
 					</p>
 				</div>
 				<div>
