@@ -44,6 +44,12 @@ export default function Menu() {
 					</Link>
 				</MenuItem>
 
+				<MenuItem as="span" className="flex">
+					<Link href="/lender" passHref>
+						<a className="w-full px-4 py-2 hover:bg-[#292929]">Lender Stats</a>
+					</Link>
+				</MenuItem>
+
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-[#292929]"
