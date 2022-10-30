@@ -141,9 +141,6 @@ async function getLoans({
 				startTime: loan.startTime,
 				borrowed: loan.borrowed,
 				toPay: infoToRepayLoan(loan),
-				toPaayBreakdown: {
-					initialBorrowed: loan.interest
-				},
 				deadline: Number(loan.deadline) * 1000,
 				imgUrl: isTestnet ? '' : loanImgUrls[index],
 				owner: loan.owner,
