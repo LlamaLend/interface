@@ -24,15 +24,43 @@ export async function getOwnedNfts({
 		}
 
 		const data: INftApiResponse = await fetch(
-			`${alchemyNftUrl}/?owner=${userAddress}&contractAddresses[]=${nftContractAddress}`
+			`${alchemyNftUrl}/getNFTs?owner=${userAddress}&contractAddresses[]=${nftContractAddress}`
 		).then((res) => res.json())
 
-		return data?.ownedNfts.map((item) => ({
+		return data?.ownedNfts?.map((item) => ({
 			tokenId: Number(item.id.tokenId),
 			imgUrl: formatImageUrl(item.media[0].gateway) || ''
 		}))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get nfts of user"))
+	}
+}
+
+export async function getNftMetadata({
+	alchemyNftUrl,
+	nftContractAddress,
+	nftId
+}: {
+	alchemyNftUrl: string
+	nftContractAddress?: string
+	nftId: string
+}): Promise<string> {
+	try {
+		if (!nftContractAddress) {
+			return ''
+		}
+
+		if (!alchemyNftUrl) {
+			throw new Error('Error: Invalid arguments')
+		}
+
+		const data = await fetch(
+			`${alchemyNftUrl}/getNFTMetadata?contractAddress=${nftContractAddress.toLowerCase()}&tokenId=${nftId}`
+		).then((res) => res.json())
+
+		return formatImageUrl(data.media[0].gateway) || ''
+	} catch (error: any) {
+		throw new Error(error.message || (error?.reason ?? "Couldn't get nft metadata"))
 	}
 }
 

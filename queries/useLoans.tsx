@@ -6,6 +6,7 @@ import { request, gql } from 'graphql-request'
 import { chainConfig, SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
 import type { ILoan, ILoanValidity, ITransactionError } from '~/types'
 import { getLoansPayableAmount } from '~/utils'
+import { getNftMetadata } from './useNftsList'
 
 interface IGraphLoanResponse {
 	id: string
@@ -21,6 +22,7 @@ interface IGraphLoanResponse {
 		name: string
 		owner: string
 		address: string
+		nftContract: string
 	}
 }
 
@@ -93,32 +95,32 @@ const loansByPoolQuery = (poolAddress: string) => gql`
 				name
 				owner
 				address
+				nftContract
 			}
 		}
 	}
 `
 
-const getImgUrls = async (url: string) => {
-	const data = await fetch(url).then((res) => res.json())
-
-	return data.image
-}
-
 async function getLoans({
-	endpoint,
+	chainId,
 	userAddress,
-	poolAddress,
-	isTestnet
+	poolAddress
 }: {
-	endpoint: string
 	userAddress?: string
 	poolAddress?: string
-	isTestnet: boolean
+
+	chainId?: number | null
 }) {
 	try {
+		if (!chainId) {
+			return []
+		}
+
 		if (poolAddress ? false : !userAddress) {
 			return []
 		}
+
+		const { subgraphUrl: endpoint, isTestnet, alchemyNftUrl } = chainConfig(chainId)
 
 		if (!endpoint) {
 			throw new Error('Error: Invalid arguments')
@@ -129,7 +131,11 @@ async function getLoans({
 			poolAddress ? loansByPoolQuery(poolAddress) : userLoansQuery(userAddress)
 		)
 
-		const loanImgUrls = await Promise.all(loans.map(({ tokenUri }) => (isTestnet ? '' : getImgUrls(tokenUri))))
+		const loanImgUrls = await Promise.all(
+			loans.map(({ pool, nftId }) =>
+				isTestnet ? '' : getNftMetadata({ nftContractAddress: pool.nftContract, alchemyNftUrl, nftId })
+			)
+		)
 
 		return loans
 			.filter((pool) => pool.owner !== '0x0000000000000000000000000000000000000000')
@@ -164,11 +170,14 @@ export function useGetLoans({
 	userAddress?: string
 	poolAddress?: string
 }) {
-	const config = chainConfig(chainId)
-
 	return useQuery<Array<ILoan>, ITransactionError>(
 		['userLoans', chainId, userAddress, poolAddress],
-		() => getLoans({ endpoint: config.subgraphUrl, userAddress, poolAddress, isTestnet: config.isTestnet }),
+		() =>
+			getLoans({
+				userAddress,
+				poolAddress,
+				chainId
+			}),
 		{
 			refetchInterval: 30_000
 		}
@@ -214,9 +223,7 @@ async function getLoansToLiquidate({
 
 		const pools = liquidators.map((liq) => liq.pool.address)
 
-		const loans = await Promise.all(
-			pools.map((poolAddress) => getLoans({ poolAddress, endpoint: config.subgraphUrl, isTestnet: config.isTestnet }))
-		)
+		const loans = await Promise.all(pools.map((poolAddress) => getLoans({ poolAddress, chainId })))
 
 		const liquidatableLoans: Array<ILoan> = []
 

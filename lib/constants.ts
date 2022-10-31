@@ -17,7 +17,7 @@ export const EMAIL_SERVER_API = 'https://nft.llamalend.com/email'
 export const CHAINS_CONFIGURATION: IChainConfig = {
 	1: {
 		ankrUrl: 'https://rpc.ankr.com/eth',
-		alchemyNftUrl: 'https://eth-mainnet.g.alchemy.com/nft/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_/getNFTs',
+		alchemyNftUrl: 'https://eth-mainnet.g.alchemy.com/nft/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_',
 		factoryAddress: FACTORY_MAINNET,
 		factoryABI: FACTORY_ABI,
 		poolABI: POOL_ABI,
@@ -29,7 +29,7 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 	},
 	5: {
 		ankrUrl: 'https://rpc.ankr.com/eth_goerli',
-		alchemyNftUrl: 'https://eth-goerli.g.alchemy.com/nft/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_/getNFTs',
+		alchemyNftUrl: 'https://eth-goerli.g.alchemy.com/nft/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_',
 		factoryAddress: FACTORY_GOERLI,
 		factoryABI: FACTORY_ABI,
 		poolABI: POOL_ABI,
