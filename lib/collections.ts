@@ -42,6 +42,11 @@ const collections: ICollection = {
 			name: 'Bit Bears',
 			address: '0x32bb5a147b5371fd901aa4a72b7f82c58a87e36d',
 			imgUrl: '/assets/collection/bitbears.avif'
+		},
+		{
+			name: 'Wassies',
+			address: '0x1D20A51F088492A0f1C57f047A9e30c9aB5C07Ea',
+			imgUrl: '/assets/collection/wassies.avif'
 		}
 	],
 	5: [
