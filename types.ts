@@ -129,3 +129,10 @@ export interface ILoanValidity {
 	provider: Provider
 	poolABI: ContractInterface
 }
+
+export interface ICollection {
+	address: string
+	name: string
+	imgUrl: string
+	sortIndex: number
+}

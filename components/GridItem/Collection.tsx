@@ -11,12 +11,16 @@ export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemP
 	return (
 		<ItemWrapper>
 			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#202020]">
-				<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" priority />
+				{data.imgUrl === '' ? (
+					<div className="aspect-square rounded-t-xl"></div>
+				) : (
+					<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" priority />
+				)}
 			</div>
 
 			<h1>{data.name}</h1>
 
-			<Link href={`/borrow/${chainName}/collections/${data.address}`}>
+			<Link href={`/collections/${chainName}/${data.address}`}>
 				<a className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pools</a>
 			</Link>
 		</ItemWrapper>

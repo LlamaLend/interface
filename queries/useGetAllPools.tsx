@@ -1,17 +1,13 @@
-import { ContractInterface, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { erc721ABI } from 'wagmi'
 import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
-import type { IBorrowPool, Provider, ITransactionError, IGetAdminPoolDataArgs } from '~/types'
-import { chainConfig, SECONDS_IN_A_YEAR } from '~/lib/constants'
+import type { IBorrowPool, ITransactionError, IGetAdminPoolDataArgs } from '~/types'
+import { chainConfig, ERC721_ABI, SECONDS_IN_A_YEAR } from '~/lib/constants'
 
 interface IGetAllPoolsArgs {
-	endpoint: string
-	poolAbi: ContractInterface
-	quoteApi: string
-	provider: Provider
+	chainId?: number | null
 	collectionAddress?: string
 	ownerAddress?: string
 }
@@ -37,7 +33,7 @@ async function getAdminPoolInfo({
 }: IGetAdminPoolDataArgs) {
 	try {
 		const poolContract = new ethers.Contract(poolAddress, poolAbi, provider)
-		const nftContract = new ethers.Contract(nftContractAddress, erc721ABI, provider)
+		const nftContract = new ethers.Contract(nftContractAddress, ERC721_ABI, provider)
 
 		const [
 			nftName,
@@ -146,21 +142,16 @@ const getAllPoolsByOwner = (ownerAddress: string) => gql`
 	}
 `
 
-export async function getAllpools({
-	endpoint,
-	quoteApi,
-	provider,
-	poolAbi,
-	collectionAddress,
-	ownerAddress
-}: IGetAllPoolsArgs) {
+export async function getAllpools({ chainId, collectionAddress, ownerAddress }: IGetAllPoolsArgs) {
 	try {
 		// return empty array when no chainId, as there is no chainId returned on /borrow/[chainName] when chainName is not supported/invalid
-		if (!endpoint) {
+		if (!chainId) {
 			return []
 		}
 
-		if (!poolAbi || !provider || !quoteApi || !provider) {
+		const { poolABI: poolAbi, chainProvider: provider, quoteApi, subgraphUrl: endpoint } = chainConfig(chainId)
+
+		if (!poolAbi || !provider || !quoteApi || !endpoint) {
 			throw new Error('Invalid arguments')
 		}
 
@@ -210,16 +201,11 @@ export function useGetAllPools({
 	collectionAddress?: string
 	ownerAddress?: string
 }) {
-	const config = chainConfig(chainId)
-
 	return useQuery<Array<IBorrowPool>, ITransactionError>(
 		['allPools', chainId, collectionAddress, ownerAddress],
 		() =>
 			getAllpools({
-				endpoint: config.subgraphUrl,
-				poolAbi: config.poolABI,
-				quoteApi: config.quoteApi,
-				provider: config.chainProvider,
+				chainId,
 				collectionAddress,
 				ownerAddress
 			}),
