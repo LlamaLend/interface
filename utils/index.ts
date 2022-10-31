@@ -26,6 +26,10 @@ export function getTotalReceivedArg({
 	noOfItems: number
 	ltv: string
 }) {
+	if (!oraclePrice || !ltv || !noOfItems) {
+		return 0
+	}
+
 	return new BigNumber(new BigNumber(oraclePrice).times(ltv).div(1e18).toFixed(0, 1)).times(noOfItems).toFixed(0, 1)
 }
 
