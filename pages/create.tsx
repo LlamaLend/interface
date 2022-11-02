@@ -119,7 +119,7 @@ const ManagePools: NextPage = () => {
 					<InputText
 						name="nftAddress"
 						placeholder="0x..."
-						label={'Address of NFT to borrow'}
+						label={'Address of NFT to lend against'}
 						required
 						pattern="^0x[a-fA-F0-9]{40}$"
 						title="Enter valid address."
