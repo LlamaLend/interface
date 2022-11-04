@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import { allChains } from 'wagmi'
 import BorrowCollectionsContainer from '~/containers/BorrowCollectionsContainer'
 import { getAllCollections } from '~/queries/useGetAllCollections'
-import { ICollection } from '~/types'
+import type { ICollection } from '~/types'
 
 interface IPageProps {
 	chainId: number
@@ -11,7 +11,7 @@ interface IPageProps {
 }
 
 const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, collections }) => {
-	// only show pools of network user is connected to if they are on /borrow/pools, as /borrow/pools is similare index route i.e., '/'
+	// only show pools of network user is connected to if they are on /borrow/collections
 	return <BorrowCollectionsContainer chainId={chainId} chainName={chainName} collections={collections} />
 }
 
