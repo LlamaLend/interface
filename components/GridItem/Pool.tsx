@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
@@ -30,7 +30,7 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 	const router = useRouter()
 
 	return (
-		<div className="flex gap-14 rounded-xl bg-[#22242A] p-5">
+		<div className="flex flex-wrap gap-14 rounded-xl bg-[#22242A] p-5">
 			<div className="flex gap-2">
 				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
 				<div>
@@ -85,7 +85,7 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 
 export function PlaceholderBorrowPoolItem() {
 	return (
-		<div className="flex gap-14 rounded-xl bg-[#22242A] p-5">
+		<div className="flex flex-wrap gap-14 rounded-xl bg-[#22242A] p-5">
 			<div className="flex gap-2">
 				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
 				<div>

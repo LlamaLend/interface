@@ -1,4 +1,4 @@
-import Image from 'next/future/image'
+import Image from 'next/image'
 import { chainConfig } from '~/lib/constants'
 import { useGetLoans } from '~/queries/useLoans'
 import type { IBorrowPool } from '~/types'

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import { useNetwork } from 'wagmi'
 import { useChainModal } from '@rainbow-me/rainbowkit'
 import BeatLoader from '~/components/BeatLoader'
