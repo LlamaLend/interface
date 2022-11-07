@@ -14,9 +14,9 @@ interface IPoolsContainerProps {
 }
 
 const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsContainerProps) => {
-	const { data: collectionName, isLoading: fetchingName } = useGetCollectionName({ chainId, collectionAddress })
+	const { data: collectionName } = useGetCollectionName({ chainId, collectionAddress })
 
-	const { data: oracle, isLoading: fetchingOracle } = useGetOracle({ nftContractAddress: collectionAddress, chainId })
+	const { data: oracle } = useGetOracle({ nftContractAddress: collectionAddress, chainId })
 
 	const { data, isError, isLoading } = useGetAllPools({ chainId, collectionAddress })
 
