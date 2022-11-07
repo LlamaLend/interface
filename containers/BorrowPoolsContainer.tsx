@@ -31,11 +31,9 @@ const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsC
 			</Head>
 
 			<Layout>
-				<div className="flex flex-wrap justify-between gap-16">
-					<h1 className="mt-16 min-h-[2.5rem] text-4xl font-semibold">
-						{collectionName ? collectionName + ' Loans' : ''}
-					</h1>
-					<h1 className="mt-16 min-h-[2.5rem] text-4xl font-semibold opacity-20">{floorPrice}</h1>
+				<div className="-mb-[6px] mt-12 flex flex-wrap justify-between gap-16">
+					<h1 className="min-h-[2.5rem] text-4xl font-semibold">{collectionName ? collectionName + ' Loans' : ''}</h1>
+					<h1 className="min-h-[2.5rem] text-4xl font-semibold opacity-20">{floorPrice}</h1>
 				</div>
 
 				<hr className="my-6 border-[#27282A]" />

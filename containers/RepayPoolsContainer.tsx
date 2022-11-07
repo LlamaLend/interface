@@ -56,8 +56,8 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 				) : data?.length === 0 ? (
 					<p className="fallback-text">
 						You don't have any loans, Click{' '}
-						<Link href="/">
-							<a className="underline">here</a>
+						<Link href="/" className="underline">
+							here
 						</Link>{' '}
 						to borrow {chainSymbol}.
 					</p>

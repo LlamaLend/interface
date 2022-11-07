@@ -34,8 +34,8 @@ export default function LenderStatsContainer({ chainId, chainName, lenderAddress
 				) : data?.length === 0 ? (
 					<p className="fallback-text">
 						You don't have any pools, Click{' '}
-						<Link href="/create">
-							<a className="underline">here</a>
+						<Link href="/create" className="underline">
+							here
 						</Link>{' '}
 						to create.
 					</p>

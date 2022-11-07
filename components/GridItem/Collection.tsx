@@ -20,8 +20,11 @@ export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemP
 
 			<h1>{data.name}</h1>
 
-			<Link href={`/collections/${chainName}/${data.address}`}>
-				<a className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pools</a>
+			<Link
+				href={`/collections/${chainName}/${data.address}`}
+				className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm"
+			>
+				View Pools
 			</Link>
 		</ItemWrapper>
 	)

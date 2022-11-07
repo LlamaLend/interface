@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@gnosis.pm/safe-apps-wagmi': ^1.1.0
+  '@next/font': ^13.0.2
   '@rainbow-me/rainbowkit': ^0.7.4
   '@tailwindcss/forms': ^0.5.3
   '@tanstack/react-query': ^4.14.1
@@ -34,6 +35,7 @@ specifiers:
 
 dependencies:
   '@gnosis.pm/safe-apps-wagmi': 1.1.0
+  '@next/font': 13.0.2
   '@rainbow-me/rainbowkit': 0.7.4_cejeke5wl2tn5ye67d4a7w7egm
   '@tanstack/react-query': 4.14.1_biqbaboplfbrettd7655fr4n2y
   ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
@@ -724,6 +726,10 @@ packages:
     dependencies:
       glob: 7.1.7
     dev: true
+
+  /@next/font/13.0.2:
+    resolution: {integrity: sha512-tLbyZCA1uF8HjbUEN5c4zB453yEzt5aT9VDhXPw1/eJhX4U0Q4lD3s3Bs+gpCjuLrEgILd56jQuzxgrMnWHH8A==}
+    dev: false
 
   /@next/swc-android-arm-eabi/13.0.2:
     resolution: {integrity: sha512-X54UQCTFyOGnJP//Z71dPPlp4BCYcQL2ncikKXQcPzVpqPs4C3m+tKC8ivBNH6edAXkppwsLRz1/yQwgSZ9Swg==}
