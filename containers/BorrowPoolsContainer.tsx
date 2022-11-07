@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { BorrowPoolItem, PlaceholderBorrowPoolItem } from '~/components/GridItem'
-import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
+import { chainConfig } from '~/lib/constants'
 import { useGetAllPools } from '~/queries/useGetAllPools'
+import useGetCollectionName from '~/queries/useGetCollectionName'
+import { useGetOracle } from '~/queries/useGetOracle'
 
 interface IPoolsContainerProps {
 	chainId?: number | null
@@ -12,7 +14,15 @@ interface IPoolsContainerProps {
 }
 
 const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsContainerProps) => {
+	const { data: collectionName, isLoading: fetchingName } = useGetCollectionName({ chainId, collectionAddress })
+
+	const { data: oracle, isLoading: fetchingOracle } = useGetOracle({ nftContractAddress: collectionAddress, chainId })
+
 	const { data, isError, isLoading } = useGetAllPools({ chainId, collectionAddress })
+
+	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
+
+	const floorPrice = oracle?.price ? `FP: ${(Number(oracle.price) / 1e18).toFixed(2)} ${chainSymbol}` : ''
 
 	return (
 		<>
@@ -21,16 +31,25 @@ const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsC
 			</Head>
 
 			<Layout>
+				<div className="flex flex-wrap justify-between gap-16">
+					<h1 className="mt-16 min-h-[2.5rem] text-4xl font-semibold">
+						{collectionName ? collectionName + ' Loans' : ''}
+					</h1>
+					<h1 className="mt-16 min-h-[2.5rem] text-4xl font-semibold opacity-20">{floorPrice}</h1>
+				</div>
+
+				<hr className="my-6 border-[#27282A]" />
+
 				{!chainId || !chainName ? (
 					<p className="fallback-text">Network not supported. No pools on {chainName || 'this network'}.</p>
 				) : isError ? (
 					<p className="fallback-text">Something went wrong, couldn't get pools on this networkk.</p>
 				) : isLoading ? (
-					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
-						{new Array(10).fill(1).map((_, index) => (
+					<div className="flex flex-col gap-5">
+						{new Array(4).fill(1).map((_, index) => (
 							<PlaceholderBorrowPoolItem key={'plitem' + index} />
 						))}
-					</GridWrapper>
+					</div>
 				) : data.length === 0 ? (
 					<p className="fallback-text">
 						{collectionAddress ? (
@@ -46,11 +65,11 @@ const BorrowPoolsContainer = ({ chainId, chainName, collectionAddress }: IPoolsC
 						)}
 					</p>
 				) : (
-					<GridWrapper className="mx-0 mt-8 mb-auto sm:my-9">
+					<div className="flex flex-col gap-5">
 						{data.map((item) => (
 							<BorrowPoolItem key={item.address} data={item} chainName={chainName} chainId={chainId} />
 						))}
-					</GridWrapper>
+					</div>
 				)}
 			</Layout>
 		</>

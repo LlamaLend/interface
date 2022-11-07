@@ -1,12 +1,13 @@
 import * as React from 'react'
-import Link from 'next/link'
+import Image from 'next/future/image'
+import { useRouter } from 'next/router'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
-import ItemWrapper from './ItemWrapper'
 import type { IBorrowPool } from '~/types'
 import { useGetPoolData } from '~/queries/useGetPoolData'
-import { formatCurrentAnnualInterest } from '~/utils'
+import { formatDailyInterest } from '~/utils'
 import pools from '~/lib/pools'
+import { chainConfig } from '~/lib/constants'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -24,75 +25,91 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 
 	const { data: poolAddlInfo, isLoading } = useGetPoolData({ chainId, poolAddress: data.address })
 
+	const config = chainConfig(chainId)
+
+	const router = useRouter()
+
 	return (
-		<ItemWrapper>
-			<div className="relative -mx-4 -mt-4 mb-4 h-20 rounded-t-xl bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364]">
-				<span className="absolute -bottom-5 left-4 h-12 w-12 rounded-full bg-gradient-to-r from-[#141e30] to-[#243b55]"></span>
+		<div className="flex gap-14 rounded-xl bg-[#22242A] p-5">
+			<div className="flex gap-2">
+				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
+				<div>
+					<p
+						className="data-[isfetching=true]:placeholder-box data-[isfetching=true]:w-20 min-h-[1.5rem] font-semibold"
+						data-isfetching={isLoading ? 'true' : 'false'}
+					>
+						{poolAddlInfo?.pricePerNft ?? ''}
+					</p>
+					<p className="text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
+				</div>
 			</div>
-			<h1>{data.name + (poolDeployer ? ` by ${poolDeployer}` : '')}</h1>
 
-			<div className="grid grid-cols-2 gap-3">
-				<p className="col-span-1 flex flex-col gap-1">
-					<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
+			<div>
+				<p className="min-h-[1.5rem] font-semibold">
 					{/* @ts-ignore */}
-					<span>{dayjs(new Date(new Date().getTime() + data.maxLoanLength * 1000)).toNow(true)}</span>
+					{dayjs(new Date(new Date().getTime() + data.maxLoanLength * 1000)).toNow(true)}
 				</p>
-				<p className="col-span-1 flex flex-col items-end gap-1">
-					<span className="text-xs font-light text-gray-400">LTV</span>
-					<span>{data.ltv / 1e16}%</span>
+				<p className="text-sm font-normal text-[#D4D4D8]">Max Duration</p>
+			</div>
+			<div>
+				<p
+					className="data-[isfetching=true]:placeholder-box data-[isfetching=true]:w-20 min-h-[1.5rem] font-semibold"
+					data-isfetching={isLoading ? 'true' : 'false'}
+				>
+					{poolAddlInfo ? `${formatDailyInterest(poolAddlInfo.currentAnnualInterest)}%` : ''}
 				</p>
-				<p className="col-span-1 flex flex-col gap-1">
-					<span className="text-xs font-light text-gray-400">Current Interest</span>
-					<span className={isLoading ? 'placeholder-box h-6 w-20' : ''}>
-						{poolAddlInfo ? `${formatCurrentAnnualInterest(poolAddlInfo.currentAnnualInterest)}% APR` : ''}
-					</span>
-				</p>
-				<p className="col-span-1 flex flex-col items-end gap-1">
-					<span className="text-xs font-light text-gray-400">Borrowable Now</span>
-					<span className={isLoading ? 'placeholder-box h-6 w-20' : ''}>{poolAddlInfo?.maxNftsToBorrow}</span>
-				</p>
+				<p className="text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
+			</div>
+			<div>
+				<a
+					target="_blank"
+					rel="noreferrer noopener"
+					href={`${config.blockExplorer.url}/address/${data.address}`}
+					className="min-h-[1.5rem] font-semibold text-[#3070FB]"
+				>
+					{data.name + (poolDeployer ? ` by ${poolDeployer}` : '')}
+				</a>
+
+				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>
 
-			<Link href={`/borrow/${chainName}/${data.address}`}>
-				<a className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pool</a>
-			</Link>
-		</ItemWrapper>
+			<button
+				className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold"
+				onClick={() => router.push(`/borrow/${chainName}/${data.address}`)}
+			>
+				Select Loan
+			</button>
+		</div>
 	)
 }
 
 export function PlaceholderBorrowPoolItem() {
 	return (
-		<ItemWrapper>
-			<div className="placeholder-box relative -mx-4 -mt-4 mb-4 h-20 rounded-t-xl bg-[#202020]">
-				<span
-					className="placeholder-box absolute -bottom-5 left-4 h-12 w-12 rounded-full"
-					style={{ background: 'linear-gradient(to right, #232323 5%, #252525 20%, #232323 40%)' }}
-				></span>
-			</div>
-			<h1 className="placeholder-box h-6 w-36"></h1>
-
-			<div className="grid grid-cols-2 gap-3">
-				<p className="col-span-1 flex flex-col gap-1">
-					<span className="text-xs font-light text-gray-400">Max Loan Duration</span>
-					<span className="placeholder-box h-6 w-20"></span>
-				</p>
-				<p className="col-span-1 flex flex-col items-end gap-1">
-					<span className="text-xs font-light text-gray-400">LTV</span>
-					<span className="placeholder-box h-6 w-20"></span>
-				</p>
-				<p className="col-span-1 flex flex-col gap-1">
-					<span className="text-xs font-light text-gray-400">Current Interest</span>
-					<span className="placeholder-box h-6 w-20"></span>
-				</p>
-				<p className="col-span-1 flex flex-col items-end gap-1">
-					<span className="text-xs font-light text-gray-400">Borrowable Now</span>
-					<span className="placeholder-box h-6 w-20"></span>
-				</p>
+		<div className="flex gap-14 rounded-xl bg-[#22242A] p-5">
+			<div className="flex gap-2">
+				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
+				<div>
+					<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
+					<p className="text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
+				</div>
 			</div>
 
-			<div className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm text-white text-opacity-40">
-				<div className="h-5"></div>
+			<div>
+				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
+				<p className="text-sm font-normal text-[#D4D4D8]">Max Duration</p>
 			</div>
-		</ItemWrapper>
+			<div>
+				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
+				<p className="text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
+			</div>
+			<div>
+				<p className="placeholder-box-2 h-[1.5rem] w-16 font-semibold text-[#3070FB]"></p>
+				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
+			</div>
+
+			<button className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold" disabled>
+				Select Loan
+			</button>
+		</div>
 	)
 }

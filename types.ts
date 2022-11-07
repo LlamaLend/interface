@@ -86,6 +86,7 @@ export interface IBorrowPoolData {
 	nftContract: string
 	nftName: string
 	owner: string
+	pricePerNft: string
 	maxNftsToBorrow: string
 }
 

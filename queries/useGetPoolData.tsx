@@ -73,6 +73,12 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 			nftContractInterface.name()
 		])
 
+		const priceAndCurrentBorrowables = getMaxNftsToBorrow({
+			maxInstantBorrow: maxInstantBorrow.toString(),
+			oraclePrice: quote.price,
+			ltv
+		})
+
 		return {
 			name,
 			symbol,
@@ -85,11 +91,8 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 			nftContract,
 			nftName,
 			owner,
-			maxNftsToBorrow: getMaxNftsToBorrow({
-				maxInstantBorrow: maxInstantBorrow.toString(),
-				oraclePrice: quote.price,
-				ltv
-			})
+			pricePerNft: priceAndCurrentBorrowables.pricePerNft,
+			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pool data"))

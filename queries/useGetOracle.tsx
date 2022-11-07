@@ -36,7 +36,13 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 	}
 }
 
-const useGetOracle = ({ nftContractAddress, chainId }: { nftContractAddress?: string | null; chainId?: number }) => {
+const useGetOracle = ({
+	nftContractAddress,
+	chainId
+}: {
+	nftContractAddress?: string | null
+	chainId?: number | null
+}) => {
 	const config = chainConfig(chainId)
 
 	return useQuery<IOracleResponse | null, ITransactionError>(

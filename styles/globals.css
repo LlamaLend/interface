@@ -140,6 +140,14 @@
 		border-radius: 4px;
 	}
 
+	.placeholder-box-2 {
+		background-color: #1f1f1f;
+		animation: shimmer 2s cubic-bezier(0.31, 0.29, 0.62, 0.59) infinite;
+		background: linear-gradient(to right, #1f1f1f 5%, #252525 20%, #1f1f1f 40%);
+		background-size: 1000px 100%;
+		border-radius: 4px;
+	}
+
 	@keyframes shimmer {
 		0% {
 			background-position: -1000px 0;

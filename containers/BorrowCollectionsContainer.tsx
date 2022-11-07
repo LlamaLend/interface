@@ -4,13 +4,13 @@ import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import type { ICollection } from '~/types'
 
-interface IPoolsContainerProps {
+interface ICollectionContainerProps {
 	chainId: number
 	chainName: string
 	collections: Array<ICollection>
 }
 
-const BorrowCollectionsContainer = ({ chainId, chainName, collections }: IPoolsContainerProps) => {
+const BorrowCollectionsContainer = ({ chainId, chainName, collections }: ICollectionContainerProps) => {
 	return (
 		<>
 			<Head>
@@ -19,7 +19,7 @@ const BorrowCollectionsContainer = ({ chainId, chainName, collections }: IPoolsC
 
 			<Layout>
 				{!chainId || !chainName ? (
-					<p className="fallback-text">Network not supported. No pools on {chainName || 'this network'}.</p>
+					<p className="fallback-text">Network not supported. No collections on {chainName || 'this network'}.</p>
 				) : collections.length === 0 ? (
 					<p className="fallback-text">There are no collections on {chainName || 'this'} network.</p>
 				) : (
