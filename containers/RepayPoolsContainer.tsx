@@ -3,14 +3,14 @@ import Link from 'next/link'
 import Image from 'next/future/image'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
+import BigNumber from 'bignumber.js'
 import Layout from '~/components/Layout'
-import { chainConfig } from '~/lib/constants'
-import { useGetLoans } from '~/queries/useLoans'
-import { formatLoanDeadline, getLoansPayableAmount } from '~/utils'
-import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import { RepayCart } from '~/components/Cart'
 import Tooltip from '~/components/Tooltip'
-import BigNumber from 'bignumber.js'
+import { useGetLoans } from '~/queries/useLoans'
+import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
+import { chainConfig } from '~/lib/constants'
+import { formatLoanDeadline, getLoansPayableAmount } from '~/utils'
 
 interface ILoansContainerProps {
 	chainId?: number | null
@@ -218,7 +218,9 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 													{loan.toPay.totalPayable + ' ' + chainSymbol}
 												</td>
 												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
-													{formatLoanDeadline(loan.deadline)}
+													<Tooltip content={new Date(loan.deadline).toUTCString()}>
+														<span className="w-full text-center">{formatLoanDeadline(loan.deadline)}</span>
+													</Tooltip>
 												</td>
 												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													{itemsInCart?.includes(loan.id) ? (

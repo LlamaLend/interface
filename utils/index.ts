@@ -17,15 +17,12 @@ export function formatCurrentAnnualInterest(currentAnnualInterest: string) {
 }
 
 // returns totalToBorrow arg that is passed in a contracts method
-export function getTotalReceivedArg({
-	oraclePrice,
-	noOfItems,
-	ltv
-}: {
-	oraclePrice: string
-	noOfItems: number
-	ltv: string
-}) {
+export function getTotalReceivedArg(args: { oraclePrice: string; noOfItems: number; ltv: string }) {
+	if (Object.values(args).filter((arg) => !arg || arg === '' || arg === '0').length > 0) {
+		return '0'
+	}
+
+	const { oraclePrice, noOfItems, ltv } = args
 
 	return new BigNumber(new BigNumber(oraclePrice).times(ltv).div(1e18).toFixed(0, 1)).times(noOfItems).toFixed(0, 1)
 }
@@ -113,18 +110,12 @@ export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: string |
 }
 
 // returns maximum no.of nfts a user can borrow based on pool balance
-export function getMaxNftsToBorrow({
-	maxInstantBorrow,
-	oraclePrice,
-	ltv
-}: {
-	maxInstantBorrow: string
-	oraclePrice: string
-	ltv: string
-}) {
-	if (maxInstantBorrow === '0' || oraclePrice === '0' || ltv === '0') {
+export function getMaxNftsToBorrow(args: { maxInstantBorrow: string; oraclePrice: string; ltv: string }) {
+	if (Object.values(args).filter((arg) => !arg || arg === '' || arg === '0').length > 0) {
 		return '0'
 	}
+
+	const { maxInstantBorrow, oraclePrice, ltv } = args
 
 	const formattedLtv = new BigNumber(ltv).div(1e18)
 
