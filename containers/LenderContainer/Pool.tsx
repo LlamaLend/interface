@@ -1,4 +1,5 @@
-import Image from 'next/image'
+import Image from 'next/future/image'
+import Tooltip from '~/components/Tooltip'
 import { chainConfig } from '~/lib/constants'
 import { useGetLoans } from '~/queries/useLoans'
 import type { IBorrowPool } from '~/types'
@@ -210,7 +211,9 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 												{(loan.toPay.total / 1e18).toFixed(4) + ' ' + chainSymbol}
 											</td>
 											<td className="whitespace-nowrap border border-[#252525] px-4 py-2 text-center">
-												{formatLoanDeadline(loan.deadline)}
+												<Tooltip content={new Date(loan.deadline).toUTCString()}>
+													<span className="w-full text-center">{formatLoanDeadline(loan.deadline)}</span>
+												</Tooltip>
 											</td>
 										</tr>
 									))}
