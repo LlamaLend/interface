@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAddress } from 'ethers/lib/utils'
 import { chainConfig } from '~/lib/constants'
-import { IOracleResponse, ITransactionError } from '~/types'
+import type { IOracleResponse, ITransactionError } from '~/types'
 
 interface IFetchOracleProps {
 	api: string

@@ -66,7 +66,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 						rel="noreferrer noopener"
 						href={`${config.blockExplorer.url}/address/${data?.nftContract}`}
 					>
-						{data?.nftName ?? ''}
+						{data?.collectionName ?? ''}
 					</a>
 
 					<a
@@ -164,7 +164,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 								<p className="fallback-text">Something went wrong, couldn't fetch your NFTs.</p>
 							) : nftsList.length === 0 ? (
 								<p className="fallback-text">
-									There are no {data.nftName} in this address on {chainName}.
+									There are no {data.collectionName} in this address on {chainName}.
 								</p>
 							) : (
 								<GridWrapper className="xl:flex-1">
@@ -185,7 +185,7 @@ const PoolByChain: NextPage<IPageProps> = ({ chainId, chainName, poolAddress, ch
 								poolAddress={poolAddress}
 								chainId={chainId}
 								nftContractAddress={data?.nftContract}
-								nftCollectionName={data?.nftName}
+								nftCollectionName={data?.collectionName}
 								isLoading={isLoading || nftsListLoading || fetchingOracle}
 							/>
 						</>

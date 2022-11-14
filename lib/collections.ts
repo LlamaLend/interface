@@ -44,9 +44,39 @@ const collections: ICollection = {
 			imgUrl: '/assets/collection/bitbears.avif'
 		},
 		{
+			name: 'Otherdeed',
+			address: '0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258',
+			imgUrl: '/assets/collection/otherdeed.avif'
+		},
+		{
+			name: 'Lil Nouns',
+			address: '0x4b10701Bfd7BFEdc47d50562b76b436fbB5BdB3B',
+			imgUrl: '/assets/collection/lilnouns.avif'
+		},
+		{
+			name: 'Ethlizards',
+			address: '0x16de9D750F4AC24226154C40980Ef83d4D3fD4AD',
+			imgUrl: '/assets/collection/ethlizards.avif'
+		},
+		{
+			name: 'Crypto Marcs',
+			address: '0xe9b91d537c3Aa5A3fA87275FBD2e4feAAED69Bd0',
+			imgUrl: '/assets/collection/cryptomarcs.avif'
+		},
+		{
 			name: 'Wassies',
 			address: '0x1D20A51F088492A0f1C57f047A9e30c9aB5C07Ea',
 			imgUrl: '/assets/collection/wassies.avif'
+		},
+		{
+			name: 'Jay Pegs Auto Mart',
+			address: '0xF210D5d9DCF958803C286A6f8E278e4aC78e136E',
+			imgUrl: '/assets/collection/jaypegsautomart.avif'
+		},
+		{
+			name: 'Lil Pudgys',
+			address: '0x524cAB2ec69124574082676e6F654a18df49A048',
+			imgUrl: '/assets/collection/lilpudgys.avif'
 		}
 	],
 	5: [

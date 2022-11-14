@@ -1,18 +1,17 @@
+import { dehydrate, QueryClient } from '@tanstack/react-query'
 import type { NextPage } from 'next'
 import { allChains } from 'wagmi'
 import BorrowCollectionsContainer from '~/containers/BorrowCollectionsContainer'
 import { getAllCollections } from '~/queries/useGetAllCollections'
-import type { ICollection } from '~/types'
 
 interface IPageProps {
 	chainId: number
 	chainName: string
-	collections: Array<ICollection>
 }
 
-const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, collections }) => {
-	// only show pools of network user is connected to if they are on /borrow/collections
-	return <BorrowCollectionsContainer chainId={chainId} chainName={chainName} collections={collections} />
+const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
+	// only show pools of network user is connected to if they are on /borrow/pools, as /borrow/pools is similare index route i.e., '/'
+	return <BorrowCollectionsContainer chainId={chainId} chainName={chainName} />
 }
 
 export default BorrowPoolsByChain
@@ -38,10 +37,12 @@ export async function getStaticProps({ params: { chainName } }: { params: { chai
 		return { notFound: true }
 	}
 
-	const collections = await getAllCollections({ chainId: chainDetails.id })
+	const queryClient = new QueryClient()
+
+	await queryClient.prefetchQuery(['allCollections', 1], () => getAllCollections({ chainId: 1 }))
 
 	return {
-		props: { collections, chainId: chainDetails.id, chainName: chainDetails.name },
+		props: { dehydratedState: dehydrate(queryClient), chainId: chainDetails.id, chainName: chainDetails.name },
 		revalidate: 30
 	}
 }

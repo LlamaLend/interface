@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
 import type { IBorrowPool, ITransactionError, IGetAdminPoolDataArgs } from '~/types'
-import { chainConfig, ERC721_ABI, SECONDS_IN_A_YEAR } from '~/lib/constants'
+import { chainConfig, ERC721_ABI, POOL_ABI, SECONDS_IN_A_YEAR } from '~/lib/constants'
 
 interface IGetAllPoolsArgs {
 	chainId?: number | null
@@ -23,39 +23,56 @@ interface IPoolsQueryResponse {
 	}>
 }
 
-// TODO fetch this inside useGetPoolData
-async function getAdminPoolInfo({
+async function getPoolAddlInfo({
 	poolAddress,
-	poolAbi,
 	provider,
-	nftContractAddress,
-	graphEndpoint
-}: IGetAdminPoolDataArgs) {
+	nftContractAddress
+}: {
+	poolAddress: string
+	nftContractAddress: string
+	provider: ethers.providers.BaseProvider
+}) {
 	try {
-		const poolContract = new ethers.Contract(poolAddress, poolAbi, provider)
+		const poolContract = new ethers.Contract(poolAddress, POOL_ABI, provider)
 		const nftContract = new ethers.Contract(nftContractAddress, ERC721_ABI, provider)
 
+		const [collectionName, poolBalance, totalBorrowed] = await Promise.all([
+			nftContract.name(),
+			provider.getBalance(poolAddress),
+			poolContract.totalBorrowed()
+		])
+
+		return {
+			collectionName,
+			poolBalance: poolBalance.toString(),
+			totalBorrowed: totalBorrowed.toString(),
+			totalDeposited: new BigNumber(poolBalance.toString()).plus(totalBorrowed.toString()).toFixed(0, 1)
+		}
+	} catch (error: any) {
+		throw new Error(error.message || (error?.reason ?? "Couldn't get total amount deposited in pool."))
+	}
+}
+
+// TODO fetch this inside useGetPoolData
+async function getAdminPoolInfo({ poolAddress, provider, nftContractAddress, graphEndpoint }: IGetAdminPoolDataArgs) {
+	try {
+		const poolContract = new ethers.Contract(poolAddress, POOL_ABI, provider)
+
 		const [
-			nftName,
-			poolBalance,
 			maxPrice,
 			{ maxDailyBorrowsLimit },
 			maxLoanLength,
 			oracle,
 			minimumInterest,
 			maxVariableInterestPerEthPerSecond,
-			totalBorrowed,
 			{ liquidators }
 		] = await Promise.all([
-			nftContract.name(),
-			provider.getBalance(poolAddress),
 			poolContract.maxPrice(),
 			poolContract.getDailyBorrows(),
 			poolContract.maxLoanLength(),
 			poolContract.oracle(),
 			poolContract.minimumInterest(),
 			poolContract.maxVariableInterestPerEthPerSecond(),
-			poolContract.totalBorrowed(),
 			request(
 				graphEndpoint,
 				gql`
@@ -78,8 +95,8 @@ async function getAdminPoolInfo({
 
 		return {
 			key:
-				nftName +
-				poolBalance +
+				nftContractAddress +
+				poolAddress +
 				maxPrice +
 				maxDailyBorrowsLimit +
 				maxLoanLength +
@@ -87,15 +104,12 @@ async function getAdminPoolInfo({
 				minInt +
 				maxVariableInt +
 				liqAddresses.join(''),
-			nftName: nftName,
-			poolBalance: Number(poolBalance),
 			maxPrice: Number(maxPrice),
 			maxDailyBorrows: Number(maxDailyBorrowsLimit),
 			maxLoanLength: Number(maxLoanLength),
 			oracle,
 			minimumInterest: minInt,
 			maximumInterest: (Number(maxVariableInt) + Number(minInt)).toFixed(0),
-			totalBorrowed: Number(totalBorrowed),
 			liquidators: liqAddresses
 		}
 	} catch (error: any) {
@@ -149,9 +163,9 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 			return []
 		}
 
-		const { poolABI: poolAbi, chainProvider: provider, quoteApi, subgraphUrl: endpoint } = chainConfig(chainId)
+		const { chainProvider: provider, quoteApi, subgraphUrl: endpoint } = chainConfig(chainId)
 
-		if (!poolAbi || !provider || !quoteApi || !endpoint) {
+		if (!provider || !quoteApi || !endpoint) {
 			throw new Error('Invalid arguments')
 		}
 
@@ -164,11 +178,16 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 				: getAllPoolsQuery()
 		)
 
+		const poolAddlInfo = await Promise.all(
+			pools.map((pool) =>
+				getPoolAddlInfo({ poolAddress: pool.address, provider, nftContractAddress: pool.nftContract })
+			)
+		)
+
 		const adminPoolInfo = ownerAddress
 			? await Promise.all(
 					pools.map((pool) =>
 						getAdminPoolInfo({
-							poolAbi,
 							poolAddress: pool.address,
 							nftContractAddress: pool.nftContract,
 							provider,
@@ -178,15 +197,21 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 			  )
 			: await Promise.resolve([])
 
-		return pools.map((pool, index) => ({
-			name: pool.name,
-			symbol: pool.symbol,
-			address: getAddress(pool.address),
-			nftContract: getAddress(pool.nftContract),
-			maxLoanLength: Number(pool.maxLoanLength),
-			ltv: Number(pool.ltv),
-			adminPoolInfo: adminPoolInfo?.[index] ?? {}
-		}))
+		return pools
+			.map((pool, index) => ({
+				name: pool.name,
+				symbol: pool.symbol,
+				address: getAddress(pool.address),
+				nftContract: getAddress(pool.nftContract),
+				maxLoanLength: Number(pool.maxLoanLength),
+				ltv: Number(pool.ltv),
+				collectionName: poolAddlInfo?.[index]?.collectionName ?? '',
+				poolBalance: poolAddlInfo?.[index]?.poolBalance ?? '0',
+				totalBorrowed: poolAddlInfo?.[index]?.totalBorrowed ?? '0',
+				totalDeposited: poolAddlInfo?.[index]?.totalDeposited ?? '0',
+				adminPoolInfo: adminPoolInfo?.[index] ?? {}
+			}))
+			.sort((a, b) => Number(b.poolBalance) - Number(a.poolBalance))
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get pools"))
 	}

@@ -1,28 +1,24 @@
-import type { NextPage } from 'next'
+import { dehydrate, QueryClient } from '@tanstack/react-query'
 import { useNetwork } from 'wagmi'
 import BorrowCollectionsContainer from '~/containers/BorrowCollectionsContainer'
 import { getAllCollections } from '~/queries/useGetAllCollections'
-import type { ICollection } from '~/types'
 
 export async function getStaticProps() {
-	const collections = await getAllCollections({ chainId: 1 })
+	const queryClient = new QueryClient()
+
+	await queryClient.prefetchQuery(['allCollections', 1], () => getAllCollections({ chainId: 1 }))
+
 	return {
-		props: { collections },
-		revalidate: 30
+		props: { dehydratedState: dehydrate(queryClient) },
+		revalidate: 120
 	}
 }
 
-const Home: NextPage<{ collections: Array<ICollection> }> = ({ collections }) => {
+const Home = () => {
 	const { chain } = useNetwork()
 
 	// by default if wallet is not connected, show collections on ethereum
-	return (
-		<BorrowCollectionsContainer
-			chainId={chain?.id ?? 1}
-			chainName={chain?.name ?? 'Ethereum'}
-			collections={collections}
-		/>
-	)
+	return <BorrowCollectionsContainer chainId={chain?.id ?? 1} chainName={chain?.name ?? 'Ethereum'} />
 }
 
 export default Home

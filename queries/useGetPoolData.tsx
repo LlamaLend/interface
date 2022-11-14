@@ -1,12 +1,12 @@
 import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
-import { IBorrowPoolData, IContractReadConfig, ITransactionError } from '~/types'
-import { chainConfig } from '~/lib/constants'
-import { erc721ABI, useContractRead, useNetwork } from 'wagmi'
+import { useContractRead, useNetwork } from 'wagmi'
+import type { IBorrowPoolData, IContractReadConfig, ITransactionError } from '~/types'
+import { chainConfig, ERC721_ABI } from '~/lib/constants'
 import { fetchOracle } from './useGetOracle'
 import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
-import BigNumber from 'bignumber.js'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null
@@ -59,15 +59,14 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 			owner
 		} = pools[0]
 
-		const nftContractInterface = new ethers.Contract(nftContract, erc721ABI, provider)
-
+		const nftContractInterface = new ethers.Contract(nftContract, ERC721_ABI, provider)
 		const quote = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress: nftContract })
 
 		if (!quote) {
 			throw new Error("Couldn't get oracle price")
 		}
 
-		const [currentAnnualInterest, { maxInstantBorrow }, nftName] = await Promise.all([
+		const [currentAnnualInterest, { maxInstantBorrow }, collectionName] = await Promise.all([
 			contract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote.price, noOfItems: 1, ltv })),
 			contract.getDailyBorrows(),
 			nftContractInterface.name()
@@ -89,7 +88,7 @@ export async function getPool({ contractArgs, chainId, quoteApi, isTestnet, grap
 				.toString(),
 			ltv,
 			nftContract,
-			nftName,
+			collectionName,
 			owner,
 			pricePerNft: priceAndCurrentBorrowables.pricePerNft,
 			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow

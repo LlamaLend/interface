@@ -1,53 +1,57 @@
 import { useQuery } from '@tanstack/react-query'
-import { ethers } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { chainConfig, ERC721_ABI } from '~/lib/constants'
+import BigNumber from 'bignumber.js'
 import { getAllpools } from './useGetAllPools'
 import verifiedCollections from '~/lib/collections'
 import type { ICollection } from '~/types'
 
-const getCollectionName = async ({ address, chainId }: { address: string; chainId?: number | null }) => {
-	const config = chainConfig(chainId)
-
-	const nftContract = new ethers.Contract(address, ERC721_ABI, config.chainProvider)
-
-	return await nftContract.name()
-}
-
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
 	const pools = await getAllpools({ chainId })
-	const collections = new Set<string>()
+
+	const collections: Array<{ address: string; name: string; totalDeposited: string }> = []
 
 	pools.forEach((pool) => {
-		collections.add(getAddress(pool.nftContract))
-	})
+		const index = collections.findIndex((col) => col.address.toLowerCase() === pool.nftContract.toLowerCase())
 
-	const collectionNames = await Promise.all(
-		Array.from(collections).map((address) => getCollectionName({ address, chainId }))
-	)
+		if (index >= 0) {
+			collections[index] = {
+				...collections[index],
+				totalDeposited: new BigNumber(collections[index].totalDeposited).plus(pool.totalDeposited).toFixed(0, 1)
+			}
+		} else {
+			collections.push({
+				address: getAddress(pool.nftContract),
+				name: pool.collectionName,
+				totalDeposited: pool.totalDeposited
+			})
+		}
+	})
 
 	const verified: Array<ICollection> = []
 
 	const notVerified: Array<ICollection> = []
 
-	Array.from(collections).forEach((address, index) => {
+	Array.from(collections).forEach(({ address, name, totalDeposited }) => {
 		const verifiedCollectionIndex = verifiedCollections[chainId || 1].findIndex(
-			(x) => x.address.toLowerCase() === address.toLowerCase()
+			(x) => x.address.toLowerCase() == address.toLowerCase()
 		)
 
 		if (verifiedCollectionIndex + 1) {
 			verified.push({
 				address,
-				name: collectionNames[index],
+				name,
 				imgUrl: verifiedCollections[chainId || 1][verifiedCollectionIndex].imgUrl,
-				sortIndex: verifiedCollectionIndex + 1
+				sortIndex: verifiedCollectionIndex + 1,
+				totalDeposited
 			})
 		} else {
-			notVerified.push({ address, name: collectionNames[index], imgUrl: '', sortIndex: -1 })
+			notVerified.push({ address, name, totalDeposited, imgUrl: '', sortIndex: -1 })
 		}
 	})
 
-	return [...verified.sort((a, b) => a.sortIndex - b.sortIndex), ...notVerified]
+	return [...verified.sort((a, b) => a.sortIndex - b.sortIndex), ...notVerified].sort(
+		(a, b) => Number(b.totalDeposited) - Number(a.totalDeposited)
+	)
 }
 
 export function useGetAllCollections({ chainId }: { chainId?: number | null }) {
