@@ -27,12 +27,6 @@ export default function Menu() {
 				className="z-10 flex h-full max-h-96 min-w-[160px] flex-col overflow-auto overscroll-contain rounded-lg border border-[#292929] bg-[#181818] py-2 shadow-xl"
 			>
 				<MenuItem as="span" className="flex">
-					<Link href="/create" passHref>
-						<a className="w-full px-4 py-2 hover:bg-[#292929]">Create Pool</a>
-					</Link>
-				</MenuItem>
-
-				<MenuItem as="span" className="flex">
 					<Link href="/manage" passHref>
 						<a className="w-full px-4 py-2 hover:bg-[#292929]">Manage Pools</a>
 					</Link>
