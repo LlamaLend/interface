@@ -37,8 +37,7 @@ export default function AdminPool({
 
 	const { data: poolAddlInfo, isLoading } = useGetPoolData({ chainId, poolAddress: data.address })
 
-	const { nftName, poolBalance, maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest, liquidators } =
-		data.adminPoolInfo
+	const { maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest, liquidators } = data.adminPoolInfo
 
 	const [ltv, setLtv] = useState<string>((data.ltv / 1e16).toFixed(0))
 
@@ -178,7 +177,7 @@ export default function AdminPool({
 			</a>
 
 			<h1 className="text-xs font-light text-gray-400">Collection</h1>
-			<p className="-my-6 min-h-[1.75rem] text-lg">{nftName}</p>
+			<p className="-my-6 min-h-[1.75rem] text-lg">{data.collectionName}</p>
 			<a
 				target="_blank"
 				rel="noreferrer noopener"
@@ -190,7 +189,9 @@ export default function AdminPool({
 
 			<h1 className="text-xs font-light text-gray-400">Balance</h1>
 			<p className="-mt-6 min-h-[1.5rem] break-all">
-				{poolBalance ? `${poolBalance / 1e18 < 1e-10 ? '~0' : poolBalance / 1e18} ${chainSymbol}` : `0 ${chainSymbol}`}
+				{data.poolBalance
+					? `${Number(data.poolBalance) / 1e18 < 1e-10 ? '~0' : Number(data.poolBalance) / 1e18} ${chainSymbol}`
+					: `0 ${chainSymbol}`}
 			</p>
 
 			<h1 className="text-xs font-light text-gray-400">Borrowable Now</h1>

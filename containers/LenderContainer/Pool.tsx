@@ -15,8 +15,6 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 
 	const { data, isLoading, isError } = useGetLoans({ chainId, poolAddress: pool.address })
 
-	const { poolBalance, totalBorrowed } = pool.adminPoolInfo
-
 	const chainSymbol = config.nativeCurrency?.symbol
 
 	const weightedSum =
@@ -25,12 +23,11 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 			return (total += pool.toPay.apr * pool.toPay.initialBorrowed)
 		}, 0)
 
-	const aprOnLentEth =
-		poolBalance && totalBorrowed && weightedSum ? ((weightedSum / totalBorrowed) * 100).toFixed(2) : 0
-	const aprOnAllEthDeposited =
-		poolBalance && totalBorrowed && weightedSum ? ((weightedSum / (totalBorrowed + poolBalance)) * 100).toFixed(2) : 0
+	const { poolBalance, totalBorrowed, totalDeposited } = pool
 
-	const totalDeposited = poolBalance + totalBorrowed
+	const aprOnLentEth = totalBorrowed && weightedSum ? ((weightedSum / Number(totalBorrowed)) * 100).toFixed(2) : 0
+	const aprOnAllEthDeposited =
+		totalBorrowed && weightedSum ? ((weightedSum / Number(totalDeposited)) * 100).toFixed(2) : 0
 
 	return (
 		<div className="my-4 flex w-full flex-col gap-6 rounded-xl bg-[#191919] p-4 shadow">
@@ -51,7 +48,9 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 					<h1 className="text-xs font-light text-gray-400">Total Deposited</h1>
 					<p className="min-h-[1.5rem] break-all">
 						{totalDeposited
-							? `${totalDeposited / 1e18 < 1e-10 ? '~0' : (totalDeposited / 1e18).toFixed(4)} ${chainSymbol}`
+							? `${
+									Number(totalDeposited) / 1e18 < 1e-10 ? '~0' : (Number(totalDeposited) / 1e18).toFixed(4)
+							  } ${chainSymbol}`
 							: `0 ${chainSymbol}`}
 					</p>
 				</div>
@@ -60,7 +59,7 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 					<h1 className="text-xs font-light text-gray-400">Balance</h1>
 					<p className="min-h-[1.5rem] break-all">
 						{poolBalance
-							? `${poolBalance / 1e18 < 1e-10 ? '~0' : (poolBalance / 1e18).toFixed(4)} ${chainSymbol}`
+							? `${Number(poolBalance) / 1e18 < 1e-10 ? '~0' : (Number(poolBalance) / 1e18).toFixed(4)} ${chainSymbol}`
 							: `0 ${chainSymbol}`}
 					</p>
 				</div>
@@ -68,14 +67,15 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 				<div>
 					<h1 className="text-xs font-light text-gray-400">Total Lent</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed ? (totalBorrowed / 1e18).toFixed(4) : 0} {chainSymbol}
+						{totalBorrowed ? (Number(totalBorrowed) / 1e18).toFixed(4) : 0} {chainSymbol}
 					</p>
 				</div>
 
 				<div>
 					<h1 className="text-xs font-light text-gray-400">% Borrowed</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed && totalDeposited ? ((totalBorrowed / totalDeposited) * 100).toFixed(2) : 0} %
+						{totalBorrowed && totalDeposited ? ((Number(totalBorrowed) / Number(totalDeposited)) * 100).toFixed(2) : 0}{' '}
+						%
 					</p>
 				</div>
 				<div>

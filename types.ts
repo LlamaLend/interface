@@ -61,17 +61,18 @@ export interface IBorrowPool {
 	maxLoanLength: number
 	ltv: number
 	nftContract: string
+	collectionName: string
+	poolBalance: string
+	totalBorrowed: string
+	totalDeposited: string
 	adminPoolInfo: {
 		key: string
-		nftName: string
-		poolBalance: number
 		maxPrice: number
 		maxDailyBorrows: number
 		maxLoanLength: number
 		oracle: string
 		minimumInterest: string
 		maximumInterest: string
-		totalBorrowed: number
 		liquidators: Array<string>
 	}
 }
@@ -84,7 +85,7 @@ export interface IBorrowPoolData {
 	maxVariableInterestPerEthPerSecond: string
 	ltv: string
 	nftContract: string
-	nftName: string
+	collectionName: string
 	owner: string
 	maxNftsToBorrow: string
 }
@@ -92,7 +93,6 @@ export interface IBorrowPoolData {
 export interface IGetAdminPoolDataArgs {
 	poolAddress: string
 	nftContractAddress: string
-	poolAbi: ContractInterface
 	provider: Provider
 	graphEndpoint: string
 }
@@ -133,6 +133,7 @@ export interface ILoanValidity {
 export interface ICollection {
 	address: string
 	name: string
+	totalDeposited: string
 	imgUrl: string
 	sortIndex: number
 }

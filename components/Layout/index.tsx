@@ -26,7 +26,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 
 			<header className="mx-auto flex w-full max-w-8xl flex-col flex-wrap gap-4 p-3 sm:flex-row sm:items-center sm:justify-between">
 				<nav className="mr-auto flex w-full items-center gap-3 rounded-xl bg-white p-1 text-base font-semibold text-black sm:w-auto">
-					<Image src="/assets/gib.png" alt="llamalend" className="hidden sm:block" height={24} width={24} priority />
+					<Image src="/assets/gib.png" alt="" className="hidden sm:block" height={24} width={24} priority />
 					<AppLink name="Borrow" path="/" />
 					<AppLink name="Repay" path="/repay" />
 					<AppLink name="Create Pool" path="/create" />
