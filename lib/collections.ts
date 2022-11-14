@@ -44,6 +44,16 @@ const collections: ICollection = {
 			imgUrl: '/assets/collection/bitbears.avif'
 		},
 		{
+			name: 'Otherdeed',
+			address: '0x34d85c9CDeB23FA97cb08333b511ac86E1C4E258',
+			imgUrl: '/assets/collection/otherdeed.avif'
+		},
+		{
+			name: 'Lil Nouns',
+			address: '0x4b10701Bfd7BFEdc47d50562b76b436fbB5BdB3B',
+			imgUrl: '/assets/collection/lilnouns.avif'
+		},
+		{
 			name: 'Wassies',
 			address: '0x1D20A51F088492A0f1C57f047A9e30c9aB5C07Ea',
 			imgUrl: '/assets/collection/wassies.avif'
