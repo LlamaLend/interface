@@ -1,12 +1,12 @@
 import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 import { useQuery } from '@tanstack/react-query'
 import { request, gql } from 'graphql-request'
-import { IBorrowPoolData, IContractReadConfig, ITransactionError } from '~/types'
-import { chainConfig, ERC721_ABI } from '~/lib/constants'
 import { useContractRead, useNetwork } from 'wagmi'
+import type { IBorrowPoolData, IContractReadConfig, ITransactionError } from '~/types'
+import { chainConfig, ERC721_ABI } from '~/lib/constants'
 import { fetchOracle } from './useGetOracle'
 import { getMaxNftsToBorrow, getTotalReceivedArg } from '~/utils'
-import BigNumber from 'bignumber.js'
 
 interface IGetPoolDataArgs {
 	contractArgs: IContractReadConfig | null

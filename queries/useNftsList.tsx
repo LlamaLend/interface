@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAccount } from 'wagmi'
 import { chainConfig } from '~/lib/constants'
-import { INftApiResponse, INftItem, ITransactionError } from '~/types'
+import type { INftApiResponse, INftItem, ITransactionError } from '~/types'
 
 interface IGetOwnedNfts {
 	userAddress?: string

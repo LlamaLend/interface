@@ -6,6 +6,7 @@ import { cx } from 'cva'
 import AppLink from './AppLink'
 import Menu from './Menu'
 import { CartLink } from './CartLink'
+import Notifications from './Notifications'
 import useAutoConnect from '~/hooks/useAutoConnect'
 
 interface ILayoutProps {
@@ -35,6 +36,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 				<span className="flex flex-wrap items-center gap-3 [&>*:first-child]:!mr-auto">
 					<ConnectButton />
 					<CartLink />
+					<Notifications />
 					<Menu />
 				</span>
 			</header>
