@@ -25,7 +25,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 				<meta name="description" content="NFT-collateralized loans for long tail markets." />
 			</Head>
 
-			<header className="mx-auto flex w-full max-w-8xl flex-col flex-wrap gap-4 p-3 sm:flex-row sm:items-center sm:justify-between">
+			<header className="mx-auto flex w-full max-w-8xl flex-row flex-wrap items-center justify-between gap-4 p-3">
 				<nav className="mr-auto flex w-full items-center gap-3 rounded-xl bg-white p-1 text-base font-semibold text-black sm:w-auto">
 					<Image src="/assets/gib.png" alt="" className="hidden sm:block" height={24} width={24} priority />
 					<AppLink name="Borrow" path="/" />
@@ -33,10 +33,11 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 					<AppLink name="Create Pool" path="/create" />
 				</nav>
 
-				<span className="flex flex-wrap items-center gap-3 [&>*:first-child]:!mr-auto">
-					<ConnectButton />
-					<CartLink />
+				<ConnectButton />
+
+				<span className="flex items-center justify-end gap-3 max-[424px]:w-full sm:w-full min-[908px]:w-auto">
 					<Notifications />
+					<CartLink />
 					<Menu />
 				</span>
 			</header>

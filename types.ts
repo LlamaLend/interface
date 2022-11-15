@@ -65,6 +65,11 @@ export interface IBorrowPool {
 	poolBalance: string
 	totalBorrowed: string
 	totalDeposited: string
+	maxVariableInterestPerEthPerSecond: string
+	owner: string
+	pricePerNft: string
+	maxNftsToBorrow: string
+	currentAnnualInterest: string
 	adminPoolInfo: {
 		key: string
 		maxPrice: number
