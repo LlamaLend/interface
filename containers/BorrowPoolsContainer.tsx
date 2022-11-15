@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { BorrowPoolItem, PlaceholderBorrowPoolItem } from '~/components/GridItem'
+import { BorrowPoolItem, PlaceholderBorrowPoolItem } from '~/components/Pool'
 import Layout from '~/components/Layout'
 import { chainConfig } from '~/lib/constants'
 import { useGetAllPools } from '~/queries/useGetAllPools'
