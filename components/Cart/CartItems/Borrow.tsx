@@ -14,10 +14,9 @@ import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
 import { formatErrorMsg } from './utils'
 import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from '~/utils'
-
 import { chainConfig } from '~/lib/constants'
 
-export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
+export function BorrowItems({ poolAddress, chainId, collectionAddress }: IBorrowItemsProps) {
 	const [email, setEmail] = React.useState('')
 	const { chain } = useNetwork()
 
@@ -28,21 +27,24 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	// check if user is on same network or else show switch network button and disable all write methods
 	const isUserOnDifferentChain = chainId !== chain?.id
 
-	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList({ nftContractAddress, chainId })
+	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList({
+		nftContractAddress: collectionAddress,
+		chainId
+	})
 
 	// query to get cart items from local storage
 	const {
 		data: itemsInCart,
 		isLoading: fetchingCartItems,
 		isError: errorLoadingCartItems
-	} = useGetCartItems({ contractAddress: nftContractAddress, chainId })
+	} = useGetCartItems({ contractAddress: collectionAddress, chainId })
 
 	// query to get quotation from server
 	const {
 		data: oracle,
 		isLoading: fetchingOracle,
 		isError: errorFetchingOracle
-	} = useGetOracle({ nftContractAddress, chainId })
+	} = useGetOracle({ nftContractAddress: collectionAddress, chainId })
 
 	// query to get interest rates
 	const {
@@ -62,7 +64,11 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		data: isApprovedForAll,
 		isLoading: fetchingIfApproved,
 		error: failedToFetchIfApproved
-	} = useGetContractApproval({ poolAddress, nftContractAddress, enabled: isUserOnDifferentChain ? false : true })
+	} = useGetContractApproval({
+		poolAddress,
+		nftContractAddress: collectionAddress,
+		enabled: isUserOnDifferentChain ? false : true
+	})
 
 	// query to set approval for all tokens
 	const {
@@ -74,7 +80,11 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 			isLoading: checkingForApproveTxOnChain,
 			error: txApproveErrorOnChain
 		}
-	} = useSetContractApproval({ poolAddress, nftContractAddress, enabled: isUserOnDifferentChain ? false : true })
+	} = useSetContractApproval({
+		poolAddress,
+		nftContractAddress: collectionAddress,
+		enabled: isUserOnDifferentChain ? false : true
+	})
 
 	const isApproved = isApprovedForAll || approvalTxOnChain?.status === 1 ? true : false
 
@@ -150,9 +160,9 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 	return (
 		<>
 			{errorMsgOfQueries ? (
-				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393] xl:mt-[60%]">{errorMsgOfQueries}</p>
+				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393]">{errorMsgOfQueries}</p>
 			) : cartItemsList && cartItemsList.length <= 0 ? (
-				<p className="mt-8 mb-9 p-6 text-center xl:mt-[60%]">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
+				<p className="mt-8 mb-9 p-6 text-center">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
 			) : (
 				<>
 					{/* Show placeholder when fetching items in cart */}
@@ -164,7 +174,7 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 								<li key={tokenId} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
 									<button
 										className="absolute -top-2 -left-1.5 z-10 h-5 w-5 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
-										onClick={() => saveItemToCart({ tokenId, contractAddress: nftContractAddress })}
+										onClick={() => saveItemToCart({ tokenId, contractAddress: collectionAddress })}
 									>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
@@ -185,11 +195,6 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 										className="rounded object-cover"
 										alt={`token id ${tokenId}`}
 									/>
-
-									<span className="flex flex-col flex-wrap justify-between gap-1">
-										<span>{`#${tokenId}`}</span>
-										<span className="font-base text-[0.8rem] text-[#989898]">{nftCollectionName}</span>
-									</span>
 
 									<span className="ml-auto flex gap-1.5">
 										<Image
@@ -350,7 +355,6 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 									clipRule="evenodd"
 								/>
 							</svg>
-							<span>{`Max ${nftCollectionName} to borrow against: ${poolData?.maxNftsToBorrow}`}</span>
 						</p>
 					)}
 				</>

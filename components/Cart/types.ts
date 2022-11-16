@@ -1,16 +1,14 @@
 export interface IBorrowCartProps {
-	poolAddress?: string
-	chainId?: number
-	nftContractAddress?: string
-	nftCollectionName?: string
+	poolAddress?: string | null
+	chainId?: number | null
+	collectionAddress?: string
 	isLoading: boolean
 }
 
 export interface IBorrowItemsProps {
 	poolAddress: string
 	chainId: number
-	nftContractAddress: string
-	nftCollectionName: string
+	collectionAddress: string
 }
 
 export interface IRepayCartProps {

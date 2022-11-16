@@ -4,28 +4,25 @@ import { RepayItems } from './Repay'
 import type { IBorrowCartProps, IRepayCartProps } from '../types'
 
 export function BorrowCartItems(props: IBorrowCartProps) {
-	const { poolAddress, nftContractAddress, chainId, nftCollectionName } = props
+	const { poolAddress, collectionAddress, chainId } = props
 
-	if (!nftContractAddress || !poolAddress || !nftCollectionName) {
-		return <p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">Check the URL validity to view items in cart.</p>
+	if (!poolAddress) {
+		return <p className="mt-8 mb-9 text-center text-sm">Sorry, couldn't find any pools of this collection.</p>
+	}
+
+	if (!collectionAddress || !poolAddress) {
+		return <p className="mt-8 mb-9 text-center text-sm">Check the URL validity to view items in cart.</p>
 	}
 
 	if (!chainId) {
 		return (
-			<p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">
+			<p className="mt-8 mb-9 text-center text-sm">
 				Network not supported, Please check URL validity to view items in cart
 			</p>
 		)
 	}
 
-	return (
-		<BorrowItems
-			poolAddress={poolAddress}
-			nftContractAddress={nftContractAddress}
-			chainId={chainId}
-			nftCollectionName={nftCollectionName}
-		/>
-	)
+	return <BorrowItems poolAddress={poolAddress} collectionAddress={collectionAddress} chainId={chainId} />
 }
 
 export function RepayCartItems(props: IRepayCartProps) {

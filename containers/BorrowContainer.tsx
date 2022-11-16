@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -11,6 +11,8 @@ import { useGetOracle } from '~/queries/useGetOracle'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { formatDailyInterest } from '~/utils'
 import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
+import { useAccount } from 'wagmi'
+import { BorrowCart } from '~/components/Cart'
 
 interface IPoolsContainerProps {
 	chainId?: number | null
@@ -22,6 +24,8 @@ type TSortKey = 'borrowableNow' | 'loanAmount' | 'maxDuration' | 'dailyInterest'
 
 const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContainerProps) => {
 	const [sortKey, setSortKey] = useState<TSortKey>('borrowableNow')
+
+	const [selectedPool, setSelectedPool] = useState(null)
 
 	const [interestRange, setInterestRange] = useState<Array<number> | null>(null)
 	const [loanAmountRange, setLoanAmountRange] = useState<Array<number> | null>(null)
@@ -44,6 +48,8 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 	const { data: oracle } = useGetOracle({ nftContractAddress: collectionAddress, chainId })
 
 	const { data, isError, isLoading } = useGetAllPools({ chainId, collectionAddress })
+
+	const { isConnected } = useAccount()
 
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
 
@@ -152,7 +158,9 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 									</div>
 
 									<p className="min-h-[1.25rem] text-sm font-medium text-[#D4D4D8]">
-										{fetchingNftsList || fetchingCollectionName
+										{!isConnected
+											? `Connect wallet to view your ${collectionName || collectionAddress + ' tokens'}`
+											: fetchingNftsList || fetchingCollectionName
 											? ''
 											: `You have ${nftsList.length} ${
 													collectionName || collectionAddress + ' tokens'
@@ -283,6 +291,15 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 					</div>
 				)}
 			</Layout>
+
+			<Suspense fallback={null}>
+				<BorrowCart
+					poolAddress={selectedPool || (data && data.length > 0 ? data[0].address : null)}
+					chainId={chainId}
+					collectionAddress={collectionAddress}
+					isLoading={isLoading || fetchingNftsList}
+				/>
+			</Suspense>
 		</>
 	)
 }
