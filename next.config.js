@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['cloudflare-ipfs.com', 'nft.llamalend.com', 'res.cloudinary.com'],
+    domains: ['cloudflare-ipfs.com', 'nft.llamalend.com', 'res.cloudinary.com', 'nft-cdn.alchemy.com'],
   },
   async headers() {
     return [

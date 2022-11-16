@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { allChains } from 'wagmi'
-import BorrowPoolsContainer from '~/containers/BorrowPoolsContainer'
+import BorrowContainer from '~/containers/BorrowContainer'
 
 interface IPageProps {
 	chainId?: number
@@ -9,7 +9,7 @@ interface IPageProps {
 }
 
 const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, collectionAddress }) => {
-	return <BorrowPoolsContainer chainId={chainId} chainName={chainName} collectionAddress={collectionAddress} />
+	return <BorrowContainer chainId={chainId} chainName={chainName} collectionAddress={collectionAddress} />
 }
 
 export default BorrowPoolsByChain

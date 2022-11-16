@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { allChains, useNetwork } from 'wagmi'
-import BorrowPoolsContainer from '~/containers/BorrowPoolsContainer'
+import BorrowContainer from '~/containers/BorrowContainer'
 
 interface IPageProps {
 	chainId?: number
@@ -16,7 +16,7 @@ const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 
 	// only show pools of network user is connected to if they are on /borrow/pools, as /borrow/pools is similare index route i.e., '/'
 	return (
-		<BorrowPoolsContainer
+		<BorrowContainer
 			chainId={chainId || (isDefaultRoute ? chain?.id ?? 1 : null)}
 			chainName={chainName || (isDefaultRoute ? chain?.name ?? 'Ethereum' : null)}
 		/>

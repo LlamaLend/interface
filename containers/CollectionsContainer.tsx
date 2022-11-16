@@ -9,7 +9,7 @@ interface ICollectionContainerProps {
 	chainName: string
 }
 
-const BorrowCollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
+const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
 	const { data: collections } = useGetAllCollections({ chainId })
 	return (
 		<>
@@ -34,4 +34,4 @@ const BorrowCollectionsContainer = ({ chainId, chainName }: ICollectionContainer
 	)
 }
 
-export default BorrowCollectionsContainer
+export default CollectionsContainer

@@ -27,37 +27,31 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 	const router = useRouter()
 
 	return (
-		<div className="flex flex-wrap gap-14 rounded-xl bg-[#22242A] p-5">
-			<div className="flex gap-2">
+		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
+			<div className="flex min-w-[45%] flex-shrink-0 gap-2 sm:min-w-[8.25rem]">
 				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
 				<div>
-					<p className="data-[isfetching=true]:placeholder-box min-h-[1.5rem] font-semibold data-[isfetching=true]:w-20">
-						{data?.pricePerNft ?? ''}
-					</p>
-					<p className="text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
+					<p className="min-h-[1.5rem] font-semibold">{data?.pricePerNft ?? ''}</p>
+					<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
 				</div>
 			</div>
 
-			<div>
+			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[5.625rem]">
 				<p className="min-h-[1.5rem] font-semibold">
 					{/* @ts-ignore */}
 					{dayjs(new Date(new Date().getTime() + data.maxLoanLength * 1000)).toNow(true)}
 				</p>
-				<p className="text-sm font-normal text-[#D4D4D8]">Max Duration</p>
+				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Max Duration</p>
 			</div>
-			<div>
-				<p className="data-[isfetching=true]:placeholder-box min-h-[1.5rem] font-semibold data-[isfetching=true]:w-20">
-					{`${formatDailyInterest(data.currentAnnualInterest)}%`}
-				</p>
-				<p className="text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
+			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[5.5rem]">
+				<p className="min-h-[1.5rem] font-semibold">{`${formatDailyInterest(data.currentAnnualInterest)}%`}</p>
+				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
 			</div>
-			<div>
-				<p className="data-[isfetching=true]:placeholder-box min-h-[1.5rem] font-semibold data-[isfetching=true]:w-20">
-					{data.maxNftsToBorrow}
-				</p>
-				<p className="text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
+			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[7rem]">
+				<p className="min-h-[1.5rem] font-semibold">{data.maxNftsToBorrow}</p>
+				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
 			</div>
-			<div>
+			<div className="max-[948px]:min-w-[45%] lg:max-[1300px]:min-w-[45%] flex-shrink-0">
 				<a
 					target="_blank"
 					rel="noreferrer noopener"
@@ -71,7 +65,7 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 			</div>
 
 			<button
-				className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold"
+				className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold max-sm:w-full"
 				onClick={() => router.push(`/borrow/${chainName}/${data.address}`)}
 			>
 				Select Loan
@@ -82,8 +76,8 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 
 export function PlaceholderBorrowPoolItem() {
 	return (
-		<div className="flex flex-wrap gap-14 rounded-xl bg-[#22242A] p-5">
-			<div className="flex gap-2">
+		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
+			<div className="flex min-w-[45%] flex-shrink-0 gap-2 sm:min-w-[8.25rem]">
 				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
 				<div>
 					<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
@@ -91,24 +85,24 @@ export function PlaceholderBorrowPoolItem() {
 				</div>
 			</div>
 
-			<div>
+			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[5.625rem]">
 				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Max Duration</p>
 			</div>
-			<div>
+			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[5.5rem]">
 				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
 			</div>
-			<div>
+			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[7rem]">
 				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
 			</div>
-			<div>
+			<div className="max-[948px]:min-w-[45%] lg:max-[1300px]:min-w-[45%] flex-shrink-0">
 				<p className="placeholder-box-2 h-[1.5rem] w-16 font-semibold text-[#3070FB]"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>
 
-			<button className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold" disabled>
+			<button className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold max-sm:w-full" disabled>
 				Select Loan
 			</button>
 		</div>

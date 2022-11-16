@@ -1,7 +1,7 @@
 import { dehydrate, QueryClient } from '@tanstack/react-query'
 import type { NextPage } from 'next'
 import { allChains } from 'wagmi'
-import BorrowCollectionsContainer from '~/containers/BorrowCollectionsContainer'
+import CollectionsContainer from '~/containers/CollectionsContainer'
 import { getAllCollections } from '~/queries/useGetAllCollections'
 
 interface IPageProps {
@@ -11,7 +11,7 @@ interface IPageProps {
 
 const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName }) => {
 	// only show pools of network user is connected to if they are on /borrow/pools, as /borrow/pools is similare index route i.e., '/'
-	return <BorrowCollectionsContainer chainId={chainId} chainName={chainName} />
+	return <CollectionsContainer chainId={chainId} chainName={chainName} />
 }
 
 export default BorrowPoolsByChain
