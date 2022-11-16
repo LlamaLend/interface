@@ -49,15 +49,15 @@ async function getPoolAddlInfo({
 
 		const quote = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
 
-		const [collectionName, poolBalance, totalBorrowed, { maxInstantBorrow }, currentAnnualInterest] = await Promise.all(
-			[
+		const [collectionName, poolBalance, totalBorrowed, { maxInstantBorrow }, currentAnnualInterest, oracle] =
+			await Promise.all([
 				nftContract.name(),
 				provider.getBalance(poolAddress),
 				poolContract.totalBorrowed(),
 				poolContract.getDailyBorrows(),
-				poolContract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote?.price, noOfItems: 1, ltv }))
-			]
-		)
+				poolContract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote?.price, noOfItems: 1, ltv })),
+				poolContract.oracle()
+			])
 
 		const priceAndCurrentBorrowables = getMaxNftsToBorrow({
 			maxInstantBorrow: maxInstantBorrow.toString(),
@@ -72,7 +72,8 @@ async function getPoolAddlInfo({
 			totalDeposited: new BigNumber(poolBalance.toString()).plus(totalBorrowed.toString()).toFixed(0, 1),
 			pricePerNft: priceAndCurrentBorrowables.pricePerNft,
 			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow,
-			currentAnnualInterest
+			currentAnnualInterest,
+			oracle
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get total amount deposited in pool."))
@@ -246,7 +247,7 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 				owner: getAddress(pool.owner),
 				nftContract: getAddress(pool.nftContract),
 				maxLoanLength: Number(pool.maxLoanLength),
-				ltv: Number(pool.ltv),
+				ltv: pool.ltv,
 				collectionName: poolAddlInfo?.[index]?.collectionName ?? '',
 				poolBalance: poolAddlInfo?.[index]?.poolBalance ?? '0',
 				totalBorrowed: poolAddlInfo?.[index]?.totalBorrowed ?? '0',
@@ -257,6 +258,7 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 				currentAnnualInterest: poolAddlInfo?.[index]?.currentAnnualInterest ?? '0',
 				pricePerNft: poolAddlInfo?.[index]?.pricePerNft ?? '0',
 				maxNftsToBorrow: poolAddlInfo?.[index]?.maxNftsToBorrow ?? '0',
+				oracle: poolAddlInfo?.[index]?.oracle ?? '',
 				adminPoolInfo: adminPoolInfo?.[index] ?? {}
 			}))
 			.sort((a, b) => Number(b.maxNftsToBorrow) - Number(a.maxNftsToBorrow))

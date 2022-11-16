@@ -14,10 +14,10 @@ dayjs.extend(relativeTime)
 interface IBorrowPoolItemProps {
 	data: IBorrowPool
 	chainId?: number | null
-	chainName: string
+	setSelectedPool: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProps) {
+export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolItemProps) {
 	const poolDeployer = pools[chainId || 1]?.find(
 		(pool) => pool.poolAddress.toLowerCase() === data.address.toLowerCase()
 	)?.ownerName
@@ -51,7 +51,7 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 				<p className="min-h-[1.5rem] font-semibold">{data.maxNftsToBorrow}</p>
 				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
 			</div>
-			<div className="max-[948px]:min-w-[45%] lg:max-[1300px]:min-w-[45%] flex-shrink-0">
+			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
 				<a
 					target="_blank"
 					rel="noreferrer noopener"
@@ -66,7 +66,10 @@ export function BorrowPoolItem({ data, chainId, chainName }: IBorrowPoolItemProp
 
 			<button
 				className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold max-sm:w-full"
-				onClick={() => router.push(`/borrow/${chainName}/${data.address}`)}
+				onClick={() => {
+					setSelectedPool(data.address)
+					router.push({ pathname: router.pathname, query: { ...router.query, cart: true } })
+				}}
 			>
 				Select Loan
 			</button>
@@ -97,7 +100,7 @@ export function PlaceholderBorrowPoolItem() {
 				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
 			</div>
-			<div className="max-[948px]:min-w-[45%] lg:max-[1300px]:min-w-[45%] flex-shrink-0">
+			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
 				<p className="placeholder-box-2 h-[1.5rem] w-16 font-semibold text-[#3070FB]"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>

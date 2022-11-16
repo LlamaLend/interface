@@ -39,7 +39,7 @@ export default function AdminPool({
 
 	const { maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest, liquidators } = data.adminPoolInfo
 
-	const [ltv, setLtv] = useState<string>((data.ltv / 1e16).toFixed(0))
+	const [ltv, setLtv] = useState<string>((Number(data.ltv) / 1e16).toFixed(0))
 
 	const [newMaxPrice, setNewMaxPrice] = useState<string>(maxPrice ? (maxPrice / 1e18).toFixed(3) : '0')
 	const [newOracle, setNewOracle] = useState<string>(oracle || '')

@@ -25,7 +25,7 @@ type TSortKey = 'borrowableNow' | 'loanAmount' | 'maxDuration' | 'dailyInterest'
 const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContainerProps) => {
 	const [sortKey, setSortKey] = useState<TSortKey>('borrowableNow')
 
-	const [selectedPool, setSelectedPool] = useState(null)
+	const [selectedPool, setSelectedPool] = useState<string | null>(null)
 
 	const [interestRange, setInterestRange] = useState<Array<number> | null>(null)
 	const [loanAmountRange, setLoanAmountRange] = useState<Array<number> | null>(null)
@@ -283,7 +283,12 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 											return Number(b.maxNftsToBorrow.toString()) - Number(a.maxNftsToBorrow.toString())
 										})
 										.map((item) => (
-											<BorrowPoolItem key={item.address} data={item} chainName={chainName} chainId={chainId} />
+											<BorrowPoolItem
+												key={item.address}
+												data={item}
+												chainId={chainId}
+												setSelectedPool={setSelectedPool}
+											/>
 										))}
 								</div>
 							)}
@@ -294,7 +299,14 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 
 			<Suspense fallback={null}>
 				<BorrowCart
-					poolAddress={selectedPool || (data && data.length > 0 ? data[0].address : null)}
+					poolData={
+						data
+							? selectedPool
+								? data.find((pool) => pool.address.toLowerCase() === selectedPool.toLowerCase())
+								: data[0]
+							: null
+					}
+					nftsList={nftsList}
 					chainId={chainId}
 					collectionAddress={collectionAddress}
 					isLoading={isLoading || fetchingNftsList}
