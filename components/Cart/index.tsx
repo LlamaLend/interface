@@ -35,9 +35,8 @@ export function BorrowCart(props: IBorrowCartProps) {
 			className="dialog min-h-[300px] w-full max-w-[720px] bg-[#22242A]"
 		>
 			<header className="flex items-center justify-between">
-				<DialogHeading className="m-0 text-2xl font-medium">Checkout</DialogHeading>
-				<Link href={router.asPath.split('?cart=true')[0]} className="buttonDismiss">
-					<span className="sr-only">Close checkout dialog</span>
+				<Link href={router.asPath.split('?cart=true')[0]} className="buttonDismiss absolute top-2 right-2">
+					<span className="sr-only">Close cart</span>
 					<svg
 						aria-hidden="true"
 						fill="none"
@@ -54,9 +53,9 @@ export function BorrowCart(props: IBorrowCartProps) {
 				</Link>
 			</header>
 			{!isConnected ? (
-				<p className="mt-8 mb-9 text-center text-sm">Connect wallet to view items in cart.</p>
+				<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">Connect wallet to view items in cart.</p>
 			) : chain?.unsupported ? (
-				<p className="mt-8 mb-9 text-center text-sm">
+				<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">
 					Connect wallet to the app's supported network to view items in cart.
 				</p>
 			) : !props.isLoading ? (

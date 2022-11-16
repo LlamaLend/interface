@@ -160,9 +160,11 @@ export function BorrowItems({ poolAddress, chainId, collectionAddress }: IBorrow
 	return (
 		<>
 			{errorMsgOfQueries ? (
-				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393]">{errorMsgOfQueries}</p>
+				<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm text-[#ff9393]">{errorMsgOfQueries}</p>
 			) : cartItemsList && cartItemsList.length <= 0 ? (
-				<p className="mt-8 mb-9 p-6 text-center">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
+				<p className="relative top-0 bottom-0 my-auto p-6 text-center">
+					Your cart is empty. Fill it with NFTs to borrow ETH.
+				</p>
 			) : (
 				<>
 					{/* Show placeholder when fetching items in cart */}
