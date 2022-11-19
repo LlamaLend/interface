@@ -18,7 +18,7 @@ import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { TransactionsContext } from '~/contexts'
 
 // If loading a variable font, you don't need to specify the font weight
-const inter = Inter()
+const inter = Inter({ subsets: ['latin'] })
 
 const { chains, provider } = configureChains(
 	[chain.mainnet, chain.goerli],

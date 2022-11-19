@@ -255,7 +255,7 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 				maxVariableInterestPerEthPerSecond: new BigNumber(pool.maxVariableInterestPerEthPerSecond)
 					.plus(pool.minimumInterest)
 					.toString(),
-				currentAnnualInterest: poolAddlInfo?.[index]?.currentAnnualInterest ?? '0',
+				currentAnnualInterest: poolAddlInfo?.[index]?.currentAnnualInterest.toString() ?? '0',
 				pricePerNft: poolAddlInfo?.[index]?.pricePerNft ?? '0',
 				maxNftsToBorrow: poolAddlInfo?.[index]?.maxNftsToBorrow ?? '0',
 				oracle: poolAddlInfo?.[index]?.oracle ?? '',
@@ -277,7 +277,7 @@ export function useGetAllPools({
 	ownerAddress?: string
 }) {
 	return useQuery<Array<IBorrowPool>, ITransactionError>(
-		['allPools', chainId, collectionAddress, ownerAddress],
+		['allPools', chainId, collectionAddress, ownerAddress || null],
 		() =>
 			getAllpools({
 				chainId,
