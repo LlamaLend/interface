@@ -156,7 +156,7 @@ export function useBorrow({
 				refetchNftsList()
 
 				// hide cart
-				router.push({ pathname: router.pathname, query: { ...queries } })
+				router.push('/repay')
 			} else {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: config.blockExplorer })
 			}

@@ -54,6 +54,10 @@ export default function Menu() {
 					<span>Docs</span>
 				</MenuItem>
 
+				<MenuItem as="a" className="w-full px-4 py-2 hover:bg-gray-100" href="https://safe.llamalend.com">
+					<span>Safe App</span>
+				</MenuItem>
+
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-gray-100"

@@ -10,9 +10,9 @@ interface IBorrowCollectionItemProps {
 export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemProps) {
 	return (
 		<ItemWrapper>
-			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#202020]">
+			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#22242A]">
 				{data.imgUrl === '' ? (
-					<div className="aspect-square rounded-t-xl"></div>
+					<div className="aspect-square rounded-t-xl bg-[#22242A]"></div>
 				) : (
 					<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" priority />
 				)}
