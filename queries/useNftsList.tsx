@@ -64,7 +64,13 @@ export async function getNftMetadata({
 	}
 }
 
-export function useGetNftsList({ nftContractAddress, chainId }: { nftContractAddress?: string; chainId?: number }) {
+export function useGetNftsList({
+	nftContractAddress,
+	chainId
+}: {
+	nftContractAddress?: string
+	chainId?: number | null
+}) {
 	const { address: userAddress } = useAccount()
 
 	const { alchemyNftUrl } = chainConfig(chainId)

@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 import Layout from '~/components/Layout'

@@ -4,15 +4,27 @@ import { RepayItems } from './Repay'
 import type { IBorrowCartProps, IRepayCartProps } from '../types'
 
 export function BorrowCartItems(props: IBorrowCartProps) {
-	const { poolAddress, nftContractAddress, chainId, nftCollectionName } = props
+	const { poolData, nftsList, collectionAddress, chainId, isLoading } = props
 
-	if (!nftContractAddress || !poolAddress || !nftCollectionName) {
-		return <p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">Check the URL validity to view items in cart.</p>
+	if (!poolData) {
+		return (
+			<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">
+				Sorry, couldn't find any pools of this collection.
+			</p>
+		)
+	}
+
+	if (!collectionAddress) {
+		return (
+			<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">
+				Check the URL validity to view items in cart.
+			</p>
+		)
 	}
 
 	if (!chainId) {
 		return (
-			<p className="mt-8 mb-9 text-center text-sm xl:mt-[60%]">
+			<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">
 				Network not supported, Please check URL validity to view items in cart
 			</p>
 		)
@@ -20,10 +32,11 @@ export function BorrowCartItems(props: IBorrowCartProps) {
 
 	return (
 		<BorrowItems
-			poolAddress={poolAddress}
-			nftContractAddress={nftContractAddress}
+			poolData={poolData}
+			nftsList={nftsList}
+			collectionAddress={collectionAddress}
 			chainId={chainId}
-			nftCollectionName={nftCollectionName}
+			fetchingNftsList={isLoading}
 		/>
 	)
 }

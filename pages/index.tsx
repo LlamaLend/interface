@@ -1,6 +1,6 @@
 import { dehydrate, QueryClient } from '@tanstack/react-query'
 import { useNetwork } from 'wagmi'
-import BorrowCollectionsContainer from '~/containers/BorrowCollectionsContainer'
+import CollectionsContainer from '~/containers/CollectionsContainer'
 import { getAllCollections } from '~/queries/useGetAllCollections'
 
 export async function getStaticProps() {
@@ -10,7 +10,7 @@ export async function getStaticProps() {
 
 	return {
 		props: { dehydratedState: dehydrate(queryClient) },
-		revalidate: 120
+		revalidate: 180
 	}
 }
 
@@ -18,7 +18,7 @@ const Home = () => {
 	const { chain } = useNetwork()
 
 	// by default if wallet is not connected, show collections on ethereum
-	return <BorrowCollectionsContainer chainId={chain?.id ?? 1} chainName={chain?.name ?? 'Ethereum'} />
+	return <CollectionsContainer chainId={chain?.id ?? 1} chainName={chain?.name ?? 'Ethereum'} />
 }
 
 export default Home

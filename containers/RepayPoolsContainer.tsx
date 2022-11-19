@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useAccount } from 'wagmi'
 import BigNumber from 'bignumber.js'
@@ -56,8 +56,8 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 				) : data?.length === 0 ? (
 					<p className="fallback-text">
 						You don't have any loans, Click{' '}
-						<Link href="/">
-							<a className="underline">here</a>
+						<Link href="/" className="underline">
+							here
 						</Link>{' '}
 						to borrow {chainSymbol}.
 					</p>

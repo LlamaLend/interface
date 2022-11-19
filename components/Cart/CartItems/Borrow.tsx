@@ -1,55 +1,44 @@
 import * as React from 'react'
-import Image from 'next/future/image'
-import { useNetwork } from 'wagmi'
-import { useChainModal } from '@rainbow-me/rainbowkit'
+import Image from 'next/image'
+import { useAccount, useNetwork } from 'wagmi'
+import { useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
+import * as dayjs from 'dayjs'
 import BeatLoader from '~/components/BeatLoader'
-import Tooltip from '~/components/Tooltip'
-import ItemsPlaceholder from './Placeholder'
-import { useGetNftsList } from '~/queries/useNftsList'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'
 import type { IBorrowItemsProps } from '../types'
 import { useGetOracle } from '~/queries/useGetOracle'
-import { useGetPoolData, useGetPoolInterestInCart } from '~/queries/useGetPoolData'
 import { useBorrow } from '~/queries/useBorrow'
 import { useGetContractApproval, useSetContractApproval } from '~/queries/useContractApproval'
 import { formatErrorMsg } from './utils'
-import { formatCurrentAnnualInterest, getTotalReceivedArg, getQuotePrice } from '~/utils'
-
+import { formatCurrentAnnualInterest, getTotalReceivedArg, formatDailyInterest } from '~/utils'
 import { chainConfig } from '~/lib/constants'
 
-export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftCollectionName }: IBorrowItemsProps) {
-	const [email, setEmail] = React.useState('')
+export function BorrowItems({ poolData, nftsList, chainId, collectionAddress, fetchingNftsList }: IBorrowItemsProps) {
+	const { isConnected } = useAccount()
+
 	const { chain } = useNetwork()
 
 	const config = chainConfig(chainId)
 
 	const { openChainModal } = useChainModal()
+	const { openConnectModal } = useConnectModal()
 
 	// check if user is on same network or else show switch network button and disable all write methods
 	const isUserOnDifferentChain = chainId !== chain?.id
-
-	const { data: nftsList, isLoading: fetchingNftsList } = useGetNftsList({ nftContractAddress, chainId })
 
 	// query to get cart items from local storage
 	const {
 		data: itemsInCart,
 		isLoading: fetchingCartItems,
 		isError: errorLoadingCartItems
-	} = useGetCartItems({ contractAddress: nftContractAddress, chainId })
+	} = useGetCartItems({ contractAddress: collectionAddress, chainId })
 
 	// query to get quotation from server
 	const {
 		data: oracle,
 		isLoading: fetchingOracle,
 		isError: errorFetchingOracle
-	} = useGetOracle({ nftContractAddress, chainId })
-
-	// query to get interest rates
-	const {
-		data: poolData,
-		isLoading: fetchingPoolData,
-		isError: errorFetchingPoolData
-	} = useGetPoolData({ chainId, poolAddress })
+	} = useGetOracle({ nftContractAddress: collectionAddress, chainId })
 
 	// query to save/remove item to cart/localstorage
 	const { mutate: saveItemToCart } = useSaveItemToCart({ chainId })
@@ -62,7 +51,11 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		data: isApprovedForAll,
 		isLoading: fetchingIfApproved,
 		error: failedToFetchIfApproved
-	} = useGetContractApproval({ poolAddress, nftContractAddress, enabled: isUserOnDifferentChain ? false : true })
+	} = useGetContractApproval({
+		poolAddress: poolData.address,
+		nftContractAddress: collectionAddress,
+		enabled: isUserOnDifferentChain ? false : true
+	})
 
 	// query to set approval for all tokens
 	const {
@@ -74,7 +67,11 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 			isLoading: checkingForApproveTxOnChain,
 			error: txApproveErrorOnChain
 		}
-	} = useSetContractApproval({ poolAddress, nftContractAddress, enabled: isUserOnDifferentChain ? false : true })
+	} = useSetContractApproval({
+		poolAddress: poolData.address,
+		nftContractAddress: collectionAddress,
+		enabled: isUserOnDifferentChain ? false : true
+	})
 
 	const isApproved = isApprovedForAll || approvalTxOnChain?.status === 1 ? true : false
 
@@ -92,17 +89,13 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		error: errorConfirmingBorrow,
 		waitForTransaction: { data: borrowTxOnChain, isLoading: checkingForBorrowTxOnChain, error: txBorrowErrorOnChain }
 	} = useBorrow({
-		poolAddress,
+		poolAddress: poolData.address,
 		cartTokenIds,
 		enabled: isApproved && oracle && poolData && !isUserOnDifferentChain ? true : false,
 		maxInterest: poolData?.maxVariableInterestPerEthPerSecond,
 		totalReceived,
-		chainId,
-		email
+		chainId
 	})
-
-	const { data: currentAPR } = useGetPoolInterestInCart({ poolAddress, totalReceived, chainId })
-	const currentAnnualInterest = currentAPR?.toString()
 
 	// construct error messages
 	// Failed queries, but user can't retry with data of these queries
@@ -110,8 +103,6 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 		? "Couldn't fetch items in your cart"
 		: errorFetchingOracle
 		? "Couldn't fetch price quotation"
-		: errorFetchingPoolData
-		? "Couldn't fetch interest rate"
 		: null
 
 	// Failed queries, but user can retry
@@ -133,10 +124,8 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 	// check all loading states to show beat loader
 	const isLoading =
-		fetchingNftsList ||
 		fetchingCartItems ||
 		fetchingOracle ||
-		fetchingPoolData ||
 		approvingContract ||
 		checkingForApproveTxOnChain ||
 		fetchingIfApproved ||
@@ -149,212 +138,210 @@ export function BorrowItems({ poolAddress, chainId, nftContractAddress, nftColle
 
 	return (
 		<>
-			{errorMsgOfQueries ? (
-				<p className="mt-5 mb-9 p-6 text-center text-sm text-[#ff9393] xl:mt-[60%]">{errorMsgOfQueries}</p>
-			) : cartItemsList && cartItemsList.length <= 0 ? (
-				<p className="mt-8 mb-9 p-6 text-center xl:mt-[60%]">Your cart is empty. Fill it with NFTs to borrow ETH.</p>
-			) : (
-				<>
-					{/* Show placeholder when fetching items in cart */}
-					{fetchingCartItems || fetchingNftsList ? (
-						<ItemsPlaceholder />
-					) : (
-						<ul className="flex flex-col gap-4">
-							{cartItemsList?.map(({ tokenId, imgUrl }) => (
-								<li key={tokenId} className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-									<button
-										className="absolute -top-2 -left-1.5 z-10 h-5 w-5 rounded-xl bg-white p-1 text-black transition-[1.125s_ease]"
-										onClick={() => saveItemToCart({ tokenId, contractAddress: nftContractAddress })}
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											strokeWidth={2}
+			<div className="flex flex-col lg:flex-row">
+				<div className="bg-[#191B21] p-6 lg:flex-1">
+					<h1 className="text-base font-semibold">You Deposit:</h1>
+
+					<div className="mt-4 flex max-w-[312px] flex-nowrap gap-3 overflow-x-auto">
+						{!isConnected ? (
+							<p className="text-xs opacity-60">Connect wallet to view your NFTs from this collection.</p>
+						) : chain?.unsupported ? (
+							<p className="text-xs opacity-60">Switch network to view your NFTs from this collection.</p>
+						) : !nftsList ? (
+							<p className="text-xs opacity-60">Sorry, couldn't find your NFTs from this collection.</p>
+						) : nftsList.length === 0 ? (
+							<p className="text-xs opacity-60">You have 0 NFTs in this collection to use as collateral.</p>
+						) : (
+							<>
+								{nftsList.map((nft) => {
+									const isChecked = cartTokenIds.includes(nft.tokenId) ? true : false
+									return (
+										<label
+											className="relative aspect-square h-[96px] w-[96px] rounded-lg border-2 border-transparent data-[checked=true]:border-[#336AF7]"
+											data-checked={isChecked}
+											key={'collateral' + nft.imgUrl + nft.tokenId}
 										>
-											<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-										</svg>
-										<span className="sr-only">Remove Item from cart</span>
-									</button>
-
-									<Image
-										src={imgUrl}
-										width={40}
-										height={40}
-										className="rounded object-cover"
-										alt={`token id ${tokenId}`}
-									/>
-
-									<span className="flex flex-col flex-wrap justify-between gap-1">
-										<span>{`#${tokenId}`}</span>
-										<span className="font-base text-[0.8rem] text-[#989898]">{nftCollectionName}</span>
-									</span>
-
-									<span className="ml-auto flex gap-1.5">
-										<Image
-											src="/assets/ethereum.png"
-											height={16}
-											width={16}
-											className="object-contain"
-											alt="ethereum"
-										/>
-										<span>{getQuotePrice({ oraclePrice: oracle?.price ?? '0', ltv: poolData?.ltv ?? '0' })}</span>
-									</span>
-								</li>
-							))}
-						</ul>
-					)}
-
-					<hr className="border-[rgba(255,255,255,0.08)]" />
-
-					<h2 className="-mt-1.5 -mb-3 text-sm font-medium">Loan Details</h2>
-
-					{/* These values are always truth as error and loading states are handled, but adding a check satisfy typescript compiler  */}
-					{cartItemsList && oracle && cartItemsList?.length > 0 && oracle && (
-						<ul className="flex flex-col gap-4">
-							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-								<span className="font-base text-[#989898]">You Receive</span>
-								<span className="ml-auto flex gap-1.5">
-									<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
-									{/* Show placeholder when fetching quotation */}
-									{fetchingOracle ? (
-										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
-									) : (
-										<span>
-											{(Number(totalReceived) / 1e18).toFixed(4)} {chainSymbol}
-										</span>
-									)}
-								</span>
-							</li>
-
-							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-								<span className="font-base flex items-center gap-1 text-[#989898]">
-									<span>Interest</span>
-									<Tooltip content="You only pay for the time borrowed">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-											<path
-												fillRule="evenodd"
-												d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 11-1.061-1.061 3 3 0 112.871 5.026v.345a.75.75 0 01-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 108.94 6.94zM10 15a1 1 0 100-2 1 1 0 000 2z"
-												clipRule="evenodd"
+											<input
+												type="checkbox"
+												name={`#${nft.tokenId}`}
+												className="absolute z-0 aspect-square h-[92px] w-[92px] rounded-lg !border-none !bg-none !outline-none !ring-0 !ring-offset-0"
+												checked={isChecked}
+												onClick={() => saveItemToCart({ tokenId: nft.tokenId, contractAddress: collectionAddress })}
 											/>
-										</svg>
-									</Tooltip>
-								</span>
-								<span className="ml-auto flex gap-1.5">
-									{/* Show placeholder when fetching interest rates */}
-									{fetchingPoolData ? (
-										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
-									) : (
-										<span>{currentAnnualInterest && `${formatCurrentAnnualInterest(currentAnnualInterest)}% APR`}</span>
-									)}
-								</span>
-							</li>
+											<Image
+												src={nft.imgUrl}
+												width={96}
+												height={96}
+												alt={nft.tokenId.toString()}
+												className="relative z-10 aspect-square rounded-lg"
+											/>
+											{isChecked && (
+												<div className="absolute top-1.5 right-1.5 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-[#336AF7]">
+													<svg
+														width="12"
+														height="10"
+														viewBox="0 0 12 10"
+														fill="none"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<path d="M1 4.81818L4.125 8L11 1" stroke="white" stroke-width="2" />
+													</svg>
+												</div>
+											)}
+										</label>
+									)
+								})}
+							</>
+						)}
+					</div>
 
-							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-								<span className="font-base text-[#989898]">Repay Deadline</span>
-								<span className="ml-auto flex gap-1.5">
-									{/* Show placeholder when fetching quotation */}
-									{fetchingPoolData ? (
-										<span className="placeholder-box h-4 w-[7ch]" style={{ width: '7ch', height: '16px' }}></span>
-									) : (
-										<span>
-											{poolData && new Date(Date.now() + Number(poolData.maxLoanLength) * 1000).toLocaleString()}
-										</span>
-									)}
-								</span>
-							</li>
-						</ul>
-					)}
+					<div className="mt-6 flex flex-col gap-3 text-sm text-[#9CA3AF]">
+						<p className="flex justify-between gap-4">
+							<span>Pool Name</span>
+							<span>{poolData?.name}</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Pool Creator</span>
+							<span>
+								{poolData && (
+									<a
+										href={`${config.blockExplorer.url}/address/${poolData.owner}`}
+										target="_blank"
+										rel="noreferrer noopener"
+										className="underline"
+									>
+										{poolData.owner.slice(0, 4) + '...' + poolData.owner.slice(-4)}
+									</a>
+								)}
+							</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Oracle Contract</span>
+							<span>
+								{poolData && (
+									<a
+										href={`${config.blockExplorer.url}/address/${poolData.oracle}`}
+										target="_blank"
+										rel="noreferrer noopener"
+										className="underline"
+									>
+										{poolData.oracle.slice(0, 4) + '...' + poolData.oracle.slice(-4)}
+									</a>
+								)}
+							</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Current APR</span>
+							<span>{poolData && `${formatCurrentAnnualInterest(poolData.currentAnnualInterest)}%`}</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Loan To Value</span>
+							<span>{poolData && `${Number(poolData.ltv) / 1e16}%`}</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Loans Available</span>
+							<span>{poolData?.maxNftsToBorrow}</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Pool Balance</span>
+							<span>{poolData && `${(Number(poolData.poolBalance) / 1e18).toFixed(4)} ${chainSymbol}`}</span>
+						</p>
+					</div>
+				</div>
 
-					<label className="label text-sm">
-						<span>Email (optional)</span>
-						<input
-							name="email"
-							className="input-field"
-							type="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-						/>
-						<small>We use this email to notify you when your loan is about to expire.</small>
-					</label>
+				<div className="p-6 lg:flex-1">
+					<h1 className="text-base font-semibold">You Receive:</h1>
+					<div className="mt-6 flex flex-col gap-3 text-sm text-[#9CA3AF]">
+						<p className="flex justify-between gap-4">
+							<span>Loans</span>
+							<span className="text-white">{cartTokenIds.length}</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Total {chainSymbol}</span>
+							<span className="text-white">
+								{cartItemsList && oracle && poolData && cartItemsList?.length > 0
+									? (Number(totalReceived) / 1e18).toFixed(4)
+									: 0}
+							</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Daily Interest</span>
+							<span className="text-white">
+								{poolData && `${formatDailyInterest(poolData.currentAnnualInterest)}%`}
+							</span>
+						</p>
+						<p className="flex justify-between gap-4">
+							<span>Repay Deadline</span>
+							<span className="text-white">
+								{/* @ts-ignore */}
+								{poolData && dayjs(Date.now() + Number(poolData.maxLoanLength) * 1000).format('DD MMM YY')}
+							</span>
+						</p>
+					</div>
 
 					{/* Show error message of txs/queries initiated with wallet */}
 					{errorMsgOfEthersQueries && !errorMsgOfEthersQueries.startsWith('user rejected transaction') && (
-						<p className="mt-5 text-center text-sm text-[#ff9393]">
+						<p className="mt-5 text-center text-xs text-[#ff9393]">
 							{errorMsgOfEthersQueries.slice(0, 150)}
 							{errorMsgOfEthersQueries.length > 150 ? '...' : ''}
 						</p>
 					)}
 
-					{isLoading ? (
-						<button
-							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							disabled
-						>
+					{errorMsgOfQueries && <p className="mt-5 text-center text-xs text-[#ff9393]">{errorMsgOfQueries}</p>}
+
+					{isLoading || fetchingNftsList ? (
+						<Button disabled>
 							<BeatLoader />
-						</button>
+						</Button>
+					) : !isConnected ? (
+						<Button onClick={openConnectModal}>Connect Wallet</Button>
 					) : isUserOnDifferentChain ? (
-						<button
-							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							onClick={openChainModal}
-						>
-							Switch Network
-						</button>
+						<Button onClick={openChainModal}>Switch Network</Button>
+					) : !nftsList || nftsList.length === 0 ? (
+						<></>
 					) : isApproved ? (
-						canUserBorrowETH ? (
-							<button
-								className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
+						cartTokenIds.length === 0 ? (
+							<Button disabled>Select items to deposit</Button>
+						) : canUserBorrowETH ? (
+							<Button
 								onClick={() => borrowETH?.()}
-								disabled={!borrowETH || mutationDisabled}
+								disabled={!borrowETH || mutationDisabled || errorMsgOfQueries ? true : false}
 							>
 								Confirm Borrow
-							</button>
+							</Button>
 						) : (
 							<>
-								<button
-									className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-									data-not-allowed
-									disabled={true}
-								>
-									Borrow limit reached
-								</button>
-								<p style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '-12px' }}>
-									Try removing some items from your cart
-								</p>
+								<Button disabled={true}>Borrow limit reached</Button>
+								<p className="mt-2 text-center text-xs">Try removing some items from your cart</p>
 							</>
 						)
 					) : (
-						<button
-							className="mt-5 rounded-lg bg-blue-500 p-2 shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							onClick={() => approveContract?.()}
-							disabled={!approveContract || errorMsgOfQueries ? true : false}
-						>
-							Approve
-						</button>
+						<Button onClick={() => approveContract?.()} disabled={!approveContract || errorMsgOfQueries ? true : false}>
+							Approve Loans
+						</Button>
 					)}
-
-					{poolData && (
-						<p className="mt-auto flex items-center justify-center gap-[1ch] pt-10 text-center text-xs font-medium">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								width={16}
-								height={16}
-								className="flex-shrink-0"
-							>
-								<path
-									fillRule="evenodd"
-									d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-									clipRule="evenodd"
-								/>
-							</svg>
-							<span>{`Max ${nftCollectionName} to borrow against: ${poolData?.maxNftsToBorrow}`}</span>
-						</p>
-					)}
-				</>
-			)}
+				</div>
+			</div>
 		</>
+	)
+}
+
+const Button = ({
+	onClick,
+	children,
+	disabled
+}: {
+	children: React.ReactNode
+	onClick?: () => void
+	disabled?: boolean
+}) => {
+	return (
+		<button
+			className="mt-5 min-h-[40px] w-full rounded-lg bg-[#3046FB] p-2 text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-gray-400"
+			onClick={onClick}
+			disabled={disabled}
+		>
+			{children}
+		</button>
 	)
 }

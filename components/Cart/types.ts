@@ -1,16 +1,19 @@
+import type { IBorrowPool, INftItem } from '~/types'
+
 export interface IBorrowCartProps {
-	poolAddress?: string
-	chainId?: number
-	nftContractAddress?: string
-	nftCollectionName?: string
+	poolData?: IBorrowPool | null
+	nftsList?: Array<INftItem> | null
+	chainId?: number | null
+	collectionAddress?: string
 	isLoading: boolean
 }
 
 export interface IBorrowItemsProps {
-	poolAddress: string
+	poolData: IBorrowPool
+	nftsList?: Array<INftItem> | null
 	chainId: number
-	nftContractAddress: string
-	nftCollectionName: string
+	collectionAddress: string
+	fetchingNftsList: boolean
 }
 
 export interface IRepayCartProps {

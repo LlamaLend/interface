@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import ItemWrapper from './ItemWrapper'
 import { INftItem } from '~/types'
 import { useGetCartItems, useSaveItemToCart } from '~/queries/useCart'

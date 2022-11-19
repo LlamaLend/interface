@@ -1,4 +1,4 @@
-import Image from 'next/future/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import ItemWrapper from './ItemWrapper'
 
@@ -10,9 +10,9 @@ interface IBorrowCollectionItemProps {
 export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemProps) {
 	return (
 		<ItemWrapper>
-			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#202020]">
+			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#22242A]">
 				{data.imgUrl === '' ? (
-					<div className="aspect-square rounded-t-xl"></div>
+					<div className="aspect-square rounded-t-xl bg-[#22242A]"></div>
 				) : (
 					<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" priority />
 				)}
@@ -20,8 +20,11 @@ export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemP
 
 			<h1>{data.name}</h1>
 
-			<Link href={`/collections/${chainName}/${data.address}`}>
-				<a className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm">View Pools</a>
+			<Link
+				href={`/collections/${chainName}/${data.address}`}
+				className="mt-auto rounded-xl bg-[#243b55] p-2 text-center text-sm"
+			>
+				View Pools
 			</Link>
 		</ItemWrapper>
 	)

@@ -14,7 +14,7 @@ export default function TxSubmittedDialog({ dialog, transactionHash }: FormDialo
 	const blockExplorer = chain?.blockExplorers?.default
 
 	return (
-		<Dialog state={dialog} className="dialog z-20">
+		<Dialog state={dialog} className="dialog z-50">
 			<header className="flex items-center justify-end">
 				<button className="buttonDismiss" onClick={dialog.toggle}>
 					<span className="sr-only">Close</span>

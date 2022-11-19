@@ -125,8 +125,7 @@ export function useRepay({ loansToRepay, payableAmout, enabled, chainId }: IUseR
 				// refetch all loans
 				refetch()
 
-				// hide cart
-				router.push({ pathname: router.pathname, query: { ...queries } })
+				router.push('/')
 			} else {
 				txError({ txHash: contractWrite.data?.hash ?? '', blockExplorer: config.blockExplorer })
 			}

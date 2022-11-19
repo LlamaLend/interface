@@ -16,15 +16,25 @@ export function formatCurrentAnnualInterest(currentAnnualInterest: string) {
 	return new BigNumber(currentAnnualInterest.toString()).div(1e16).toFixed(2)
 }
 
+export function formatDailyInterest(currentAnnualInterest: string) {
+	return new BigNumber(
+		new BigNumber(new BigNumber(currentAnnualInterest.toString()).div(SECONDS_IN_A_YEAR)).times(SECONDS_IN_A_DAY)
+	)
+		.div(1e16)
+		.toFixed(2)
+}
+
 // returns totalToBorrow arg that is passed in a contracts method
-export function getTotalReceivedArg(args: { oraclePrice: string; noOfItems: number; ltv: string }) {
+export function getTotalReceivedArg(args: { oraclePrice?: string; noOfItems: number; ltv: string }) {
 	if (Object.values(args).filter((arg) => !arg || arg === '' || arg === '0').length > 0) {
 		return '0'
 	}
 
 	const { oraclePrice, noOfItems, ltv } = args
 
-	return new BigNumber(new BigNumber(oraclePrice).times(ltv).div(1e18).toFixed(0, 1)).times(noOfItems).toFixed(0, 1)
+	return new BigNumber(new BigNumber(oraclePrice || '0').times(ltv).div(1e18).toFixed(0, 1))
+		.times(noOfItems)
+		.toFixed(0, 1)
 }
 
 interface IFormArgs {
@@ -110,18 +120,21 @@ export function getMaxPricePerNft({ oraclePrice, ltv }: { oraclePrice?: string |
 }
 
 // returns maximum no.of nfts a user can borrow based on pool balance
-export function getMaxNftsToBorrow(args: { maxInstantBorrow: string; oraclePrice: string; ltv: string }) {
+export function getMaxNftsToBorrow(args: { maxInstantBorrow: string; oraclePrice?: string; ltv: string }) {
 	if (Object.values(args).filter((arg) => !arg || arg === '' || arg === '0').length > 0) {
-		return '0'
+		return { pricePerNft: '0', maxNftsToBorrow: '0' }
 	}
 
 	const { maxInstantBorrow, oraclePrice, ltv } = args
 
 	const formattedLtv = new BigNumber(ltv).div(1e18)
 
-	const price = new BigNumber(oraclePrice).times(formattedLtv)
+	const pricePerNft = new BigNumber(oraclePrice || '0').times(formattedLtv)
 
-	return new BigNumber(maxInstantBorrow.toString()).div(price).toFixed(0, 1)
+	return {
+		pricePerNft: new BigNumber(pricePerNft).div(1e18).toFixed(4),
+		maxNftsToBorrow: new BigNumber(maxInstantBorrow).div(pricePerNft).toFixed(0, 1)
+	}
 }
 
 export function formatLoanDeadline(deadline: number) {

@@ -8,7 +8,13 @@ export function CartLink() {
 	const isCartToggled = typeof cart === 'string' && cart === 'true'
 
 	// only show link to cart on pool page
-	if (!(router.pathname === '/borrow/[chainName]/[address]' || router.pathname.startsWith('/repay'))) {
+	if (
+		!(
+			router.pathname === '/borrow/[chainName]/[address]' ||
+			router.pathname.startsWith('/repay') ||
+			router.pathname === '/collections/[chainName]/[address]'
+		)
+	) {
 		return null
 	}
 

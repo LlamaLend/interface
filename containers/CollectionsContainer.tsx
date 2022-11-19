@@ -4,12 +4,12 @@ import GridWrapper from '~/components/GridWrapper'
 import Layout from '~/components/Layout'
 import { useGetAllCollections } from '~/queries/useGetAllCollections'
 
-interface IPoolsContainerProps {
+interface ICollectionContainerProps {
 	chainId: number
 	chainName: string
 }
 
-const BorrowCollectionsContainer = ({ chainId, chainName }: IPoolsContainerProps) => {
+const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
 	const { data: collections } = useGetAllCollections({ chainId })
 	return (
 		<>
@@ -34,4 +34,4 @@ const BorrowCollectionsContainer = ({ chainId, chainName }: IPoolsContainerProps
 	)
 }
 
-export default BorrowCollectionsContainer
+export default CollectionsContainer

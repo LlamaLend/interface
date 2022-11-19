@@ -1,6 +1,9 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import { dehydrate, QueryClient } from '@tanstack/react-query'
+import type { NextPage } from 'next'
 import { allChains } from 'wagmi'
-import BorrowPoolsContainer from '~/containers/BorrowPoolsContainer'
+import BorrowContainer from '~/containers/BorrowContainer'
+import collections from '~/lib/collections'
+import { getAllpools } from '~/queries/useGetAllPools'
 
 interface IPageProps {
 	chainId?: number
@@ -9,30 +12,51 @@ interface IPageProps {
 }
 
 const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, collectionAddress }) => {
-	return <BorrowPoolsContainer chainId={chainId} chainName={chainName} collectionAddress={collectionAddress} />
+	return <BorrowContainer chainId={chainId} chainName={chainName} collectionAddress={collectionAddress} />
 }
 
 export default BorrowPoolsByChain
 
-export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
-	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
+export async function getStaticPaths() {
+	const paths = collections[1].map((collection) => ({ params: { chainName: 'Ethereum', address: collection.address } }))
 
-	const chainParam = typeof query.chainName === 'string' && query.chainName
-	const address = typeof query.address === 'string' && query.address
+	return {
+		paths,
+		fallback: 'blocking'
+	}
+}
 
-	const chainDetails = chainParam
-		? allChains.find(
-				(chain) => chain.id === Number(chainParam) || chain.name.toLowerCase() === chainParam.toLowerCase()
-		  )
+export async function getStaticProps({
+	params: { chainName, address }
+}: {
+	params: { chainName: string; address: string }
+}) {
+	const chainDetails = chainName
+		? allChains.find((chain) => chain.id === Number(chainName) || chain.name.toLowerCase() === chainName.toLowerCase())
 		: null
 
-	if (!chainDetails || !address) {
-		return {
-			props: {}
-		}
+	const validAddress = typeof address === 'string' && address.length === 42 ? address : null
+
+	if (!chainDetails || !validAddress) {
+		return { notFound: true }
 	}
 
-	const validAddress = address.length === 42 ? address : null
+	const queryClient = new QueryClient()
 
-	return { props: { chainId: chainDetails.id, chainName: chainDetails.name, collectionAddress: validAddress } }
+	await queryClient.prefetchQuery(['allPools', chainDetails.id, address, null], () =>
+		getAllpools({
+			chainId: chainDetails.id,
+			collectionAddress: address
+		})
+	)
+
+	return {
+		props: {
+			dehydratedState: dehydrate(queryClient),
+			chainId: chainDetails.id,
+			chainName: chainDetails.name,
+			collectionAddress: address
+		},
+		revalidate: 30
+	}
 }

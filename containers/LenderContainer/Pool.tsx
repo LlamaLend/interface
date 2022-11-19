@@ -1,4 +1,4 @@
-import Image from 'next/future/image'
+import Image from 'next/image'
 import Tooltip from '~/components/Tooltip'
 import { chainConfig } from '~/lib/constants'
 import { useGetLoans } from '~/queries/useLoans'
