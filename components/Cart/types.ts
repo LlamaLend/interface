@@ -10,9 +10,10 @@ export interface IBorrowCartProps {
 
 export interface IBorrowItemsProps {
 	poolData: IBorrowPool
-	nftsList: Array<INftItem>
+	nftsList?: Array<INftItem> | null
 	chainId: number
 	collectionAddress: string
+	fetchingNftsList: boolean
 }
 
 export interface IRepayCartProps {

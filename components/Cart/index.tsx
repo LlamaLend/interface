@@ -2,14 +2,10 @@ import * as React from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Dialog, DialogHeading, useDialogState } from 'ariakit/dialog'
-import { useAccount, useNetwork } from 'wagmi'
 import { BorrowCartItems, RepayCartItems } from './CartItems'
 import type { IBorrowCartProps, IRepayCartProps } from './types'
 
 export function BorrowCart(props: IBorrowCartProps) {
-	const { isConnected } = useAccount()
-	const { chain } = useNetwork()
-
 	const router = useRouter()
 
 	const { cart, ...queries } = router.query
@@ -51,17 +47,7 @@ export function BorrowCart(props: IBorrowCartProps) {
 				</svg>
 			</Link>
 
-			{!isConnected ? (
-				<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">Connect wallet to view items in cart.</p>
-			) : chain?.unsupported ? (
-				<p className="relative top-0 bottom-0 my-auto p-6 text-center text-sm">
-					Connect wallet to the app's supported network to view items in cart.
-				</p>
-			) : !props.isLoading ? (
-				<BorrowCartItems {...props} />
-			) : (
-				<></>
-			)}
+			{!props.isLoading ? <BorrowCartItems {...props} /> : <></>}
 		</Dialog>
 	)
 }
