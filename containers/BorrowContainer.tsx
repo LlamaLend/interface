@@ -109,6 +109,46 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 		]
 	}
 
+	const sortedData =
+		data
+			?.filter((pool) => {
+				let toFilter = true
+				if (interestRange) {
+					const interest = Number(formatDailyInterest(pool.currentAnnualInterest.toString()))
+
+					toFilter = toFilter && interest >= interestRange[0] && interest <= interestRange[1]
+				}
+
+				if (loanAmountRange) {
+					const loanAmount = Number(pool.pricePerNft.toString())
+
+					toFilter = toFilter && loanAmount >= loanAmountRange[0] && loanAmount <= loanAmountRange[1]
+				}
+
+				if (durationRange) {
+					const loanLength = pool.maxLoanLength / SECONDS_IN_A_DAY
+
+					toFilter = toFilter && loanLength >= durationRange[0] && loanLength <= durationRange[1]
+				}
+
+				return toFilter
+			})
+			.sort((a, b) => {
+				if (sortKey === 'dailyInterest') {
+					return Number(b.currentAnnualInterest.toString()) - Number(a.currentAnnualInterest.toString())
+				}
+
+				if (sortKey === 'loanAmount') {
+					return Number(b.pricePerNft.toString()) - Number(a.pricePerNft.toString())
+				}
+
+				if (sortKey === 'maxDuration') {
+					return Number(b.maxLoanLength.toString()) - Number(a.maxLoanLength.toString())
+				}
+
+				return Number(b.maxNftsToBorrow.toString()) - Number(a.maxNftsToBorrow.toString())
+			}) ?? []
+
 	return (
 		<>
 			<Head>
@@ -228,7 +268,7 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 										<PlaceholderBorrowPoolItem key={'plitem' + index} />
 									))}
 								</div>
-							) : data.length === 0 ? (
+							) : sortedData.length === 0 ? (
 								<p className="fallback-text text-sm font-normal">
 									{collectionAddress ? (
 										<>No pools available on collection {collectionAddress}</>
@@ -244,52 +284,14 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 								</p>
 							) : (
 								<div className="flex flex-col gap-5">
-									{data
-										.filter((pool) => {
-											let toFilter = true
-											if (interestRange) {
-												const interest = Number(formatDailyInterest(pool.currentAnnualInterest.toString()))
-
-												toFilter = toFilter && interest >= interestRange[0] && interest <= interestRange[1]
-											}
-
-											if (loanAmountRange) {
-												const loanAmount = Number(pool.pricePerNft.toString())
-
-												toFilter = toFilter && loanAmount >= loanAmountRange[0] && loanAmount <= loanAmountRange[1]
-											}
-
-											if (durationRange) {
-												const loanLength = pool.maxLoanLength / SECONDS_IN_A_DAY
-
-												toFilter = toFilter && loanLength >= durationRange[0] && loanLength <= durationRange[1]
-											}
-
-											return toFilter
-										})
-										.sort((a, b) => {
-											if (sortKey === 'dailyInterest') {
-												return Number(b.currentAnnualInterest.toString()) - Number(a.currentAnnualInterest.toString())
-											}
-
-											if (sortKey === 'loanAmount') {
-												return Number(b.pricePerNft.toString()) - Number(a.pricePerNft.toString())
-											}
-
-											if (sortKey === 'maxDuration') {
-												return Number(b.maxLoanLength.toString()) - Number(a.maxLoanLength.toString())
-											}
-
-											return Number(b.maxNftsToBorrow.toString()) - Number(a.maxNftsToBorrow.toString())
-										})
-										.map((item) => (
-											<BorrowPoolItem
-												key={item.address}
-												data={item}
-												chainId={chainId}
-												setSelectedPool={setSelectedPool}
-											/>
-										))}
+									{sortedData.map((item) => (
+										<BorrowPoolItem
+											key={item.address}
+											data={item}
+											chainId={chainId}
+											setSelectedPool={setSelectedPool}
+										/>
+									))}
 								</div>
 							)}
 						</div>
@@ -302,8 +304,8 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 					poolData={
 						data
 							? selectedPool
-								? data.find((pool) => pool.address.toLowerCase() === selectedPool.toLowerCase())
-								: data[0]
+								? sortedData.find((pool) => pool.address.toLowerCase() === selectedPool.toLowerCase())
+								: sortedData[0]
 							: null
 					}
 					nftsList={nftsList}

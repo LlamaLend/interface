@@ -153,16 +153,44 @@ export function BorrowItems({ poolData, nftsList, chainId, collectionAddress, fe
 							<p className="text-xs opacity-60">You have 0 NFTs in this collection to use as collateral.</p>
 						) : (
 							<>
-								{nftsList.map((nft) => (
-									<Image
-										key={'bcart' + nft.imgUrl}
-										src={nft.imgUrl}
-										width={96}
-										height={96}
-										alt={nft.tokenId.toString()}
-										className="aspect-square rounded-lg"
-									/>
-								))}
+								{nftsList.map((nft) => {
+									const isChecked = cartTokenIds.includes(nft.tokenId) ? true : false
+									return (
+										<label
+											className="relative aspect-square h-[96px] w-[96px] rounded-lg border-2 border-transparent data-[checked=true]:border-[#336AF7]"
+											data-checked={isChecked}
+											key={'collateral' + nft.imgUrl + nft.tokenId}
+										>
+											<input
+												type="checkbox"
+												name={`#${nft.tokenId}`}
+												className="absolute z-0 aspect-square h-[92px] w-[92px] rounded-lg !border-none !bg-none !outline-none !ring-0 !ring-offset-0"
+												checked={isChecked}
+												onClick={() => saveItemToCart({ tokenId: nft.tokenId, contractAddress: collectionAddress })}
+											/>
+											<Image
+												src={nft.imgUrl}
+												width={96}
+												height={96}
+												alt={nft.tokenId.toString()}
+												className="relative z-10 aspect-square rounded-lg"
+											/>
+											{isChecked && (
+												<div className="absolute top-1.5 right-1.5 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-[#336AF7]">
+													<svg
+														width="12"
+														height="10"
+														viewBox="0 0 12 10"
+														fill="none"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<path d="M1 4.81818L4.125 8L11 1" stroke="white" stroke-width="2" />
+													</svg>
+												</div>
+											)}
+										</label>
+									)
+								})}
 							</>
 						)}
 					</div>
@@ -226,11 +254,15 @@ export function BorrowItems({ poolData, nftsList, chainId, collectionAddress, fe
 					<div className="mt-6 flex flex-col gap-3 text-sm text-[#9CA3AF]">
 						<p className="flex justify-between gap-4">
 							<span>Loans</span>
-							<span className="text-white"></span>
+							<span className="text-white">{cartTokenIds.length}</span>
 						</p>
 						<p className="flex justify-between gap-4">
 							<span>Total {chainSymbol}</span>
-							<span className="text-white"></span>
+							<span className="text-white">
+								{cartItemsList && oracle && poolData && cartItemsList?.length > 0
+									? (Number(totalReceived) / 1e18).toFixed(4)
+									: 0}
+							</span>
 						</p>
 						<p className="flex justify-between gap-4">
 							<span>Daily Interest</span>
@@ -247,90 +279,69 @@ export function BorrowItems({ poolData, nftsList, chainId, collectionAddress, fe
 						</p>
 					</div>
 
-					{/* These values are always truth as error and loading states are handled, but adding a check satisfy typescript compiler  */}
-					{cartItemsList && oracle && cartItemsList?.length > 0 && oracle && (
-						<ul className="flex flex-col gap-4">
-							<li className="relative isolate flex items-center gap-1.5 rounded-xl text-sm font-medium">
-								<span className="ml-auto flex gap-1.5">
-									<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
-									{/* Show placeholder when fetching quotation */}
-									{fetchingOracle ? (
-										<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
-									) : (
-										<span>
-											{(Number(totalReceived) / 1e18).toFixed(4)} {chainSymbol}
-										</span>
-									)}
-								</span>
-							</li>
-						</ul>
-					)}
-
 					{/* Show error message of txs/queries initiated with wallet */}
 					{errorMsgOfEthersQueries && !errorMsgOfEthersQueries.startsWith('user rejected transaction') && (
-						<p className="mt-5 text-center text-sm text-[#ff9393]">
+						<p className="mt-5 text-center text-xs text-[#ff9393]">
 							{errorMsgOfEthersQueries.slice(0, 150)}
 							{errorMsgOfEthersQueries.length > 150 ? '...' : ''}
 						</p>
 					)}
 
+					{errorMsgOfQueries && <p className="mt-5 text-center text-xs text-[#ff9393]">{errorMsgOfQueries}</p>}
+
 					{isLoading || fetchingNftsList ? (
-						<button
-							className="mt-5 w-full rounded-lg bg-[#3046FB] p-2 text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							disabled
-						>
+						<Button disabled>
 							<BeatLoader />
-						</button>
+						</Button>
 					) : !isConnected ? (
-						<button
-							className="mt-5 w-full rounded-lg bg-[#3046FB] p-2  text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							onClick={openConnectModal}
-						>
-							Connect Wallet
-						</button>
+						<Button onClick={openConnectModal}>Connect Wallet</Button>
 					) : isUserOnDifferentChain ? (
-						<button
-							className="mt-5 w-full rounded-lg bg-[#3046FB] p-2  text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							onClick={openChainModal}
-						>
-							Switch Network
-						</button>
+						<Button onClick={openChainModal}>Switch Network</Button>
 					) : !nftsList || nftsList.length === 0 ? (
 						<></>
 					) : isApproved ? (
-						canUserBorrowETH ? (
-							<button
-								className="font-semiboldshadow mt-5 w-full rounded-lg bg-[#3046FB]  p-2  text-sm disabled:cursor-not-allowed disabled:text-opacity-50"
+						cartTokenIds.length === 0 ? (
+							<Button disabled>Select items to deposit</Button>
+						) : canUserBorrowETH ? (
+							<Button
 								onClick={() => borrowETH?.()}
-								disabled={!borrowETH || mutationDisabled}
+								disabled={!borrowETH || mutationDisabled || errorMsgOfQueries ? true : false}
 							>
 								Confirm Borrow
-							</button>
+							</Button>
 						) : (
 							<>
-								<button
-									className="mt-5 w-full rounded-lg bg-[#3046FB] p-2  text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-									data-not-allowed
-									disabled={true}
-								>
-									Borrow limit reached
-								</button>
-								<p style={{ textAlign: 'center', fontSize: '0.8rem', marginTop: '-12px' }}>
-									Try removing some items from your cart
-								</p>
+								<Button disabled={true}>Borrow limit reached</Button>
+								<p className="mt-2 text-center text-xs">Try removing some items from your cart</p>
 							</>
 						)
 					) : (
-						<button
-							className="mt-5 w-full rounded-lg bg-[#3046FB] p-2 text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-opacity-50"
-							onClick={() => approveContract?.()}
-							disabled={!approveContract || errorMsgOfQueries ? true : false}
-						>
+						<Button onClick={() => approveContract?.()} disabled={!approveContract || errorMsgOfQueries ? true : false}>
 							Approve Loans
-						</button>
+						</Button>
 					)}
 				</div>
 			</div>
 		</>
+	)
+}
+
+const Button = ({
+	onClick,
+	children,
+	disabled
+}: {
+	children: React.ReactNode
+	onClick?: () => void
+	disabled?: boolean
+}) => {
+	return (
+		<button
+			className="mt-5 min-h-[40px] w-full rounded-lg bg-[#3046FB] p-2 text-sm font-semibold shadow disabled:cursor-not-allowed disabled:text-gray-400"
+			onClick={onClick}
+			disabled={disabled}
+		>
+			{children}
+		</button>
 	)
 }
