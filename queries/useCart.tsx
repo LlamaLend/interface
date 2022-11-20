@@ -123,13 +123,17 @@ const useSaveItemToCart = ({ chainId }: { chainId?: number | null }) => {
 
 				// If its the first item added to cart, show cart section
 				if (contractAddress && data?.length === 1 && data?.length > prevItems.length) {
-					router.push({
-						pathname: router.pathname,
-						query: {
-							...queries,
-							cart: true
-						}
-					})
+					router.push(
+						{
+							pathname: router.pathname,
+							query: {
+								...queries,
+								cart: true
+							}
+						},
+						undefined,
+						{ shallow: true }
+					)
 				}
 			},
 			onSettled: () => {

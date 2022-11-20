@@ -82,7 +82,9 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 				className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold max-sm:w-full"
 				onClick={() => {
 					setSelectedPool(data.address)
-					router.push({ pathname: router.pathname, query: { ...router.query, cart: true } })
+					router.push({ pathname: router.pathname, query: { ...router.query, cart: true } }, undefined, {
+						shallow: true
+					})
 				}}
 			>
 				Select Loan

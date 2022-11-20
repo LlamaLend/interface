@@ -21,10 +21,14 @@ export function CartLink() {
 	return (
 		<button
 			onClick={() =>
-				router.push({
-					pathname: router.pathname,
-					query: { ...queries, cart: isCartToggled ? false : true }
-				})
+				router.push(
+					{
+						pathname: router.pathname,
+						query: { ...queries, cart: isCartToggled ? false : true }
+					},
+					undefined,
+					{ shallow: true }
+				)
 			}
 			className="rounded-xl bg-white px-2 py-2 text-black"
 		>

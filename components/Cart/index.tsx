@@ -16,10 +16,14 @@ export function BorrowCart(props: IBorrowCartProps) {
 		open: isOpen,
 		setOpen: (open) => {
 			if (!open) {
-				router.push({
-					pathname: router.pathname,
-					query: { ...queries }
-				})
+				router.push(
+					{
+						pathname: router.pathname,
+						query: { ...queries }
+					},
+					undefined,
+					{ shallow: true }
+				)
 			}
 		}
 	})
@@ -63,10 +67,14 @@ export function RepayCart(props: IRepayCartProps) {
 		open: isOpen,
 		setOpen: (open) => {
 			if (!open) {
-				router.push({
-					pathname: router.pathname,
-					query: { ...queries }
-				})
+				router.push(
+					{
+						pathname: router.pathname,
+						query: { ...queries }
+					},
+					undefined,
+					{ shallow: true }
+				)
 			}
 		}
 	})
