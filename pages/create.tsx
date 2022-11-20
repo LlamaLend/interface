@@ -103,7 +103,8 @@ const ManagePools: NextPage = () => {
 		addressOrName: nftContractAddress as string,
 		functionName: 'supportsInterface',
 		args: '0x80ac58cd',
-		enabled: validCollectionAddress ? true : false
+		enabled: validCollectionAddress ? true : false,
+		chainId: (!chain?.unsupported ? chain?.id : 1) ?? 1
 	})
 
 	return (
