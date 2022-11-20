@@ -7,6 +7,7 @@ export default function Menu() {
 	return (
 		<>
 			<MenuButton state={menu} className="rounded-xl bg-white px-2 py-2 text-black">
+				<span className="sr-only">Open Menu</span>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
