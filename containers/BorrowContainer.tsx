@@ -2,8 +2,11 @@ import { useState, Suspense } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useAccount } from 'wagmi'
 import Layout from '~/components/Layout'
 import { BorrowPoolItem, PlaceholderBorrowPoolItem } from '~/components/Pool'
+import { BorrowCart } from '~/components/Cart'
+import Tooltip from '~/components/Tooltip'
 import { Slider } from '~/components/Form/Slider'
 import { useGetAllPools } from '~/queries/useGetAllPools'
 import useGetCollectionName from '~/queries/useGetCollectionName'
@@ -11,8 +14,6 @@ import { useGetOracle } from '~/queries/useGetOracle'
 import { useGetNftsList } from '~/queries/useNftsList'
 import { formatDailyInterest } from '~/utils'
 import { chainConfig, SECONDS_IN_A_DAY } from '~/lib/constants'
-import { useAccount } from 'wagmi'
-import { BorrowCart } from '~/components/Cart'
 
 interface IPoolsContainerProps {
 	chainId?: number | null
@@ -20,10 +21,10 @@ interface IPoolsContainerProps {
 	collectionAddress?: string
 }
 
-type TSortKey = 'borrowableNow' | 'loanAmount' | 'maxDuration' | 'dailyInterest'
+type TSortKey = 'poolLiquidity' | 'loanAmount' | 'maxDuration' | 'dailyInterest'
 
 const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContainerProps) => {
-	const [sortKey, setSortKey] = useState<TSortKey>('borrowableNow')
+	const [sortKey, setSortKey] = useState<TSortKey>('poolLiquidity')
 
 	const [selectedPool, setSelectedPool] = useState<string | null>(null)
 
@@ -146,7 +147,7 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 					return Number(b.maxLoanLength.toString()) - Number(a.maxLoanLength.toString())
 				}
 
-				return Number(b.maxNftsToBorrow.toString()) - Number(a.maxNftsToBorrow.toString())
+				return Number(b.poolBalance) - Number(a.poolBalance)
 			}) ?? []
 
 	return (
@@ -158,7 +159,9 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 			<Layout>
 				<div className="-mb-[6px] mt-12 flex flex-wrap justify-between gap-8 xl:gap-14 2xl:gap-16">
 					<h1 className="min-h-[2.5rem] text-4xl font-semibold">{collectionName ? collectionName + ' Loans' : ''}</h1>
-					<h1 className="min-h-[2.5rem] text-4xl font-semibold opacity-20">{floorPrice}</h1>
+					<h1 className="min-h-[2.5rem] text-4xl font-semibold opacity-20">
+						<Tooltip content="Minimum floor price over last week">{floorPrice}</Tooltip>
+					</h1>
 				</div>
 
 				<hr className="my-6 border-[#27282A]" />
@@ -216,7 +219,7 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 											onChange={(e) => setSortKey(e.target.value as TSortKey)}
 											disabled={!data || data.length < 2}
 										>
-											<option value="borrowableNow">Borrowable Now</option>
+											<option value="poolLiquidity">Pool Liquidity</option>
 											<option value="loanAmount">Loan Amount</option>
 											<option value="maxDuration">Max Duration</option>
 											<option value="dailyInterest">Daily Interest</option>

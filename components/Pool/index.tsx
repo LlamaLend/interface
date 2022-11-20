@@ -7,6 +7,7 @@ import type { IBorrowPool } from '~/types'
 import { formatDailyInterest } from '~/utils'
 import pools from '~/lib/pools'
 import { chainConfig } from '~/lib/constants'
+import Tooltip from '../Tooltip'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -25,6 +26,9 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 	const config = chainConfig(chainId)
 
 	const router = useRouter()
+
+	const poolBalance = (Number(data.poolBalance) / 1e18).toFixed(2)
+	const totalDeposited = (Number(data.totalDeposited) / 1e18).toFixed(2)
 
 	return (
 		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
@@ -54,8 +58,12 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
 			</div>
 			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[7rem]">
-				<p className="min-h-[1.5rem] font-semibold">{data.maxNftsToBorrow}</p>
-				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
+				<p className="min-h-[1.5rem] font-semibold">
+					<Tooltip
+						content={`Borrowable Now: ${data.maxNftsToBorrow}`}
+					>{`${poolBalance} / ${totalDeposited} ${config.nativeCurrency?.symbol}`}</Tooltip>
+				</p>
+				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Pool Liquidity</p>
 			</div>
 			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
 				<a
