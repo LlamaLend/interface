@@ -29,7 +29,13 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 	return (
 		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
 			<div className="flex min-w-[45%] flex-shrink-0 gap-2 sm:min-w-[8.25rem]">
-				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
+				<Image
+					src="/assets/ethereum.png"
+					height={40}
+					width={40}
+					className="h-10 w-10 flex-shrink-0 rounded-full object-contain"
+					alt="ethereum"
+				/>
 				<div>
 					<p className="min-h-[1.5rem] font-semibold">{data?.pricePerNft ?? ''}</p>
 					<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
@@ -81,7 +87,13 @@ export function PlaceholderBorrowPoolItem() {
 	return (
 		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
 			<div className="flex min-w-[45%] flex-shrink-0 gap-2 sm:min-w-[8.25rem]">
-				<Image src="/assets/ethereum.png" height={40} width={40} className="rounded object-contain" alt="ethereum" />
+				<Image
+					src="/assets/ethereum.png"
+					height={40}
+					width={40}
+					className="h-10 w-10 flex-shrink-0 rounded-full object-contain"
+					alt="ethereum"
+				/>
 				<div>
 					<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 					<p className="text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
