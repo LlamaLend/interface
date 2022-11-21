@@ -10,7 +10,7 @@ interface ICollectionContainerProps {
 }
 
 const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
-	const { data: collections } = useGetAllCollections({ chainId })
+	const { data: collections } = useGetAllCollections({ chainId, skipOracle: true })
 	return (
 		<>
 			<Head>

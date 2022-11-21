@@ -6,7 +6,7 @@ import verifiedCollections from '~/lib/collections'
 import type { ICollection } from '~/types'
 
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
-	const pools = await getAllpools({ chainId })
+	const pools = await getAllpools({ chainId, skipOracle: true })
 
 	const collections: Array<{ address: string; name: string; totalDeposited: string }> = []
 
@@ -54,9 +54,9 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 	)
 }
 
-export function useGetAllCollections({ chainId }: { chainId?: number | null }) {
+export function useGetAllCollections({ chainId, skipOracle }: { chainId?: number | null; skipOracle?: boolean }) {
 	return useQuery(
-		['allCollections', chainId],
+		['allCollections', chainId, skipOracle || false],
 		() =>
 			getAllCollections({
 				chainId
