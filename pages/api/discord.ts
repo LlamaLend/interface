@@ -7,8 +7,6 @@ const redis = new Redis({
 	token: process.env.UPSTASH_REDIS_REST_TOKEN as string
 })
 
-const TEN_MINUTES = 10 * 60 * 1000
-
 export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 	const { collectionAddress, errorType } = req.body
 
@@ -20,8 +18,10 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 	if (collectionAddress && errorType) {
 		const lastUpdated: number | null = await redis.get(collectionAddress)
 
-		if (!lastUpdated || Date.now() - lastUpdated > TEN_MINUTES) {
-			await redis.set(collectionAddress, Date.now())
+		if (!lastUpdated || Date.now() - lastUpdated > 600) {
+			await redis.set(collectionAddress, Date.now(), {
+				ex: 600
+			})
 
 			const message =
 				errorType === 'deadlineExpired'
