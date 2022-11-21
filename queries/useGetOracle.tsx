@@ -36,13 +36,13 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 	try {
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
-		if (!res?.price) {
-			throw new Error(`Failed to fetch ${nftContractAddress} oracle`)
-		}
+		// if (!res?.price) {
+		// 	throw new Error(`Failed to fetch ${nftContractAddress} oracle`)
+		// }
 
-		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-			throw new Error(`${nftContractAddress} quote outdated`)
-		}
+		// if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
+		// 	throw new Error(`${nftContractAddress} quote outdated`)
+		// }
 
 		return { ...res, price: res.price }
 	} catch (error: any) {
