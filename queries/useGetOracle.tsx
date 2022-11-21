@@ -33,7 +33,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
 		if (!res?.price) {
-			await fetch('/api/discord', {
+			fetch('/api/discord', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 		}
 
 		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-			await fetch('/api/discord', {
+			fetch('/api/discord', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -64,7 +64,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 
 		return { ...res, price: res.price }
 	} catch (error: any) {
-		await fetch('/api/discord', {
+		fetch('/api/discord', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
