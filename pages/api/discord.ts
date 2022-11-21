@@ -18,7 +18,7 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 	if (collectionAddress && errorType) {
 		const lastUpdated: number | null = await redis.get(collectionAddress)
 
-		if (!lastUpdated || Date.now() - lastUpdated > 600) {
+		if (!lastUpdated || lastUpdated > 600) {
 			await redis.set(collectionAddress, Date.now(), {
 				ex: 600
 			})
