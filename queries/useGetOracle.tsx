@@ -36,20 +36,43 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 	try {
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
-		// if (!res?.price) {
-		// 	throw new Error(`Failed to fetch ${nftContractAddress} oracle`)
-		// }
+		if (!res?.price) {
+			if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
+				failedCollections[nftContractAddress] = Date.now()
 
-		// if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-		// 	throw new Error(`${nftContractAddress} quote outdated`)
-		// }
+				fetch('/api/discord', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						message: '```' + `Failed to fetch ${nftContractAddress} oracle` + '```'
+					})
+				})
+			}
+
+			return null
+		}
+
+		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
+			if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
+				failedCollections[nftContractAddress] = Date.now()
+
+				fetch('/api/discord', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						message: '```' + `${nftContractAddress} quote outdated` + '```'
+					})
+				})
+			}
+			return null
+		}
 
 		return { ...res, price: res.price }
 	} catch (error: any) {
-		const message = error.message?.endsWith('quote outdatedd')
-			? error.message
-			: `Failed to fetch ${nftContractAddress} oracle`
-
 		if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
 			failedCollections[nftContractAddress] = Date.now()
 
@@ -59,7 +82,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: '```' + message + '```'
+					message: '```' + `Failed to fetch ${nftContractAddress} oracle` + '```'
 				})
 			})
 		}
