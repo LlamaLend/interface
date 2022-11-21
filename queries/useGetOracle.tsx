@@ -9,10 +9,6 @@ interface IFetchOracleProps {
 	isTestnet?: boolean
 }
 
-const failedCollections: {
-	[address: string]: number
-} = {}
-
 const TEN_MINUTES = 10 * 60 * 1000
 
 async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
@@ -37,55 +33,47 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
 		if (!res?.price) {
-			if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
-				failedCollections[nftContractAddress] = Date.now()
-
-				fetch('/api/discord', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						message: '```' + `Failed to fetch ${nftContractAddress} oracle` + '```'
-					})
-				})
-			}
-
-			return null
-		}
-
-		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-			if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
-				failedCollections[nftContractAddress] = Date.now()
-
-				fetch('/api/discord', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						message: '```' + `${nftContractAddress} quote outdated` + '```'
-					})
-				})
-			}
-			return null
-		}
-
-		return { ...res, price: res.price }
-	} catch (error: any) {
-		if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
-			failedCollections[nftContractAddress] = Date.now()
-
-			fetch('/api/discord', {
+			await fetch('/api/discord', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: '```' + `Failed to fetch ${nftContractAddress} oracle` + '```'
+					collectionAddress: nftContractAddress,
+					errorType: 'failedToFetch'
 				})
 			})
+
+			return null
 		}
+
+		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
+			await fetch('/api/discord', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					collectionAddress: nftContractAddress,
+					errorType: 'deadlineExpired'
+				})
+			})
+
+			return null
+		}
+
+		return { ...res, price: res.price }
+	} catch (error: any) {
+		await fetch('/api/discord', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				collectionAddress: nftContractAddress,
+				errorType: 'failedToFetch'
+			})
+		})
 
 		throw new Error(error.message || (error?.reason ?? "Couldn't fetch quote"))
 	}
