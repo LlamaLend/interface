@@ -9,10 +9,6 @@ interface IFetchOracleProps {
 	isTestnet?: boolean
 }
 
-const failedCollections: {
-	[address: string]: number
-} = {}
-
 const TEN_MINUTES = 10 * 60 * 1000
 
 async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
@@ -36,33 +32,48 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 	try {
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
-		// if (!res?.price) {
-		// 	throw new Error(`Failed to fetch ${nftContractAddress} oracle`)
-		// }
-
-		// if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-		// 	throw new Error(`${nftContractAddress} quote outdated`)
-		// }
-
-		return { ...res, price: res.price }
-	} catch (error: any) {
-		const message = error.message?.endsWith('quote outdatedd')
-			? error.message
-			: `Failed to fetch ${nftContractAddress} oracle`
-
-		if (!failedCollections[nftContractAddress] || Date.now() - failedCollections[nftContractAddress] > TEN_MINUTES) {
-			failedCollections[nftContractAddress] = Date.now()
-
+		if (!res?.price) {
 			fetch('/api/discord', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: '```' + message + '```'
+					collectionAddress: nftContractAddress,
+					errorType: 'failedToFetch'
 				})
 			})
+
+			return null
 		}
+
+		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
+			fetch('/api/discord', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					collectionAddress: nftContractAddress,
+					errorType: 'deadlineExpired'
+				})
+			})
+
+			return null
+		}
+
+		return { ...res, price: res.price }
+	} catch (error: any) {
+		fetch('/api/discord', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				collectionAddress: nftContractAddress,
+				errorType: 'failedToFetch'
+			})
+		})
 
 		throw new Error(error.message || (error?.reason ?? "Couldn't fetch quote"))
 	}

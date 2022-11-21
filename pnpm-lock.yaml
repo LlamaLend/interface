@@ -10,6 +10,7 @@ specifiers:
   '@types/node': 18.7.21
   '@types/react': 18.0.21
   '@types/react-dom': 18.0.6
+  '@upstash/redis': ^1.16.1
   ariakit: 2.0.0-next.41
   autoprefixer: ^10.4.13
   bignumber.js: ^9.1.0
@@ -41,6 +42,7 @@ dependencies:
   '@radix-ui/react-slider': 1.1.0_biqbaboplfbrettd7655fr4n2y
   '@rainbow-me/rainbowkit': 0.7.4_cejeke5wl2tn5ye67d4a7w7egm
   '@tanstack/react-query': 4.14.1_biqbaboplfbrettd7655fr4n2y
+  '@upstash/redis': 1.16.1
   ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
   bignumber.js: 9.1.0
   cva: /class-variance-authority/0.2.4_typescript@4.8.3
@@ -1342,6 +1344,14 @@ packages:
       '@typescript-eslint/types': 5.42.0
       eslint-visitor-keys: 3.3.0
     dev: true
+
+  /@upstash/redis/1.16.1:
+    resolution: {integrity: sha512-tejZ5vvWthxDFe3gebZodlRY3qqiQU20TxtL/fL7yddHAeduWeKN1GcSC9WBJJA0avZUAgLk/FSHL5N+HM04AA==}
+    dependencies:
+      isomorphic-fetch: 3.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@vanilla-extract/css/1.9.1:
     resolution: {integrity: sha512-pu2SFiff5jRhPwvGoj8cM5l/qIyLvigOmy22ss5DGjwV5pJYezRjDLxWumi2luIwioMWvh9EozCjyfH8nq+7fQ==}
@@ -3564,6 +3574,15 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
+  /isomorphic-fetch/3.0.0:
+    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
+    dependencies:
+      node-fetch: 2.6.7
+      whatwg-fetch: 3.6.2
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /isomorphic-ws/4.0.1_ws@7.5.9:
     resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
     peerDependencies:
@@ -5089,6 +5108,10 @@ packages:
   /webidl-conversions/5.0.0:
     resolution: {integrity: sha512-VlZwKPCkYKxQgeSbH5EyngOmRp7Ww7I9rQLERETtf5ofd9pGeswWiOtogpEO850jziPRarreGxn5QIiTqpb2wA==}
     engines: {node: '>=8'}
+    dev: false
+
+  /whatwg-fetch/3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
     dev: false
 
   /whatwg-url-without-unicode/8.0.0-3:

@@ -12,6 +12,7 @@ interface IGetAllPoolsArgs {
 	chainId?: number | null
 	collectionAddress?: string
 	ownerAddress?: string
+	skipOracle?: boolean
 }
 
 interface IPoolsQueryResponse {
@@ -34,7 +35,8 @@ async function getPoolAddlInfo({
 	nftContractAddress,
 	quoteApi,
 	ltv,
-	isTestnet
+	isTestnet,
+	skipOracle
 }: {
 	poolAddress: string
 	nftContractAddress: string
@@ -42,12 +44,13 @@ async function getPoolAddlInfo({
 	quoteApi: string
 	ltv: string
 	isTestnet: boolean
+	skipOracle?: boolean
 }) {
 	try {
 		const poolContract = new ethers.Contract(poolAddress, POOL_ABI, provider)
 		const nftContract = new ethers.Contract(nftContractAddress, ERC721_ABI, provider)
 
-		const quote = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
+		const quote = skipOracle ? null : await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
 
 		const [collectionName, poolBalance, totalBorrowed, { maxInstantBorrow }, currentAnnualInterest, oracle] =
 			await Promise.all([
@@ -191,7 +194,7 @@ const getAllPoolsByOwner = (ownerAddress: string) => gql`
 	}
 `
 
-export async function getAllpools({ chainId, collectionAddress, ownerAddress }: IGetAllPoolsArgs) {
+export async function getAllpools({ chainId, collectionAddress, ownerAddress, skipOracle }: IGetAllPoolsArgs) {
 	try {
 		// return empty array when no chainId, as there is no chainId returned on /borrow/[chainName] when chainName is not supported/invalid
 		if (!chainId) {
@@ -221,7 +224,8 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress }: 
 					nftContractAddress: pool.nftContract,
 					quoteApi,
 					isTestnet,
-					ltv: pool.ltv
+					ltv: pool.ltv,
+					skipOracle
 				})
 			)
 		)
