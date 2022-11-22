@@ -43,7 +43,7 @@ export async function getStaticProps({
 
 	const queryClient = new QueryClient()
 
-	await queryClient.prefetchQuery(['allPools', chainDetails.id, address, null], () =>
+	await queryClient.prefetchQuery(['allPools', chainDetails.id, address, null, false], () =>
 		getAllpools({
 			chainId: chainDetails.id,
 			collectionAddress: address

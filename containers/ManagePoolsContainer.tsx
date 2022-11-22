@@ -16,7 +16,7 @@ export default function ManagePoolsContainer({ chainId, chainName, userAddress }
 
 	const { openConnectModal } = useConnectModal()
 
-	const { data, isError } = useGetAllPools({ chainId, ownerAddress: userAddress })
+	const { data, isError } = useGetAllPools({ chainId, ownerAddress: userAddress, skipOracle: true })
 
 	const disableActions = !isConnected || address?.toLowerCase() !== userAddress?.toLowerCase()
 

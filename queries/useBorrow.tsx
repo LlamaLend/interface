@@ -6,12 +6,11 @@ import toast from 'react-hot-toast'
 import { txConfirming, txError, txSuccess } from '~/components/TxToast'
 import { useGetOracle } from './useGetOracle'
 import { useTxContext } from '~/contexts'
-import { useGetPoolData } from './useGetPoolData'
-import { useGetNftsList } from './useNftsList'
 import { chainConfig, EMAIL_SERVER_API, LOCAL_STORAGE_KEY } from '~/lib/constants'
 
 interface IUseBorrowProps {
 	poolAddress: string
+	collectionAddress: string
 	cartTokenIds: Array<number>
 	maxInterest?: string
 	totalReceived: string
@@ -22,6 +21,7 @@ interface IUseBorrowProps {
 
 export function useBorrow({
 	poolAddress,
+	collectionAddress,
 	cartTokenIds,
 	maxInterest,
 	totalReceived,
@@ -35,20 +35,11 @@ export function useBorrow({
 
 	const { chain } = useNetwork()
 
-	const { data: poolData, refetch: refetchPoolData } = useGetPoolData({ chainId, poolAddress })
-
 	const {
 		data: oracle,
 		isLoading: fetchingOracle,
 		isError: errorFetchingOracle
-	} = useGetOracle({ nftContractAddress: poolData?.nftContract, chainId: chainId })
-
-	const { refetch: refetchNftsList } = useGetNftsList({
-		nftContractAddress: poolData?.nftContract,
-		chainId
-	})
-
-	const { cart, ...queries } = router.query
+	} = useGetOracle({ nftContractAddress: collectionAddress, chainId: chainId })
 
 	const queryClient = useQueryClient()
 
@@ -152,8 +143,7 @@ export function useBorrow({
 					}
 				}
 
-				refetchPoolData()
-				refetchNftsList()
+				queryClient.invalidateQueries()
 
 				router.push('/repay')
 			} else {

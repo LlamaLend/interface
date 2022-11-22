@@ -23,7 +23,7 @@ const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps)
 				) : collections?.length === 0 ? (
 					<p className="fallback-text">There are no collections on {chainName || 'this'} network.</p>
 				) : (
-					<GridWrapper className="mx-0 mt-8 mb-auto !place-content-around sm:my-9">
+					<GridWrapper className="mx-0 mt-8 mb-auto !place-content-around sm:my-9 2xl:!place-content-between">
 						{collections?.map((item) => (
 							<BorrowCollectionItem key={item.address} data={item} chainName={chainName} />
 						))}

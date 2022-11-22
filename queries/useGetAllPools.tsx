@@ -274,19 +274,22 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress, sk
 export function useGetAllPools({
 	chainId,
 	collectionAddress,
-	ownerAddress
+	ownerAddress,
+	skipOracle
 }: {
 	chainId?: number | null
 	collectionAddress?: string
 	ownerAddress?: string
+	skipOracle?: boolean
 }) {
 	return useQuery<Array<IBorrowPool>, ITransactionError>(
-		['allPools', chainId, collectionAddress, ownerAddress || null],
+		['allPools', chainId, collectionAddress, ownerAddress || null, skipOracle || false],
 		() =>
 			getAllpools({
 				chainId,
 				collectionAddress,
-				ownerAddress
+				ownerAddress,
+				skipOracle
 			}),
 		{
 			refetchInterval: 30_000

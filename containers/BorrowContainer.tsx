@@ -177,30 +177,32 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 								<p className="fallback-text text-sm font-normal">Something went wrong, failed to fetch your NFTs.</p>
 							) : (
 								<>
-									<div className="flex flex-nowrap gap-1 overflow-x-auto">
-										{fetchingNftsList ? (
-											<>
-												{new Array(5).fill('llama').map((_, index) => (
-													<div className="placeholder-box-2 h-10 w-10 flex-shrink-0" key={'bnp' + index}></div>
-												))}
-											</>
-										) : (
-											<>
-												{nftsList.map((item) => (
-													<Image
-														src={item.imgUrl}
-														alt={`#${item.tokenId}`}
-														height={40}
-														width={40}
-														className="aspect-square rounded"
-														key={item.tokenId}
-													></Image>
-												))}
-											</>
-										)}
-									</div>
+									{isConnected && (
+										<div className="mb-1 flex flex-nowrap gap-1 overflow-x-auto">
+											{fetchingNftsList ? (
+												<>
+													{new Array(5).fill('llama').map((_, index) => (
+														<div className="placeholder-box-2 h-10 w-10 flex-shrink-0" key={'bnp' + index}></div>
+													))}
+												</>
+											) : (
+												<>
+													{nftsList.map((item) => (
+														<Image
+															src={item.imgUrl}
+															alt={`#${item.tokenId}`}
+															height={40}
+															width={40}
+															className="aspect-square rounded"
+															key={item.tokenId}
+														></Image>
+													))}
+												</>
+											)}
+										</div>
+									)}
 
-									<p className="min-h-[1.25rem] text-sm font-medium text-[#D4D4D8]">
+									<p className="-my-1 min-h-[1.25rem] text-sm font-medium text-[#D4D4D8]">
 										{!isConnected
 											? `Connect wallet to view your ${collectionName || collectionAddress + ' tokens'}`
 											: fetchingNftsList || fetchingCollectionName
@@ -226,7 +228,7 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 										</select>
 									</label>
 
-									<hr className="my-6 border-[#27282A]" />
+									<hr className="my-5 border-[#27282A]" />
 
 									<div className="flex flex-col gap-9">
 										<Slider

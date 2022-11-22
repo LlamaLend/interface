@@ -90,6 +90,7 @@ export function BorrowItems({ poolData, nftsList, chainId, collectionAddress, fe
 		waitForTransaction: { data: borrowTxOnChain, isLoading: checkingForBorrowTxOnChain, error: txBorrowErrorOnChain }
 	} = useBorrow({
 		poolAddress: poolData.address,
+		collectionAddress,
 		cartTokenIds,
 		enabled: isApproved && oracle && poolData && !isUserOnDifferentChain ? true : false,
 		maxInterest: poolData?.maxVariableInterestPerEthPerSecond,

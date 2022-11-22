@@ -14,7 +14,7 @@ interface ILoansContainerProps {
 export default function LenderStatsContainer({ chainId, chainName, lenderAddress }: ILoansContainerProps) {
 	const { openConnectModal } = useConnectModal()
 
-	const { data, isError } = useGetAllPools({ chainId, ownerAddress: lenderAddress })
+	const { data, isError } = useGetAllPools({ chainId, ownerAddress: lenderAddress, skipOracle: true })
 
 	return (
 		<>

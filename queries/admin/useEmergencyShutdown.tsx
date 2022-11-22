@@ -81,7 +81,7 @@ export function useShutdownAllPools() {
 
 	const txConfirmingId = useRef<string>()
 
-	const { data } = useGetAllPools({ chainId: chain?.id })
+	const { data } = useGetAllPools({ chainId: chain?.id, skipOracle: true })
 
 	const { config: contractConfig } = usePrepareContractWrite({
 		addressOrName: config.factoryAddress,
