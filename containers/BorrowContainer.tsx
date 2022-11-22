@@ -204,12 +204,10 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 
 									<p className="-my-1 min-h-[1.25rem] text-sm font-medium text-[#D4D4D8]">
 										{!isConnected
-											? `Connect wallet to view your ${collectionName || collectionAddress + ' tokens'}`
+											? `Connect wallet to view your ${collectionName || ''} NFTs`
 											: fetchingNftsList || fetchingCollectionName
 											? ''
-											: `You have ${nftsList.length} ${
-													collectionName || collectionAddress + ' tokens'
-											  } to use as collateral`}
+											: `You have ${nftsList.length} ${collectionName || ''} NFTs to use as collateral`}
 									</p>
 
 									<hr className="my-5 border-[#27282A]" />

@@ -39,8 +39,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					collectionAddress: nftContractAddress,
-					errorType: 'failedToFetch'
+					collectionAddress: nftContractAddress
 				})
 			})
 
@@ -55,7 +54,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 				},
 				body: JSON.stringify({
 					collectionAddress: nftContractAddress,
-					errorType: 'deadlineExpired'
+					outdatedBy: ((res.deadline * 1000 - Date.now()) / (60 * 1000)).toFixed(2)
 				})
 			})
 
@@ -70,8 +69,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				collectionAddress: nftContractAddress,
-				errorType: 'failedToFetch'
+				collectionAddress: nftContractAddress
 			})
 		})
 

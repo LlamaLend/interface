@@ -15,14 +15,14 @@ const TEN_MINUTES = 10 * 60 * 1000
 const config = chainConfig(1)
 
 export default async function alert(req: NextApiRequest, res: NextApiResponse) {
-	const { collectionAddress, errorType } = req.body
+	const { collectionAddress, outdatedBy } = req.body
 
 	const webhookClient = new WebhookClient({
 		id: process.env.ORACLE_WEBHOOK_ID as string,
 		token: process.env.ORACLE_WEBHOOK_TOKEN as string
 	})
 
-	if (collectionAddress && errorType) {
+	if (collectionAddress) {
 		const lastUpdated: number | null = await redis.get(collectionAddress.toLowerCase())
 
 		if (!lastUpdated || Date.now() - lastUpdated > TEN_MINUTES) {
@@ -36,7 +36,7 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 
 			const name = collectionName ? `${collectionName} (${collectionAddress})` : collectionAddress
 
-			const message = errorType === 'deadlineExpired' ? `${name} quote outdated` : `Failed to fetch ${name} oracle`
+			const message = outdatedBy ? `${name} quote outdated by ${outdatedBy} mins` : `Failed to fetch ${name} oracle`
 
 			webhookClient.send({
 				username: 'Oracle Error',
