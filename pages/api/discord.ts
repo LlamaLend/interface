@@ -15,7 +15,7 @@ const TEN_MINUTES = 10 * 60 * 1000
 const config = chainConfig(1)
 
 export default async function alert(req: NextApiRequest, res: NextApiResponse) {
-	const { collectionAddress, outdatedBy } = req.body
+	const { collectionAddress, outdatedBy, errorMessage } = req.body
 
 	const webhookClient = new WebhookClient({
 		id: process.env.ORACLE_WEBHOOK_ID as string,
@@ -36,7 +36,9 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 
 			const name = collectionName ? `${collectionName} (${collectionAddress})` : collectionAddress
 
-			const message = outdatedBy ? `${name} quote outdated by ${outdatedBy} mins` : `Failed to fetch ${name} oracle`
+			const failedToFetch = `Failed to fetch ${name} oracle` + errorMessage ? ` - ${errorMessage}` : ''
+
+			const message = outdatedBy ? `${name} quote outdated by ${outdatedBy} mins` : failedToFetch
 
 			webhookClient.send({
 				username: 'Oracle Error',

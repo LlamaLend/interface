@@ -39,7 +39,8 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					collectionAddress: nftContractAddress
+					collectionAddress: nftContractAddress,
+					errorMessage: JSON.stringify(res || {})
 				})
 			})
 
@@ -69,7 +70,8 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				collectionAddress: nftContractAddress
+				collectionAddress: nftContractAddress,
+				errorMessage: JSON.stringify(error || {})
 			})
 		})
 
