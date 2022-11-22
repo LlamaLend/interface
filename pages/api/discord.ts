@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { WebhookClient } from 'discord.js'
 import { Redis } from '@upstash/redis'
+import { ethers } from 'ethers'
+import { ERC721_ABI } from '~/lib/erc721.abi'
+import { chainConfig } from '~/lib/constants'
 
 const redis = new Redis({
 	url: process.env.UPSTASH_REDIS_REST_URL as string,
@@ -8,6 +11,8 @@ const redis = new Redis({
 })
 
 const TEN_MINUTES = 10 * 60 * 1000
+
+const config = chainConfig(1)
 
 export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 	const { collectionAddress, errorType } = req.body
@@ -25,10 +30,13 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 				ex: 600
 			})
 
-			const message =
-				errorType === 'deadlineExpired'
-					? `${collectionAddress} quote outdated`
-					: `Failed to fetch ${collectionAddress} oracle`
+			const contract = new ethers.Contract(collectionAddress, ERC721_ABI, config.chainProvider)
+
+			const collectionName = await contract.name()
+
+			const name = collectionName ? `${collectionName} (${collectionAddress})` : collectionAddress
+
+			const message = errorType === 'deadlineExpired' ? `${name} quote outdated` : `Failed to fetch ${name} oracle`
 
 			webhookClient.send({
 				username: 'Oracle Error',
