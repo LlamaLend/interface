@@ -54,7 +54,7 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
 
-	const floorPrice = oracle?.price ? `FP: ${(Number(oracle.price) / 1e18).toFixed(2)} ${chainSymbol}` : ''
+	const floorPrice = oracle?.price ? `Floor Price: ${(Number(oracle.price) / 1e18).toFixed(2)} ${chainSymbol}` : ''
 
 	const onInterestRateChange = (value: Array<number>) => {
 		setInterestRange(value)
