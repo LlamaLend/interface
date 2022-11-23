@@ -33,47 +33,53 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
 		if (!res?.price) {
-			fetch('/api/discord', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					collectionAddress: nftContractAddress,
-					errorMessage: JSON.stringify(res || {})
+			if (typeof window !== 'undefined') {
+				fetch('/api/discord', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						collectionAddress: nftContractAddress,
+						errorMessage: JSON.stringify(res || {})
+					})
 				})
-			})
+			}
 
 			return null
 		}
 
 		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-			fetch('/api/discord', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					collectionAddress: nftContractAddress,
-					outdatedBy: ((res.deadline * 1000 - Date.now()) / (60 * 1000)).toFixed(2)
+			if (typeof window !== 'undefined') {
+				fetch('/api/discord', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						collectionAddress: nftContractAddress,
+						outdatedBy: ((res.deadline * 1000 - Date.now()) / (60 * 1000)).toFixed(2)
+					})
 				})
-			})
+			}
 
 			return null
 		}
 
 		return { ...res, price: res.price }
 	} catch (error: any) {
-		fetch('/api/discord', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				collectionAddress: nftContractAddress,
-				errorMessage: JSON.stringify(error || {})
+		if (typeof window !== 'undefined') {
+			fetch('/api/discord', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					collectionAddress: nftContractAddress,
+					errorMessage: JSON.stringify(error || {})
+				})
 			})
-		})
+		}
 
 		throw new Error(error.message || (error?.reason ?? "Couldn't fetch quote"))
 	}
