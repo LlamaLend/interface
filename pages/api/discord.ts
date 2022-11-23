@@ -36,7 +36,7 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 
 			const name = collectionName ? `${collectionName} (${collectionAddress})` : collectionAddress
 
-			const failedToFetch = `Failed to fetch ${name} oracle` + errorMessage ? ` - ${errorMessage}` : ''
+			const failedToFetch = `Failed to fetch ${name} oracle` + (errorMessage ? ` - ${errorMessage}` : '')
 
 			const message = outdatedBy ? `${name} quote outdated by ${outdatedBy} mins` : failedToFetch
 
