@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import ItemWrapper from './ItemWrapper'
 
 interface IBorrowCollectionItemProps {
 	data: { name: string; address: string; imgUrl: string }
@@ -9,12 +8,12 @@ interface IBorrowCollectionItemProps {
 
 export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemProps) {
 	return (
-		<ItemWrapper>
+		<li className="flex min-h-[300px] min-w-[240px] flex-col gap-4 rounded-xl bg-[#191919] p-4 shadow backdrop-blur">
 			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#22242A]">
 				{data.imgUrl === '' ? (
 					<div className="aspect-square rounded-t-xl bg-[#22242A]"></div>
 				) : (
-					<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" priority />
+					<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" sizes="260px" priority />
 				)}
 			</div>
 
@@ -26,6 +25,6 @@ export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemP
 			>
 				View Pools
 			</Link>
-		</ItemWrapper>
+		</li>
 	)
 }
