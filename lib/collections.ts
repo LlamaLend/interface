@@ -82,6 +82,11 @@ const collections: ICollection = {
 			name: 'Milady',
 			address: '0x5Af0D9827E0c53E4799BB226655A1de152A425a5',
 			imgUrl: '/assets/collection/milady.avif'
+		},
+		{
+			name: 'RENGA',
+			address: '0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91',
+			imgUrl: '/assets/collection/renga.webp'
 		}
 	],
 	5: [
