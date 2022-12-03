@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { chainConfig } from '~/lib/constants';
+import { useGetAllPools } from '~/queries/useGetAllPools';
 import { useGetOracle } from '~/queries/useGetOracle';
 
 interface IBorrowCollectionItemProps {
@@ -11,6 +12,7 @@ interface IBorrowCollectionItemProps {
 
 export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCollectionItemProps) {
 	const { data: oracle } = useGetOracle({ nftContractAddress: data.address, chainId })
+	const { data: pools} = useGetAllPools({ chainId, collectionAddress: data.address })
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
 	const floorPrice = Number(oracle?.price) / 1e18
 	return (
@@ -48,7 +50,7 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1>5</h1>
+				<h1>{pools?.length}</h1>
 				<p className="text-sm text-[#D4D4D8]">Loans</p>
 			</div>
 
