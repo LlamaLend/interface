@@ -15,10 +15,11 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 	const { data: pools} = useGetAllPools({ chainId, collectionAddress: data.address })
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
 	const floorPrice = Number(oracle?.price) / 1e18
-	const poolsWithLiquidity = pools?.filter(pool => Number(pool.totalDeposited) > 0)
+	const poolsWithLiquidity = pools?.filter(pool => Number(pool.totalDeposited) / 1e18 > 0.01)
 	const poolsTotalAvailableBalance = poolsWithLiquidity && poolsWithLiquidity?.map(pool => Number(pool.poolBalance) / 1e18).reduce((a, b) => a + b, 0)
+	const poolsMaxApr = poolsWithLiquidity && Math.max(...poolsWithLiquidity?.map(pool => Number(pool.currentAnnualInterest) / 1e16))
 	return (
-		<li className="grid grid-cols-3 md:grid-cols-5 gap-4 min-h-[80px] min-w-[300px] bg-[#191919] p-4 shadow backdrop-blur justify-between">
+		<li className="grid grid-cols-3 md:grid-cols-6 gap-4 min-h-[80px] min-w-[300px] bg-[#191919] p-4 shadow backdrop-blur justify-between">
 			<div className="flex gap-4">
 				<div className="flex flex-col justify-center">
 					<div className="relative min-h-[50px] min-w-[50px] w-full aspect-square">
@@ -44,6 +45,11 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 			<div className="flex flex-col justify-center">
 				<h1>{oracle?.price ? `${floorPrice.toFixed(2)} ${chainSymbol}` : ''}</h1>
 				<p className="text-sm text-[#D4D4D8]">Floor</p>
+			</div>
+
+			<div className="flex flex-col justify-center">
+				<h1>{poolsMaxApr && `${poolsMaxApr.toFixed(2)}%`}</h1>
+				<p className="text-sm text-[#D4D4D8]">APR up to</p>
 			</div>
 
 			<div className="flex flex-col justify-center">
