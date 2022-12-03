@@ -1,12 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { chainConfig } from '~/lib/constants';
+import { useGetOracle } from '~/queries/useGetOracle';
 
 interface IBorrowCollectionItemProps {
 	data: { name: string; address: string; imgUrl: string }
 	chainName: string
+	chainId?: number
 }
 
-export function BorrowCollectionItemList({ data, chainName }: IBorrowCollectionItemProps) {
+export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCollectionItemProps) {
+	const { data: oracle } = useGetOracle({ nftContractAddress: data.address, chainId })
+	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
+	const floorPrice = Number(oracle?.price) / 1e18
 	return (
 		<li className="grid grid-cols-3 md:grid-cols-5 gap-4 min-h-[80px] min-w-[300px] bg-[#191919] p-4 shadow backdrop-blur justify-between">
 			<div className="flex gap-4">
@@ -32,7 +38,7 @@ export function BorrowCollectionItemList({ data, chainName }: IBorrowCollectionI
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1>10.00 ETH</h1>
+				<h1>{oracle?.price ? `${floorPrice.toFixed(2)} ${chainSymbol}` : ''}</h1>
 				<p className="text-sm text-[#D4D4D8]">Floor</p>
 			</div>
 

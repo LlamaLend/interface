@@ -37,7 +37,7 @@ const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps)
 					) : (
 						<ul className="grid grid-rows-1">
 							{collections?.map((item) => (
-								<BorrowCollectionItemList key={item.address} data={item} chainName={chainName} />
+								<BorrowCollectionItemList key={item.address} data={item} chainId={chainId} chainName={chainName} />
 							))}
 					</ul>
 					)
