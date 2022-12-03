@@ -15,6 +15,8 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 	const { data: pools} = useGetAllPools({ chainId, collectionAddress: data.address })
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
 	const floorPrice = Number(oracle?.price) / 1e18
+	const poolsWithLiquidity = pools?.filter(pool => Number(pool.totalDeposited) > 0)
+	const poolsTotalAvailableBalance = poolsWithLiquidity && poolsWithLiquidity?.map(pool => Number(pool.poolBalance) / 1e18).reduce((a, b) => a + b, 0)
 	return (
 		<li className="grid grid-cols-3 md:grid-cols-5 gap-4 min-h-[80px] min-w-[300px] bg-[#191919] p-4 shadow backdrop-blur justify-between">
 			<div className="flex gap-4">
@@ -45,7 +47,7 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1>123.00 ETH</h1>
+				<h1>{poolsTotalAvailableBalance && `${poolsTotalAvailableBalance.toFixed(2)} ${chainSymbol}`}</h1>
 				<p className="text-sm text-[#D4D4D8]">Available</p>
 			</div>
 
