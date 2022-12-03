@@ -6,6 +6,58 @@ interface IBorrowCollectionItemProps {
 	chainName: string
 }
 
+export function BorrowCollectionItemList({ data, chainName }: IBorrowCollectionItemProps) {
+	return (
+		<li className="grid grid-cols-3 md:grid-cols-5 gap-4 min-h-[80px] min-w-[300px] bg-[#191919] p-4 shadow backdrop-blur justify-between">
+			<div className="flex gap-4">
+				<div className="flex flex-col justify-center">
+					<div className="relative min-h-[50px] min-w-[50px] w-full aspect-square">
+						{data.imgUrl === '' ? (
+							<div className="aspect-square rounded-xl bg-[#22242A]"></div>
+						) : (
+							<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-xl"  priority />
+						)}						
+					</div>
+				</div>
+
+				<div className="hidden md:block">
+					<h1 className="font-semibold">{data.name}</h1>
+					<p className="text-sm text-[#D4D4D8]">Collection</p>
+				</div>
+			</div>
+
+			<div className="block md:hidden">
+				<h1 className="font-semibold">{data.name}</h1>
+				<p className="text-sm text-[#D4D4D8]">Collection</p>
+			</div>
+
+			<div className="flex flex-col justify-center">
+				<h1>10.00 ETH</h1>
+				<p className="text-sm text-[#D4D4D8]">Floor</p>
+			</div>
+
+			<div className="flex flex-col justify-center">
+				<h1>123.00 ETH</h1>
+				<p className="text-sm text-[#D4D4D8]">Available</p>
+			</div>
+
+			<div className="flex flex-col justify-center">
+				<h1>5</h1>
+				<p className="text-sm text-[#D4D4D8]">Loans</p>
+			</div>
+
+			<div className="flex flex-col justify-center">
+				<Link
+					href={`/collections/${chainName}/${data.address}`}
+					className="rounded-xl bg-[#243b55] p-2 text-center text-sm min-w-[100px] max-w-[120px]"
+				>
+					View Pools
+				</Link>
+			</div>
+		</li>
+	)
+}
+
 export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemProps) {
 	return (
 		<li className="flex min-h-[300px] min-w-[240px] flex-col gap-4 rounded-xl bg-[#191919] p-4 shadow backdrop-blur">
