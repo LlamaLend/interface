@@ -58,7 +58,7 @@ export function BorrowCollectionItemList({ data, chainName }: IBorrowCollectionI
 	)
 }
 
-export function BorrowCollectionItem({ data, chainName }: IBorrowCollectionItemProps) {
+export function BorrowCollectionItemCard({ data, chainName }: IBorrowCollectionItemProps) {
 	return (
 		<li className="flex min-h-[300px] min-w-[240px] flex-col gap-4 rounded-xl bg-[#191919] p-4 shadow backdrop-blur">
 			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#22242A]">
