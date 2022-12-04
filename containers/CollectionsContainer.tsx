@@ -54,7 +54,7 @@ const ViewTypeSwitch = ({ viewType, onClick } : { viewType: ViewType, onClick: (
 
 const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
 	const [viewType, setViewType] = useState<ViewType>(ViewType.Card)
-	const { data: collections } = useGetAllCollections({ chainId, skipOracle: true })
+	const { data: collections } = useGetAllCollections({ chainId, skipOracle: false })
 	const toggleViewType = () => {
 		viewType === ViewType.Card ? setViewType(ViewType.List) : setViewType(ViewType.Card)
 	}

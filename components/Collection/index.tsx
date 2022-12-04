@@ -2,19 +2,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { chainConfig } from '~/lib/constants';
 import { useGetAllPools } from '~/queries/useGetAllPools';
-import { useGetOracle } from '~/queries/useGetOracle';
 
 interface IBorrowCollectionItemProps {
-	data: { name: string; address: string; imgUrl: string }
+	data: { name: string; address: string; imgUrl: string, oraclePrice?: string }
 	chainName: string
 	chainId?: number
 }
 
 export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCollectionItemProps) {
-	const { data: oracle } = useGetOracle({ nftContractAddress: data.address, chainId })
 	const { data: pools} = useGetAllPools({ chainId, collectionAddress: data.address })
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
-	const floorPrice = Number(oracle?.price) / 1e18
+	const floorPrice = Number(data.oraclePrice) / 1e18
 	const poolsWithLiquidity = pools?.filter(pool => Number(pool.totalDeposited) / 1e18 > 0.01)
 	const poolsTotalAvailableBalance = poolsWithLiquidity && poolsWithLiquidity?.map(pool => Number(pool.poolBalance) / 1e18).reduce((a, b) => a + b, 0)
 	const poolsMaxApr = poolsWithLiquidity && Math.max(...poolsWithLiquidity?.map(pool => Number(pool.currentAnnualInterest) / 1e16))
@@ -43,7 +41,7 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1>{oracle?.price ? `${floorPrice.toFixed(2)} ${chainSymbol}` : ''}</h1>
+				<h1>{data.oraclePrice ? `${floorPrice.toFixed(2)} ${chainSymbol}` : ''}</h1>
 				<p className="text-sm text-[#D4D4D8]">Floor</p>
 			</div>
 
