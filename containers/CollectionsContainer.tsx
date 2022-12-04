@@ -8,10 +8,13 @@ import { ICollection } from '~/types'
 interface ICollectionContainerProps {
 	chainId: number
 	chainName: string
+}
+
+interface ICollections extends ICollectionContainerProps {
 	data: ICollection[] | undefined
 }
 
-const Collections = ({ chainId, chainName, data }: ICollectionContainerProps) => {
+const Collections = ({ chainId, chainName, data }: ICollections) => {
 	const router = useRouter()
 
 	const { view } = router.query
