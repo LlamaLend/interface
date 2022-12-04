@@ -76,7 +76,8 @@ async function getPoolAddlInfo({
 			pricePerNft: priceAndCurrentBorrowables.pricePerNft,
 			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow,
 			currentAnnualInterest,
-			oracle
+			oracle,
+			oraclePrice: quote?.price,
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get total amount deposited in pool."))
@@ -263,6 +264,7 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress, sk
 				pricePerNft: poolAddlInfo?.[index]?.pricePerNft ?? '0',
 				maxNftsToBorrow: poolAddlInfo?.[index]?.maxNftsToBorrow ?? '0',
 				oracle: poolAddlInfo?.[index]?.oracle ?? '',
+				oraclePrice: poolAddlInfo?.[index]?.oraclePrice ?? '',
 				adminPoolInfo: adminPoolInfo?.[index] ?? {}
 			}))
 			.sort((a, b) => Number(b.maxNftsToBorrow) - Number(a.maxNftsToBorrow))

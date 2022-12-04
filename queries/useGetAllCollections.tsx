@@ -6,9 +6,9 @@ import verifiedCollections from '~/lib/collections'
 import type { ICollection } from '~/types'
 
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
-	const pools = await getAllpools({ chainId, skipOracle: true })
+	const pools = await getAllpools({ chainId, skipOracle: false })
 
-	const collections: Array<{ address: string; name: string; totalDeposited: string }> = []
+	const collections: Array<{ address: string; name: string; totalDeposited: string, oraclePrice: string }> = []
 
 	pools.forEach((pool) => {
 		const index = collections.findIndex((col) => col.address.toLowerCase() === pool.nftContract.toLowerCase())
@@ -22,7 +22,8 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 			collections.push({
 				address: getAddress(pool.nftContract),
 				name: pool.collectionName,
-				totalDeposited: pool.totalDeposited
+				totalDeposited: pool.totalDeposited,
+				oraclePrice: pool.oraclePrice,
 			})
 		}
 	})
@@ -31,7 +32,7 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 
 	const notVerified: Array<ICollection> = []
 
-	Array.from(collections).forEach(({ address, name, totalDeposited }) => {
+	Array.from(collections).forEach(({ address, name, totalDeposited, oraclePrice }) => {
 		const verifiedCollectionIndex = verifiedCollections[chainId || 1].findIndex(
 			(x) => x.address.toLowerCase() == address.toLowerCase()
 		)
@@ -42,10 +43,18 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 				name,
 				imgUrl: verifiedCollections[chainId || 1][verifiedCollectionIndex].imgUrl,
 				sortIndex: verifiedCollectionIndex + 1,
-				totalDeposited
+				totalDeposited,
+				oraclePrice
 			})
 		} else {
-			notVerified.push({ address, name, totalDeposited, imgUrl: '', sortIndex: -1 })
+			notVerified.push({
+				address,
+				name,
+				totalDeposited,
+				imgUrl: '',
+				sortIndex: -1,
+				oraclePrice
+			})
 		}
 	})
 

@@ -143,4 +143,5 @@ export interface ICollection {
 	totalDeposited: string
 	imgUrl: string
 	sortIndex: number
+	oraclePrice?: string
 }
