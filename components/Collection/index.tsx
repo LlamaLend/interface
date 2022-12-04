@@ -46,22 +46,24 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1 className="min-h-[1.4rem]">{data.oraclePrice ? `${floorPrice.toFixed(2)} ${chainSymbol}` : '-'}</h1>
+				<h1 className="min-h-[1.5rem]">{data.oraclePrice ? `${floorPrice.toFixed(2)} ${chainSymbol}` : ''}</h1>
 				<p className="text-sm text-[#D4D4D8]">Floor</p>
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1 className="min-h-[1.4rem]">{poolsMaxApr ? `${poolsMaxApr.toFixed(2)}%` : '-'}</h1>
+				<h1 className="min-h-[1.5rem]">{poolsMaxApr ? `${poolsMaxApr.toFixed(2)}%` : ''}</h1>
 				<p className="text-sm text-[#D4D4D8]">APR up to</p>
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1>{poolsTotalAvailableBalance && `${poolsTotalAvailableBalance.toFixed(2)} ${chainSymbol}`}</h1>
+				<h1 className="min-h-[1.5rem]">
+					{poolsTotalAvailableBalance && `${poolsTotalAvailableBalance.toFixed(2)} ${chainSymbol}`}
+				</h1>
 				<p className="text-sm text-[#D4D4D8]">Available</p>
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1>{pools?.length}</h1>
+				<h1 className="min-h-[1.5rem]">{pools?.length}</h1>
 				<p className="text-sm text-[#D4D4D8]">Loans</p>
 			</div>
 

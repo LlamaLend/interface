@@ -43,6 +43,6 @@ export async function getStaticProps({ params: { chainName } }: { params: { chai
 
 	return {
 		props: { dehydratedState: dehydrate(queryClient), chainId: chainDetails.id, chainName: chainDetails.name },
-		revalidate: 30
+		revalidate: 300
 	}
 }

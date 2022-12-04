@@ -8,7 +8,7 @@ import type { ICollection } from '~/types'
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
 	const pools = await getAllpools({ chainId, skipOracle: false })
 
-	const collections: Array<{ address: string; name: string; totalDeposited: string, oraclePrice: string }> = []
+	const collections: Array<{ address: string; name: string; totalDeposited: string; oraclePrice: string }> = []
 
 	pools.forEach((pool) => {
 		const index = collections.findIndex((col) => col.address.toLowerCase() === pool.nftContract.toLowerCase())
@@ -23,7 +23,7 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 				address: getAddress(pool.nftContract),
 				name: pool.collectionName,
 				totalDeposited: pool.totalDeposited,
-				oraclePrice: pool.oraclePrice,
+				oraclePrice: pool.oraclePrice
 			})
 		}
 	})

@@ -10,7 +10,7 @@ export async function getStaticProps() {
 
 	return {
 		props: { dehydratedState: dehydrate(queryClient) },
-		revalidate: 180
+		revalidate: 300
 	}
 }
 

@@ -77,7 +77,7 @@ async function getPoolAddlInfo({
 			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow,
 			currentAnnualInterest,
 			oracle,
-			oraclePrice: quote?.price,
+			oraclePrice: quote?.price
 		}
 	} catch (error: any) {
 		throw new Error(error.message || (error?.reason ?? "Couldn't get total amount deposited in pool."))
