@@ -39,7 +39,7 @@ export async function getStaticProps({ params: { chainName } }: { params: { chai
 
 	const queryClient = new QueryClient()
 
-	await queryClient.prefetchQuery(['allCollections', 1, true], () => getAllCollections({ chainId: 1 }))
+	await queryClient.prefetchQuery(['allCollections', 1, false], () => getAllCollections({ chainId: 1 }))
 
 	return {
 		props: { dehydratedState: dehydrate(queryClient), chainId: chainDetails.id, chainName: chainDetails.name },
