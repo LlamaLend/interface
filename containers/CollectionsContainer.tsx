@@ -1,49 +1,72 @@
 import Head from 'next/head'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
 import { BorrowCollectionItemCard, BorrowCollectionItemList } from '~/components/Collection'
 import Layout from '~/components/Layout'
 import { useGetAllCollections } from '~/queries/useGetAllCollections'
 import { ICollection } from '~/types'
 
-enum ViewType {
-	Card,
-	List,
-}
-
 interface ICollectionContainerProps {
 	chainId: number
 	chainName: string
+	data: ICollection[] | undefined
 }
 
-const renderCollectionItem = ({ chainId, chainName }: ICollectionContainerProps, collections: ICollection[] | undefined, viewType: ViewType ) => (
-	viewType === ViewType.Card ? (
-		<ul className="mx-0 mt-8 mb-auto grid grid-cols-[repeat(auto-fit,minmax(240px,260px))] place-content-around gap-8 sm:my-9 2xl:place-content-between">
-			{collections?.map((item) => (
+const Collections = ({ chainId, chainName, data }: ICollectionContainerProps) => {
+	const router = useRouter()
+
+	const { view } = router.query
+
+	const isListView = view === 'list'
+
+	if (isListView) {
+		return (
+			<ul className="mb-9 grid grid-rows-1">
+				{data?.map((item) => (
+					<BorrowCollectionItemList key={item.address} data={item} chainId={chainId} chainName={chainName} />
+				))}
+			</ul>
+		)
+	}
+
+	return (
+		<ul className="mx-0 mb-9 grid grid-cols-[repeat(auto-fit,minmax(240px,260px))] place-content-around gap-8 2xl:place-content-between">
+			{data?.map((item) => (
 				<BorrowCollectionItemCard key={item.address} data={item} chainName={chainName} />
 			))}
 		</ul>
-	) : (
-		<ul className="grid grid-rows-1">
-			{collections?.map((item) => (
-				<BorrowCollectionItemList key={item.address} data={item} chainId={chainId} chainName={chainName} />
-			))}
-		</ul>
 	)
-)
+}
 
-const ViewTypeSwitch = ({ viewType, onClick } : { viewType: ViewType, onClick: () => void }) => {
+const ViewTypeSwitch = () => {
+	const router = useRouter()
+
+	const { view } = router.query
+
+	const isListView = view === 'list'
+
+	const handleClick = () =>
+		router.push(
+			{ pathname: router.pathname, query: { ...router.query, view: isListView ? 'card' : 'list' } },
+			undefined,
+			{ shallow: true }
+		)
+
 	return (
-		<div className="flex items-center justify-end">
-			<div className="inline-flex pb-2" role="group" onClick={onClick}>
+		<div className="mt-8 flex items-center justify-end">
+			<div className="inline-flex pb-2" role="group">
 				<button
-					type="button"
-					className={`rounded-l px-2 py-1 border-2 border-white font-medium text-xs ${viewType === ViewType.Card && "bg-white text-black"}`}
+					className={`rounded-l border-2 border-white px-2 py-1 text-xs font-medium ${
+						!isListView && 'bg-white text-black'
+					}`}
+					onClick={handleClick}
 				>
 					Grid
 				</button>
-				<button 
-					type="button"
-					className={`rounded-r px-2 py-1 border-2 border-white font-medium text-xs ${viewType === ViewType.List && "bg-white text-black"}`}
+				<button
+					className={`rounded-r border-2 border-white px-2 py-1 text-xs font-medium ${
+						isListView && 'bg-white text-black'
+					}`}
+					onClick={handleClick}
 				>
 					List
 				</button>
@@ -53,11 +76,8 @@ const ViewTypeSwitch = ({ viewType, onClick } : { viewType: ViewType, onClick: (
 }
 
 const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
-	const [viewType, setViewType] = useState<ViewType>(ViewType.Card)
 	const { data: collections } = useGetAllCollections({ chainId, skipOracle: false })
-	const toggleViewType = () => {
-		viewType === ViewType.Card ? setViewType(ViewType.List) : setViewType(ViewType.Card)
-	}
+
 	return (
 		<>
 			<Head>
@@ -71,8 +91,9 @@ const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps)
 					<p className="fallback-text">There are no collections on {chainName || 'this'} network.</p>
 				) : (
 					<>
-						<ViewTypeSwitch viewType={viewType} onClick={toggleViewType} />
-						{renderCollectionItem({chainName, chainId}, collections, viewType)}
+						<ViewTypeSwitch />
+
+						<Collections chainId={chainId} chainName={chainName} data={collections} />
 					</>
 				)}
 			</Layout>
