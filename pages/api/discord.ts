@@ -10,7 +10,7 @@ const redis = new Redis({
 	token: process.env.UPSTASH_REDIS_REST_TOKEN as string
 })
 
-const TEN_MINUTES = 10 * 60 * 1000
+const THIRTY_MINUTES = 30 * 60 * 1000
 
 const config = chainConfig(1)
 
@@ -25,9 +25,9 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 	if (collectionAddress) {
 		const lastUpdated: number | null = await redis.get(collectionAddress.toLowerCase())
 
-		if (!lastUpdated || Date.now() - lastUpdated > TEN_MINUTES) {
+		if (!lastUpdated || Date.now() - lastUpdated > THIRTY_MINUTES) {
 			await redis.set(collectionAddress.toLowerCase(), Date.now(), {
-				ex: 600
+				ex: 1800
 			})
 
 			const contract = new ethers.Contract(collectionAddress, ERC721_ABI, config.chainProvider)

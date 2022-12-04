@@ -22,7 +22,7 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 		Math.max(...poolsWithLiquidity.map((pool) => Number(pool.currentAnnualInterest) / 1e16))
 
 	return (
-		<li className="grid min-h-[80px] min-w-[300px] grid-cols-3 justify-between gap-4 bg-[#191919] p-4 shadow backdrop-blur first-of-type:rounded-t-xl last-of-type:rounded-b-xl md:grid-cols-6">
+		<li className="grid min-h-[80px] grid-cols-3 justify-between gap-4 p-4 shadow md:grid-cols-[280px_repeat(5,_120px)] xl:grid-cols-[360px_repeat(5,_120px)]">
 			<div className="flex gap-4">
 				<div className="flex flex-col justify-center">
 					<div className="relative aspect-square min-h-[50px] w-full min-w-[50px]">
@@ -67,10 +67,10 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 				<p className="text-sm text-[#D4D4D8]">Loans</p>
 			</div>
 
-			<div className="flex flex-col justify-center">
+			<div className="col-span-3 mx-auto flex w-full flex-col justify-center md:col-span-1 md:mr-0">
 				<Link
 					href={`/collections/${chainName}/${data.address}`}
-					className="ml-auto min-w-[100px] max-w-[120px] rounded-xl bg-[#243b55] p-2 text-center text-sm"
+					className="w-full min-w-[100px] rounded-xl bg-[#243b55] p-2 text-center text-sm"
 				>
 					View Pools
 				</Link>
@@ -81,7 +81,7 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 
 export function BorrowCollectionItemCard({ data, chainName }: IBorrowCollectionItemProps) {
 	return (
-		<li className="flex min-h-[300px] min-w-[240px] flex-col gap-4 rounded-xl bg-[#191919] p-4 shadow backdrop-blur">
+		<li className="flex min-h-[300px] min-w-[240px] flex-col gap-4 rounded-xl bg-[#191919] p-4 shadow">
 			<div className="relative -mx-4 -mt-4 aspect-square rounded-t-xl bg-[#22242A]">
 				{data.imgUrl === '' ? (
 					<div className="aspect-square rounded-t-xl bg-[#22242A]"></div>

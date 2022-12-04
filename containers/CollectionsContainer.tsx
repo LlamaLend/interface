@@ -23,7 +23,7 @@ const Collections = ({ chainId, chainName, data }: ICollections) => {
 
 	if (isListView) {
 		return (
-			<ul className="mb-9 grid grid-rows-1">
+			<ul className="mb-9 flex flex-col overflow-x-auto rounded-xl bg-[#191919]">
 				{data?.map((item) => (
 					<BorrowCollectionItemList key={item.address} data={item} chainId={chainId} chainName={chainName} />
 				))}
