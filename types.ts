@@ -71,6 +71,7 @@ export interface IBorrowPool {
 	maxNftsToBorrow: string
 	currentAnnualInterest: string
 	oracle: string
+	oraclePrice?: string
 	adminPoolInfo: {
 		key: string
 		maxPrice: number
@@ -143,5 +144,4 @@ export interface ICollection {
 	totalDeposited: string
 	imgUrl: string
 	sortIndex: number
-	oraclePrice?: string
 }

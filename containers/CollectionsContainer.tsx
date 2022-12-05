@@ -11,7 +11,7 @@ interface ICollectionContainerProps {
 }
 
 interface ICollections extends ICollectionContainerProps {
-	data: ICollection[] | undefined
+	data?: ICollection[]
 }
 
 const Collections = ({ chainId, chainName, data }: ICollections) => {
@@ -79,7 +79,7 @@ const ViewTypeSwitch = () => {
 }
 
 const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
-	const { data: collections } = useGetAllCollections({ chainId, skipOracle: false })
+	const { data: collections } = useGetAllCollections({ chainId, skipOracle: true })
 
 	return (
 		<>

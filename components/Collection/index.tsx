@@ -4,15 +4,16 @@ import { chainConfig } from '~/lib/constants'
 import { useGetAllPools } from '~/queries/useGetAllPools'
 
 interface IBorrowCollectionItemProps {
-	data: { name: string; address: string; imgUrl: string; oraclePrice?: string }
+	data: { name: string; address: string; imgUrl: string }
 	chainName: string
 	chainId?: number
 }
 
 export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCollectionItemProps) {
 	const { data: pools } = useGetAllPools({ chainId, collectionAddress: data.address })
+
 	const chainSymbol = chainConfig(chainId)?.nativeCurrency?.symbol
-	const floorPrice = Number(data.oraclePrice) / 1e18
+
 	const poolsWithLiquidity = pools?.filter((pool) => Number(pool.totalDeposited) / 1e18 > 0.01)
 	const poolsTotalAvailableBalance =
 		poolsWithLiquidity && poolsWithLiquidity?.map((pool) => Number(pool.poolBalance) / 1e18).reduce((a, b) => a + b, 0)
@@ -20,6 +21,9 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 		poolsWithLiquidity &&
 		poolsWithLiquidity.length > 0 &&
 		Math.max(...poolsWithLiquidity.map((pool) => Number(pool.currentAnnualInterest) / 1e16))
+
+	const floorPrice =
+		pools && pools.length > 0 && pools[0].oraclePrice ? (Number(pools[0].oraclePrice) / 1e18).toFixed(2) : null
 
 	return (
 		<li className="grid min-h-[80px] grid-cols-3 justify-between gap-4 p-4 shadow md:grid-cols-[280px_repeat(5,_120px)] xl:grid-cols-[360px_repeat(5,_120px)]">
@@ -46,7 +50,7 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 			</div>
 
 			<div className="flex flex-col justify-center">
-				<h1 className="min-h-[1.5rem]">{data.oraclePrice ? `${floorPrice.toFixed(2)} ${chainSymbol}` : ''}</h1>
+				<h1 className="min-h-[1.5rem]">{floorPrice ? `${floorPrice} ${chainSymbol}` : ''}</h1>
 				<p className="text-sm text-[#D4D4D8]">Floor</p>
 			</div>
 
