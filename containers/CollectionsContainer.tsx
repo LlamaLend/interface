@@ -11,7 +11,7 @@ interface ICollectionContainerProps {
 }
 
 interface ICollections extends ICollectionContainerProps {
-	data: ICollection[] | undefined
+	data?: ICollection[]
 }
 
 const Collections = ({ chainId, chainName, data }: ICollections) => {
