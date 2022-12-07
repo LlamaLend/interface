@@ -72,7 +72,7 @@ export default function Menu() {
 				<MenuItem
 					as="a"
 					className="w-full px-4 py-2 hover:bg-gray-100"
-					href="https://discord.gg/bzH9yZzvMy"
+					href="https://discord.defillama.com/"
 					target="_blank"
 					rel="noreferrer noopener"
 				>
