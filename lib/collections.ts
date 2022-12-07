@@ -84,6 +84,11 @@ const collections: ICollection = {
 			imgUrl: '/assets/collection/milady.avif'
 		},
 		{
+			name: 'Pudgy Penguins',
+			address: '0xBd3531dA5CF5857e7CfAA92426877b022e612cf8',
+			imgUrl: '/assets/collection/pudgypenguins.avif'
+		},
+		{
 			name: 'RENGA',
 			address: '0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91',
 			imgUrl: '/assets/collection/renga.webp'
