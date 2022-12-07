@@ -25,6 +25,7 @@ specifiers:
   framer-motion: ^7.6.4
   graphql: ^16.6.0
   graphql-request: ^5.0.0
+  husky: ^8.0.2
   next: 13.0.4
   postcss: ^8.4.19
   prettier: ^2.7.1
@@ -68,6 +69,7 @@ devDependencies:
   eslint: 8.24.0
   eslint-config-next: 13.0.4_7ilbxdl5iguzcjriqqcg2m5cku
   eslint-config-prettier: 8.5.0_eslint@8.24.0
+  husky: 8.0.2
   postcss: 8.4.19
   prettier: 2.7.1
   prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
@@ -3365,6 +3367,12 @@ packages:
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
     dev: false
+
+  /husky/8.0.2:
+    resolution: {integrity: sha512-Tkv80jtvbnkK3mYWxPZePGFpQ/tT3HNSs/sasF9P2YfkMezDl3ON37YN6jUUI4eTg5LcyVynlb6r4eyvOmspvg==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
 
   /ieee754/1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
