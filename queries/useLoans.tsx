@@ -58,7 +58,7 @@ function infoToRepayLoan(loan: IGraphLoanResponse) {
 
 const userLoansQuery = (userAddress?: string) => gql`
 	query {
-		loans(where: { originalOwner: "${userAddress?.toLowerCase()}", owner: "${userAddress?.toLowerCase()}" }) {
+		loans(where: { owner: "${userAddress?.toLowerCase()}" }) {
 			id
 			loanId
 			nftId
