@@ -2,8 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getAddress } from 'ethers/lib/utils'
 import BigNumber from 'bignumber.js'
 import { getAllpools } from './useGetAllPools'
-import verifiedCollections from '~/lib/collections'
+import verifiedCollections, { tokenListToCollection } from '~/lib/collections'
 import type { ICollection } from '~/types'
+import { getNftTokenList } from './useGetNftTokenList'
 
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
 	const pools = await getAllpools({ chainId, skipOracle: true })
@@ -27,20 +28,27 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 		}
 	})
 
+	const nftTokenListCollections = tokenListToCollection(await getNftTokenList())
+
 	const verified: Array<ICollection> = []
 
 	const notVerified: Array<ICollection> = []
 
-	Array.from(collections).forEach(({ address, name, totalDeposited }) => {
+	Array.from(collections).forEach(({ address, totalDeposited }) => {
 		const verifiedCollectionIndex = verifiedCollections[chainId || 1].findIndex(
 			(x) => x.address.toLowerCase() == address.toLowerCase()
 		)
+		const nftTokenListCollection =
+			nftTokenListCollections &&
+			nftTokenListCollections[chainId || 1].find((x) => x.address.toLowerCase() === address.toLowerCase())
+		const name = nftTokenListCollection?.name ?? ''
+		const imgUrl = nftTokenListCollection?.imgUrl ?? ''
 
 		if (verifiedCollectionIndex + 1) {
 			verified.push({
 				address,
 				name,
-				imgUrl: verifiedCollections[chainId || 1][verifiedCollectionIndex].imgUrl,
+				imgUrl,
 				sortIndex: verifiedCollectionIndex + 1,
 				totalDeposited
 			})
@@ -49,7 +57,7 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 				address,
 				name,
 				totalDeposited,
-				imgUrl: '',
+				imgUrl,
 				sortIndex: -1
 			})
 		}
