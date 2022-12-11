@@ -22,3 +22,8 @@ export async function getNftTokenList(): Promise<ITokenList> {
 export function useGetNftTokenList() {
 	return useQuery(['nftTokenList'], () => getNftTokenList())
 }
+
+export function useGetNftTokenByAddress(address: string) {
+	const { data: nftTokenList } = useGetNftTokenList()
+	return nftTokenList && nftTokenList.tokens.find((token) => token.address.toLowerCase() === address.toLowerCase())
+}
