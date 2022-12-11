@@ -14,6 +14,10 @@ const ORACLE_SERVER_API = 'https://oracle.llamalend.com/quote'
 
 export const EMAIL_SERVER_API = 'https://nft.llamalend.com/email'
 
+export const NFT_LIST = 'https://raw.githubusercontent.com/LlamaLend/nft-list/main/build/default.nftlist.json' // TODO: Update repo to self-hosted
+export const NFT_LIST_VERSION = '1.0.0'
+export const NFT_LIST_URL_PREFIX = 'https://raw.githubusercontent.com/LlamaLend/nft-list/main/assets' // TODO: Update repo to self-hosted
+
 export const CHAINS_CONFIGURATION: IChainConfig = {
 	1: {
 		ankrUrl: 'https://rpc.ankr.com/eth',

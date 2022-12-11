@@ -1,9 +1,42 @@
+import { NFT_LIST_URL_PREFIX } from './constants'
+
+export interface IToken {
+	name: string
+	address: string
+	symbol: string
+	chainId: number
+	logoURI: string
+}
+
+export interface ITokenList {
+	version: {
+		major: number
+		minor: number
+		patch: number
+	}
+	tokens: Array<IToken>
+}
+
 interface ICollection {
 	[chainId: number]: Array<{
 		name: string
 		address: string
 		imgUrl: string
 	}>
+}
+
+export function tokenListToCollection(tokenlist: ITokenList): ICollection {
+	const collections: ICollection = {}
+	tokenlist.tokens.forEach((token) => {
+		const chainCollections = collections[token.chainId] ?? []
+		chainCollections.push({
+			name: token.name,
+			address: token.address,
+			imgUrl: `${NFT_LIST_URL_PREFIX}/${token.chainId}/${token.address}.png`
+		})
+		collections[token.chainId] = chainCollections
+	})
+	return collections
 }
 
 const collections: ICollection = {
