@@ -36,7 +36,7 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 
 	Array.from(collections).forEach(({ address, totalDeposited }) => {
 		const verifiedCollectionIndex = verifiedCollections[chainId || 1].findIndex(
-			(x) => x.address.toLowerCase() == address.toLowerCase()
+			(collectionAddress) => collectionAddress.toLowerCase() == address.toLowerCase()
 		)
 		const nftTokenListCollection =
 			nftTokenListCollections &&
