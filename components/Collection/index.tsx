@@ -90,7 +90,14 @@ export function BorrowCollectionItemCard({ data, chainName }: IBorrowCollectionI
 				{data.imgUrl === '' ? (
 					<div className="aspect-square rounded-t-xl bg-[#22242A]"></div>
 				) : (
-					<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-t-xl" sizes="260px" priority />
+					<Image
+						src={data.imgUrl}
+						fill
+						alt={data.name}
+						className="aspect-square rounded-t-xl object-cover"
+						sizes="260px"
+						priority
+					/>
 				)}
 			</div>
 
