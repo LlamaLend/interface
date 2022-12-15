@@ -97,7 +97,7 @@ const collections: ICollection = {
 			name: 'Art Gobblers',
 			address: '0x60bb1e2AA1c9ACAfB4d34F71585D7e959f387769',
 			imgUrl: '/assets/collection/artgobblers.png'
-		}		
+		}
 	],
 	5: [
 		{
