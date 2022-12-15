@@ -92,7 +92,12 @@ const collections: ICollection = {
 			name: 'RENGA',
 			address: '0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91',
 			imgUrl: '/assets/collection/renga.webp'
-		}
+		},
+		{
+			name: 'Art Gobblers',
+			address: '0x60bb1e2AA1c9ACAfB4d34F71585D7e959f387769',
+			imgUrl: '/assets/collection/artgobblers.png'
+		}		
 	],
 	5: [
 		{
