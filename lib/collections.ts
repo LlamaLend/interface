@@ -58,7 +58,8 @@ const collections: { [chainId: number]: string[] } = {
 		'0x524cAB2ec69124574082676e6F654a18df49A048', // Lil Pudgys
 		'0x5Af0D9827E0c53E4799BB226655A1de152A425a5', // Milady
 		'0xBd3531dA5CF5857e7CfAA92426877b022e612cf8', // Pudgy Penguins
-		'0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91' // RENGA
+		'0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91', // RENGA
+		'0x60bb1e2AA1c9ACAfB4d34F71585D7e959f387769' // Art Gobblers
 	],
 	5: [
 		'0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b' // MultiFaucet NFT
