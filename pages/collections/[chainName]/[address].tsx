@@ -18,7 +18,9 @@ const BorrowPoolsByChain: NextPage<IPageProps> = ({ chainId, chainName, collecti
 export default BorrowPoolsByChain
 
 export async function getStaticPaths() {
-	const paths = collections[1].map((collection) => ({ params: { chainName: 'Ethereum', address: collection.address } }))
+	const paths = collections[1].map((collectionAddress) => ({
+		params: { chainName: 'Ethereum', address: collectionAddress }
+	}))
 
 	return {
 		paths,
