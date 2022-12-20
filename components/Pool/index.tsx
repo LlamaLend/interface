@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import type { IBorrowPool } from '~/types'
-import { formatDailyInterest } from '~/utils'
+import { formatCurrentAnnualInterest, formatDailyInterest } from '~/utils'
 import pools from '~/lib/pools'
 import { chainConfig } from '~/lib/constants'
 import Tooltip from '../Tooltip'
@@ -30,6 +30,11 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 	const poolBalance = (Number(data.poolBalance) / 1e18).toFixed(2)
 	const totalDeposited = (Number(data.totalDeposited) / 1e18).toFixed(2)
 
+	const oneLoan = Number(data.oraclePrice) * (Number(data.ltv) / 1e18)
+	const maxPriceReached = Number(data.oraclePrice) > data.adminPoolInfo.maxPrice
+	const rateLimitReached = Number(data.adminPoolInfo.dailyBorrows) + oneLoan > data.adminPoolInfo.maxDailyBorrows
+	const notEnoughETH = oneLoan > data.adminPoolInfo.maxInstantBorrow
+
 	return (
 		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
 			<div className="flex min-w-[45%] flex-shrink-0 gap-2 sm:min-w-[8.25rem]">
@@ -45,7 +50,6 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 					<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Loan Amount</p>
 				</div>
 			</div>
-
 			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[5.625rem]">
 				<p className="min-h-[1.5rem] font-semibold">
 					{/* @ts-ignore */}
@@ -54,7 +58,9 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Max Duration</p>
 			</div>
 			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[5.5rem]">
-				<p className="min-h-[1.5rem] font-semibold">{`${formatDailyInterest(data.currentAnnualInterest)}%`}</p>
+				<Tooltip content={`Yearly Interest: ${formatCurrentAnnualInterest(data.currentAnnualInterest)}%`}>
+					<p className="min-h-[1.5rem] font-semibold">{`${formatDailyInterest(data.currentAnnualInterest)}%`}</p>
+				</Tooltip>
 				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Daily Interest</p>
 			</div>
 			<div className="min-w-[45%] flex-shrink-0 sm:min-w-[7rem]">
@@ -77,18 +83,31 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 
 				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>
-
-			<button
-				className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold max-sm:w-full"
-				onClick={() => {
-					setSelectedPool(data.address)
-					router.push({ pathname: router.pathname, query: { ...router.query, cart: true } }, undefined, {
-						shallow: true
-					})
-				}}
-			>
-				Select Loan
-			</button>
+			{maxPriceReached || rateLimitReached || notEnoughETH ? (
+				<button className="ml-auto rounded-md bg-[#484C50] px-4 py-[0.625rem] font-semibold max-sm:w-full" disabled>
+					{`Pool Disabled ${
+						maxPriceReached
+							? '(Max Price Reached)'
+							: notEnoughETH
+							? '(Not Enough Liquidity)'
+							: rateLimitReached
+							? '(Rate Limit Reached)'
+							: ''
+					}`}
+				</button>
+			) : (
+				<button
+					className="ml-auto rounded-md bg-[#3046FB] px-4 py-[0.625rem] font-semibold max-sm:w-full"
+					onClick={() => {
+						setSelectedPool(data.address)
+						router.push({ pathname: router.pathname, query: { ...router.query, cart: true } }, undefined, {
+							shallow: true
+						})
+					}}
+				>
+					Select Loan
+				</button>
+			)}
 		</div>
 	)
 }

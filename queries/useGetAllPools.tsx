@@ -90,7 +90,7 @@ async function getAdminPoolInfo({ poolAddress, provider, nftContractAddress, gra
 
 		const [
 			maxPrice,
-			{ maxDailyBorrowsLimit },
+			{ maxInstantBorrow, dailyBorrows, maxDailyBorrowsLimit },
 			maxLoanLength,
 			oracle,
 			minimumInterest,
@@ -128,6 +128,8 @@ async function getAdminPoolInfo({ poolAddress, provider, nftContractAddress, gra
 				nftContractAddress +
 				poolAddress +
 				maxPrice +
+				maxInstantBorrow +
+				dailyBorrows +
 				maxDailyBorrowsLimit +
 				maxLoanLength +
 				maxLoanLength +
@@ -135,6 +137,8 @@ async function getAdminPoolInfo({ poolAddress, provider, nftContractAddress, gra
 				maxVariableInt +
 				liqAddresses.join(''),
 			maxPrice: Number(maxPrice),
+			maxInstantBorrow: Number(maxInstantBorrow),
+			dailyBorrows: Number(dailyBorrows),
 			maxDailyBorrows: Number(maxDailyBorrowsLimit),
 			maxLoanLength: Number(maxLoanLength),
 			oracle,
@@ -231,18 +235,16 @@ export async function getAllpools({ chainId, collectionAddress, ownerAddress, sk
 			)
 		)
 
-		const adminPoolInfo = ownerAddress
-			? await Promise.all(
-					pools.map((pool) =>
-						getAdminPoolInfo({
-							poolAddress: pool.address,
-							nftContractAddress: pool.nftContract,
-							provider,
-							graphEndpoint: endpoint
-						})
-					)
-			  )
-			: await Promise.resolve([])
+		const adminPoolInfo = await Promise.all(
+			pools.map((pool) =>
+				getAdminPoolInfo({
+					poolAddress: pool.address,
+					nftContractAddress: pool.nftContract,
+					provider,
+					graphEndpoint: endpoint
+				})
+			)
+		)
 
 		return pools
 			.map((pool, index) => ({

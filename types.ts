@@ -75,6 +75,8 @@ export interface IBorrowPool {
 	adminPoolInfo: {
 		key: string
 		maxPrice: number
+		maxInstantBorrow: number
+		dailyBorrows: number
 		maxDailyBorrows: number
 		maxLoanLength: number
 		oracle: string
