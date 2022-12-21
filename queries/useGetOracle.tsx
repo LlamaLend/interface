@@ -11,6 +11,44 @@ interface IFetchOracleProps {
 
 const TEN_MINUTES = 10 * 60 * 1000
 
+const isOracleValid = (res: IOracleResponse, nftContractAddress: string) => {
+	if (!res?.price) {
+		if (typeof window !== 'undefined') {
+			fetch('/api/discord', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					collectionAddress: nftContractAddress,
+					errorMessage: JSON.stringify(res || {})
+				})
+			})
+		}
+
+		return false
+	}
+
+	if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
+		if (typeof window !== 'undefined') {
+			fetch('/api/discord', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					collectionAddress: nftContractAddress,
+					outdatedBy: ((res.deadline * 1000 - Date.now()) / (60 * 1000)).toFixed(2)
+				})
+			})
+		}
+
+		return false
+	}
+
+	return true
+}
+
 async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
 	if (!nftContractAddress) {
 		return null
@@ -32,38 +70,26 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 	try {
 		const res = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
-		if (!res?.price) {
-			if (typeof window !== 'undefined') {
-				fetch('/api/discord', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						collectionAddress: nftContractAddress,
-						errorMessage: JSON.stringify(res || {})
-					})
-				})
+		const isValid = isOracleValid(res, nftContractAddress)
+
+		if (!isValid) {
+			const retryone = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
+
+			const isValidRetry = isOracleValid(retryone, nftContractAddress)
+
+			if (!isValidRetry) {
+				const retrytwo = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
+
+				const isValidQuote = isOracleValid(retrytwo, nftContractAddress)
+
+				if (isValidQuote) {
+					return { ...retrytwo, price: retrytwo.price }
+				}
+
+				return null
 			}
 
-			return null
-		}
-
-		if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
-			if (typeof window !== 'undefined') {
-				fetch('/api/discord', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						collectionAddress: nftContractAddress,
-						outdatedBy: ((res.deadline * 1000 - Date.now()) / (60 * 1000)).toFixed(2)
-					})
-				})
-			}
-
-			return null
+			return { ...retryone, price: retryone.price }
 		}
 
 		return { ...res, price: res.price }
