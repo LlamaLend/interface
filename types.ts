@@ -147,3 +147,18 @@ export interface ICollection {
 	imgUrl: string
 	sortIndex: number
 }
+
+export interface IAggregatedQuote {
+	protocol?: string
+	borrowableToken?: string
+	amountBorrowable?: string
+	ltv?: string
+	liquidationThreshold?: string
+	interestRate?: string
+	interestAPR?: string
+	loanDuration?: string
+	offerDeadline?: number
+	loanInstallments?: string
+	offerTimestamp?: number
+	loanUrl?: string
+}
