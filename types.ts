@@ -152,7 +152,6 @@ export interface IArcadeQuote {
 	borrowableToken: string
 	principal: string
 	interestRate: string
-	interestAPR: string
 	loanDuration: string
 	offerDeadline: number
 	loanInstallments: string

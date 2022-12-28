@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-import { SECONDS_IN_A_YEAR } from '~/lib/constants'
 import { IArcadeQuote } from '~/types'
 
 const collectionsurl = 'https://api-v2.arcade.xyz/api/v2/collections/'
@@ -26,14 +24,7 @@ export async function getDataArcade(nft: string) {
 			results.push({
 				borrowableToken: item.payableCurrency,
 				principal: item.principal,
-				interestRate: BigNumber(item.interestRate)
-					.div(10 ** 20)
-					.toFixed(2),
-				interestAPR: BigNumber(item.interestRate)
-					.times(SECONDS_IN_A_YEAR)
-					.div(item.durationSecs)
-					.div(10 ** 20)
-					.toFixed(2),
+				interestRate: item.interestRate,
 				loanDuration: item.durationSecs,
 				offerDeadline: item.deadline,
 				loanInstallments: item.numInstallments,
