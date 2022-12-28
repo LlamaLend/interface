@@ -148,17 +148,32 @@ export interface ICollection {
 	sortIndex: number
 }
 
-export interface IAggregatedQuote {
-	protocol?: string
-	borrowableToken?: string
-	amountBorrowable?: string
-	ltv?: string
-	liquidationThreshold?: string
-	interestRate?: string
-	interestAPR?: string
-	loanDuration?: string
-	offerDeadline?: number
-	loanInstallments?: string
-	offerTimestamp?: number
-	loanUrl?: string
+export interface IArcadeQuote {
+	borrowableToken: string
+	principal: string
+	interestRate: string
+	interestAPR: string
+	loanDuration: string
+	offerDeadline: number
+	loanInstallments: string
+	offerTimestamp: number
+	loanUrl: string
+}
+
+export interface IBendDaoQuote {
+	floorInEth: string
+	borrowableToken: string
+	availableBorrow: string
+	ltv: string
+	liquidationThreshold: string
+	loanUrl: string
+}
+
+export interface IJpegdQuote {
+	vaultName: string
+	floorInEth: string
+	pToken: string
+	credit: string
+	liquidationLimit: string
+	loanUrl: string
 }

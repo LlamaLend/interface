@@ -1,7 +1,27 @@
 import { ethers } from 'ethers'
 import nftVault from './nftVaultAbi'
 import { CHAINS_CONFIGURATION } from '~/lib/constants'
-import { IAggregatedQuote } from '~/types'
+import { IJpegdQuote } from '~/types'
+import nftValueProvider from './nftValueProviderAbi'
+
+const nftToValueProvider: { [key: string]: string } = {
+	// Cryptopunks
+	'0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb': '0xDF7806Eaa13497effFdB1541d6b0FdD1A9566fd0',
+	// Etherrocks
+	'0x41f28833be34e6ede3c58d1f597bef429861c4e2': '0x9921da2908CC59b13ddbcF45e64BFA91c78c4249',
+	// BAYC
+	'0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d': '0x5b9cAA47A52e4BfbBce2f2A9f858c2A501B48C42',
+	// MAYC
+	'0x60e4d786628fea6478f785a6d7e704777c86a7c6': '0xdEd112453BD8EA88CdaB214CFD92Ab06E232E9d7',
+	// Doodles
+	'0x8a90cab2b38dba80c64b7734e58ee1db38b8992e': '0xdd245B7823ee82D14419CE072Ef815868F0D1f1A',
+	// AZUKI
+	'0xed5af388653567af2f388e6224dc7c4b3241c544': '0xcaA0aa80637262fd3Ba6DD5b5598a2BAFAc27cE8',
+	// Pudgy Penguins
+	'0xbd3531da5cf5857e7cfaa92426877b022e612cf8': '0xd0bf9A40FebDfCA596fde589a343C6cDA37A7B90',
+	// CloneX
+	'0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b': '0xb36B65400E13FF57dFDa29bBb7dC79eaA7ecA14C'
+}
 
 const nftToPusd: { [key: string]: string } = {
 	// Cryptopunks
@@ -47,29 +67,33 @@ const pusd = '0x466a756E9A7401B5e2444a3fCB3c2C12FBEa0a54'
 
 export async function getDataJpegd(nft: string) {
 	nft = nft.toLowerCase()
-	if (!nftToPeth[nft] || !nftToPusd[nft]) return []
+	if (!nftToPeth[nft] || !nftToPusd[nft] || !nftToValueProvider[nft]) return []
 	const provider = CHAINS_CONFIGURATION[1].chainProvider
+	const valueProvider = new ethers.Contract(nftToValueProvider[nft], nftValueProvider, provider)
 	const pethVault = new ethers.Contract(nftToPeth[nft], nftVault, provider)
 	const pusdVault = new ethers.Contract(nftToPusd[nft], nftVault, provider)
-	const [pethCredit, pusdCredit, pethLiquidation, pusdLiquidation] = await Promise.all([
+	const [floor, pethCredit, pusdCredit, pethLiquidation, pusdLiquidation] = await Promise.all([
+		valueProvider.getFloorETH(),
 		pethVault.getCreditLimit(zeroAddress, '0'),
 		pusdVault.getCreditLimit(zeroAddress, '0'),
 		pethVault.getLiquidationLimit(zeroAddress, '0'),
 		pusdVault.getLiquidationLimit(zeroAddress, '0')
 	])
-	const results: IAggregatedQuote[] = [
+	const results: IJpegdQuote[] = [
 		{
-			protocol: "JPEG'd",
-			borrowableToken: peth,
-			amountBorrowable: pethCredit.toString(),
-			liquidationThreshold: pethLiquidation.toString(),
+			vaultName: 'pETH Vault',
+			floorInEth: floor.toString(),
+			pToken: peth,
+			credit: pethCredit.toString(),
+			liquidationLimit: pethLiquidation.toString(),
 			loanUrl: 'https://jpegd.io/vaults'
 		},
 		{
-			protocol: "JPEG'd",
-			borrowableToken: pusd,
-			amountBorrowable: pusdCredit.toString(),
-			liquidationThreshold: pusdLiquidation.toString(),
+			vaultName: 'pUSD Vault',
+			floorInEth: floor.toString(),
+			pToken: pusd,
+			credit: pusdCredit.toString(),
+			liquidationLimit: pusdLiquidation.toString(),
 			loanUrl: 'https://jpegd.io/vaults'
 		}
 	]

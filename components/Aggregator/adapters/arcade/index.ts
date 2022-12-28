@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { SECONDS_IN_A_YEAR } from '~/lib/constants'
-import { IAggregatedQuote } from '~/types'
+import { IArcadeQuote } from '~/types'
 
 const collectionsurl = 'https://api-v2.arcade.xyz/api/v2/collections/'
 const loantermurl = 'https://api-v2.arcade.xyz/api/v2/loanterms?kind=collection&collectionId'
@@ -19,14 +19,13 @@ export async function getDataArcade(nft: string) {
 	const loanterms = await fetch(`${loantermurl}=${nft.toLowerCase()}`, {
 		headers: requestHeaders
 	}).then((res) => res.json())
-	const results: IAggregatedQuote[] = []
+	const results: IArcadeQuote[] = []
 	loanterms.forEach((item: any) => {
 		const time = Math.floor(new Date(item.updatedAt).getTime() / 1e3)
 		if (item.role === 'lender' && Number(item.deadline) >= now) {
 			results.push({
-				protocol: 'Arcade.xyz',
 				borrowableToken: item.payableCurrency,
-				amountBorrowable: item.principal,
+				principal: item.principal,
 				interestRate: BigNumber(item.interestRate)
 					.div(10 ** 20)
 					.toFixed(2),

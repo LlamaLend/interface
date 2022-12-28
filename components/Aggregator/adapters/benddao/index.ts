@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import lendPoolAbi from './abi'
 import { CHAINS_CONFIGURATION } from '~/lib/constants'
-import { IAggregatedQuote } from '~/types'
+import { IBendDaoQuote } from '~/types'
 import BigNumber from 'bignumber.js'
 
 const lendPool = '0x70b97A0da65C15dfb0FFA02aEE6FA36e507C2762'
@@ -21,15 +21,14 @@ export async function getDataBendDao(nft: string) {
 	if (!nfts.includes(nft.toLowerCase())) return []
 	const lendPoolContract = new ethers.Contract(lendPool, lendPoolAbi, CHAINS_CONFIGURATION[1].chainProvider)
 	const collateralData = await lendPoolContract.getNftCollateralData(nft, weth)
-	const result: IAggregatedQuote[] = [
-		{
-			protocol: 'Bend DAO',
-			borrowableToken: weth,
-			amountBorrowable: collateralData.availableBorrows.toString(),
-			ltv: BigNumber(collateralData.ltv).div(100).toFixed(2),
-			liquidationThreshold: BigNumber(collateralData.liquidationThreshold).div(100).toFixed(2),
-			loanUrl: 'https://www.benddao.xyz/en/account/my-nfts/?action=batch-borrow'
-		}
-	]
+	const result: IBendDaoQuote = {
+		floorInEth: collateralData.totalCollateralInReserve.toString(),
+		borrowableToken: weth,
+		availableBorrow: collateralData.availableBorrows.toString(),
+		ltv: BigNumber(collateralData.ltv).div(100).toFixed(2),
+		liquidationThreshold: BigNumber(collateralData.liquidationThreshold).div(100).toFixed(2),
+		loanUrl: 'https://www.benddao.xyz/en/account/my-nfts/?action=batch-borrow'
+	}
+
 	return result
 }
