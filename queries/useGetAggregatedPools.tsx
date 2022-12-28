@@ -13,6 +13,11 @@ export async function getAggregatedPools({ chainId, nft }: { chainId: number | n
 			jpegd
 		}
 	} catch (error) {
+		return {
+			arcade: [],
+			bendDao: [],
+			jpegd: []
+		}
 		console.error(error)
 	}
 }

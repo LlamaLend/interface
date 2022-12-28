@@ -66,36 +66,41 @@ const peth = '0x836A808d4828586A69364065A1e064609F5078c7'
 const pusd = '0x466a756E9A7401B5e2444a3fCB3c2C12FBEa0a54'
 
 export async function getDataJpegd(nft: string) {
-	nft = nft.toLowerCase()
-	if (!nftToPeth[nft] || !nftToPusd[nft] || !nftToValueProvider[nft]) return []
-	const provider = CHAINS_CONFIGURATION[1].chainProvider
-	const valueProvider = new ethers.Contract(nftToValueProvider[nft], nftValueProvider, provider)
-	const pethVault = new ethers.Contract(nftToPeth[nft], nftVault, provider)
-	const pusdVault = new ethers.Contract(nftToPusd[nft], nftVault, provider)
-	const [floor, pethCredit, pusdCredit, pethLiquidation, pusdLiquidation] = await Promise.all([
-		valueProvider.getFloorETH(),
-		pethVault.getCreditLimit(zeroAddress, '0'),
-		pusdVault.getCreditLimit(zeroAddress, '0'),
-		pethVault.getLiquidationLimit(zeroAddress, '0'),
-		pusdVault.getLiquidationLimit(zeroAddress, '0')
-	])
-	const results: IJpegdQuote[] = [
-		{
-			vaultName: 'pETH Vault',
-			floorInEth: floor.toString(),
-			pToken: peth,
-			credit: pethCredit.toString(),
-			liquidationLimit: pethLiquidation.toString(),
-			loanUrl: 'https://jpegd.io/vaults'
-		},
-		{
-			vaultName: 'pUSD Vault',
-			floorInEth: floor.toString(),
-			pToken: pusd,
-			credit: pusdCredit.toString(),
-			liquidationLimit: pusdLiquidation.toString(),
-			loanUrl: 'https://jpegd.io/vaults'
-		}
-	]
-	return results
+	try {
+		nft = nft.toLowerCase()
+		if (!nftToPeth[nft] || !nftToPusd[nft] || !nftToValueProvider[nft]) return []
+		const provider = CHAINS_CONFIGURATION[1].chainProvider
+		const valueProvider = new ethers.Contract(nftToValueProvider[nft], nftValueProvider, provider)
+		const pethVault = new ethers.Contract(nftToPeth[nft], nftVault, provider)
+		const pusdVault = new ethers.Contract(nftToPusd[nft], nftVault, provider)
+		const [floor, pethCredit, pusdCredit, pethLiquidation, pusdLiquidation] = await Promise.all([
+			valueProvider.getFloorETH(),
+			pethVault.getCreditLimit(zeroAddress, '0'),
+			pusdVault.getCreditLimit(zeroAddress, '0'),
+			pethVault.getLiquidationLimit(zeroAddress, '0'),
+			pusdVault.getLiquidationLimit(zeroAddress, '0')
+		])
+		const results: IJpegdQuote[] = [
+			{
+				vaultName: 'pETH Vault',
+				floorInEth: floor.toString(),
+				pToken: peth,
+				credit: pethCredit.toString(),
+				liquidationLimit: pethLiquidation.toString(),
+				loanUrl: 'https://jpegd.io/vaults'
+			},
+			{
+				vaultName: 'pUSD Vault',
+				floorInEth: floor.toString(),
+				pToken: pusd,
+				credit: pusdCredit.toString(),
+				liquidationLimit: pusdLiquidation.toString(),
+				loanUrl: 'https://jpegd.io/vaults'
+			}
+		]
+		return results
+	} catch (error) {
+		console.error(`Failed to get JPEG'd data: ${error}`)
+		return []
+	}
 }

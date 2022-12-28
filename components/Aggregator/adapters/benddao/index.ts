@@ -17,19 +17,24 @@ const nfts = [
 const weth = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
 export async function getDataBendDao(nft: string) {
-	if (!nfts.includes(nft.toLowerCase())) return []
-	const lendPoolContract = new ethers.Contract(lendPool, lendPoolAbi, CHAINS_CONFIGURATION[1].chainProvider)
-	const collateralData = await lendPoolContract.getNftCollateralData(nft, weth)
-	const result: IBendDaoQuote[] = [
-		{
-			floorInEth: collateralData.totalCollateralInReserve.toString(),
-			borrowableToken: weth,
-			availableBorrow: collateralData.availableBorrows.toString(),
-			ltv: collateralData.ltv.toString(),
-			liquidationThreshold: collateralData.liquidationThreshold.toString(),
-			loanUrl: 'https://www.benddao.xyz/en/account/my-nfts/?action=batch-borrow'
-		}
-	]
+	try {
+		if (!nfts.includes(nft.toLowerCase())) return []
+		const lendPoolContract = new ethers.Contract(lendPool, lendPoolAbi, CHAINS_CONFIGURATION[1].chainProvider)
+		const collateralData = await lendPoolContract.getNftCollateralData(nft, weth)
+		const result: IBendDaoQuote[] = [
+			{
+				floorInEth: collateralData.totalCollateralInReserve.toString(),
+				borrowableToken: weth,
+				availableBorrow: collateralData.availableBorrows.toString(),
+				ltv: collateralData.ltv.toString(),
+				liquidationThreshold: collateralData.liquidationThreshold.toString(),
+				loanUrl: 'https://www.benddao.xyz/en/account/my-nfts/?action=batch-borrow'
+			}
+		]
 
-	return result
+		return result
+	} catch (error) {
+		console.error(`Failed to get Bend DAO data: ${error}`)
+		return []
+	}
 }
