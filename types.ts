@@ -186,3 +186,14 @@ export interface INFTFiQuote {
 	interest: string
 	url: string
 }
+
+export interface IX2Y2Quote {
+	token: string
+	amount: string
+	repayment: string
+	apr: string
+	expires: string
+	adminFee: string
+	duration: string
+	url: string
+}
