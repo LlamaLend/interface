@@ -176,3 +176,13 @@ export interface IJpegdQuote {
 	liquidationLimit: string
 	loanUrl: string
 }
+
+export interface INFTFiQuote {
+	token: string
+	principal: string
+	repayment: string
+	duration: string
+	expiry: string
+	interest: string
+	url: string
+}
