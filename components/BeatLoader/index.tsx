@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 export default function BeatLoader({ size = '6px', color = 'white' }: { size?: string; color?: string }) {
 	return (
