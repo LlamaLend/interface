@@ -33,3 +33,19 @@ export async function getDataX2y2(nft: string) {
 		return []
 	}
 }
+
+export async function getX2y2Collections() {
+	try {
+		const res: { data: { collections: Array<{ nftAddress: string; disableCollection: 0 | 1 }> } } = await fetch(
+			'https://loan-api.x2y2.org/v1/sys/loanParam',
+			{
+				headers: requestHeaders
+			}
+		).then((res) => res.json())
+
+		return res.data.collections.filter((res) => res.disableCollection === 0).map((col) => col.nftAddress)
+	} catch (error) {
+		console.error(`Failed to get X2Y2 collections: ${error}`)
+		return []
+	}
+}

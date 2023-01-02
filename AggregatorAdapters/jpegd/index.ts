@@ -104,3 +104,7 @@ export async function getDataJpegd(nft: string) {
 		return []
 	}
 }
+
+export function getJpegdCollections() {
+	return Object.keys(nftToValueProvider)
+}

@@ -4,6 +4,7 @@ import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { IBendDaoQuote } from '~/types'
 
 const lendPool = '0x70b97A0da65C15dfb0FFA02aEE6FA36e507C2762'
+
 const nfts = [
 	'0xb7f7f6c52f2e2fdb1963eab30438024864c313f6',
 	'0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d',
@@ -14,6 +15,7 @@ const nfts = [
 	'0x620b70123fb810f6c653da7644b5dd0b6312e4d8',
 	'0x23581767a106ae21c074b2276d25e5c3e136a68b'
 ]
+
 const weth = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
 export async function getDataBendDao(nft: string) {
@@ -37,4 +39,8 @@ export async function getDataBendDao(nft: string) {
 		console.error(`Failed to get Bend DAO data: ${error}`)
 		return []
 	}
+}
+
+export function getBendDaoCollections() {
+	return nfts
 }

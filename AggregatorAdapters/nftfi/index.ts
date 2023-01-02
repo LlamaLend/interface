@@ -15,7 +15,9 @@ export async function getDataNftFi(nft: string) {
 		)
 			.then((res) => res.json())
 			.then((res) => res.results)
+
 		const result: INFTFiQuote[] = []
+
 		res.forEach((e: any) => {
 			if (e.terms.loan.expiry >= now) {
 				result.push({
@@ -32,6 +34,19 @@ export async function getDataNftFi(nft: string) {
 		return result
 	} catch (error) {
 		console.error(`Failed to get NFTFi data: ${error}`)
+		return []
+	}
+}
+
+export async function getNftFiCollections() {
+	try {
+		const collections: Array<{ _id: string }> = await fetch(
+			'https://api.nftfi.com/listings/distinctValues/nftCollateralContract'
+		).then((res) => res.json())
+
+		return collections.map((col) => col['_id'])
+	} catch (error) {
+		console.error(`Failed to get NFTFi collections: ${error}`)
 		return []
 	}
 }

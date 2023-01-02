@@ -41,3 +41,16 @@ export async function getDataArcade(nft: string) {
 		return []
 	}
 }
+
+export async function getArcadeCollections() {
+	try {
+		const collections: Array<{ id: string }> = await fetch(collectionsurl, {
+			headers: requestHeaders
+		}).then((res) => res.json())
+
+		return collections?.map((col) => col.id) ?? []
+	} catch (error) {
+		console.error(`Failed to get arcade collections: ${error}`)
+		return []
+	}
+}
