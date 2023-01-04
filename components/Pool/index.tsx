@@ -31,7 +31,7 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 	const totalDeposited = (Number(data.totalDeposited) / 1e18).toFixed(2)
 
 	const oneLoan = Number(data.oraclePrice) * (Number(data.ltv) / 1e18)
-	const maxPriceReached = Number(data.oraclePrice) > data.adminPoolInfo.maxPrice
+	const maxPriceReached = Number(data.oraclePrice) >= data.adminPoolInfo.maxPrice
 	const rateLimitReached = Number(data.adminPoolInfo.dailyBorrows) + oneLoan > data.adminPoolInfo.maxDailyBorrows
 	const notEnoughETH = oneLoan > data.adminPoolInfo.maxInstantBorrow
 
