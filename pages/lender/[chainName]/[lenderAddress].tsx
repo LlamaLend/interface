@@ -14,9 +14,7 @@ const LoansByChain: NextPage<IPageProps> = (props) => {
 
 export default LoansByChain
 
-export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
-	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
-
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const chainParam = typeof query.chainName === 'string' && query.chainName
 	const lenderAddress = typeof query.lenderAddress === 'string' && query.lenderAddress
 
@@ -41,4 +39,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 			lenderAddress: validAddress
 		}
 	}
+}
+
+export const config = {
+	runtime: 'experimental-edge'
 }

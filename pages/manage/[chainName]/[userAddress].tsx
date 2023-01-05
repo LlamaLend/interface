@@ -12,9 +12,7 @@ const Manage: NextPage<IPageProps> = (props) => {
 	return <ManagePoolsContainer {...props} />
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
-	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
-
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const chainParam = typeof query.chainName === 'string' && query.chainName
 	const userAddress = typeof query.userAddress === 'string' && query.userAddress
 
@@ -39,6 +37,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 			userAddress: validUserAddress
 		}
 	}
+}
+
+export const config = {
+	runtime: 'experimental-edge'
 }
 
 export default Manage

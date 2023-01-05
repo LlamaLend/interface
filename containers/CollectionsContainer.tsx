@@ -79,7 +79,7 @@ const ViewTypeSwitch = () => {
 }
 
 const CollectionsContainer = ({ chainId, chainName }: ICollectionContainerProps) => {
-	const { data: collections } = useGetAllCollections({ chainId, skipOracle: true })
+	const { data: collections } = useGetAllCollections({ chainId })
 
 	return (
 		<>

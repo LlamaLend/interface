@@ -109,9 +109,7 @@ const Manage: NextPage<IPageProps> = ({ poolAddress }) => {
 	)
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
-	res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59')
-
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const poolAddress = typeof query.poolAddress === 'string' && query.poolAddress
 
 	if (!poolAddress) {
@@ -127,6 +125,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 			poolAddress: validUserAddress
 		}
 	}
+}
+
+export const config = {
+	runtime: 'experimental-edge'
 }
 
 export default Manage

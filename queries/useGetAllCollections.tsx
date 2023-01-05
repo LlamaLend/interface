@@ -68,9 +68,9 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 	)
 }
 
-export function useGetAllCollections({ chainId, skipOracle }: { chainId?: number | null; skipOracle?: boolean }) {
+export function useGetAllCollections({ chainId }: { chainId?: number | null }) {
 	return useQuery(
-		['allCollections', chainId, skipOracle || false],
+		['allCollections', chainId],
 		() =>
 			getAllCollections({
 				chainId
