@@ -12,7 +12,6 @@ import { injectedWallet, rainbowWallet, metaMaskWallet, walletConnectWallet } fr
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import { useDialogState } from 'ariakit'
 import { Toaster } from 'react-hot-toast'
-import { LazyMotion, domAnimation } from 'framer-motion'
 import TxSubmittedDialog from '~/components/TxSubmittedDialog'
 import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { TransactionsContext } from '~/contexts'
@@ -72,37 +71,35 @@ function MyApp({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedS
 	const txHash = React.useRef<string | null>(null)
 
 	return (
-		<LazyMotion features={domAnimation}>
-			<QueryClientProvider client={queryClient}>
-				<Hydrate state={pageProps.dehydratedState}>
-					<WagmiConfig client={wagmiClient}>
-						<RainbowKitProvider
-							theme={lightTheme({
-								accentColor: '#3046fb',
-								accentColorForeground: 'white',
-								fontStack: 'system'
-							})}
-							chains={chains}
-							initialChain={chain.mainnet}
-							showRecentTransactions={true}
-							modalSize="compact"
-						>
-							<TransactionsContext.Provider value={{ dialog: dialog, hash: txHash }}>
-								<style jsx global>{`
-									:root {
-										--font-inter: ${inter.style.fontFamily};
-									}
-								`}</style>
-								{isMounted && <Component {...pageProps} />}
-							</TransactionsContext.Provider>
+		<QueryClientProvider client={queryClient}>
+			<Hydrate state={pageProps.dehydratedState}>
+				<WagmiConfig client={wagmiClient}>
+					<RainbowKitProvider
+						theme={lightTheme({
+							accentColor: '#3046fb',
+							accentColorForeground: 'white',
+							fontStack: 'system'
+						})}
+						chains={chains}
+						initialChain={chain.mainnet}
+						showRecentTransactions={true}
+						modalSize="compact"
+					>
+						<TransactionsContext.Provider value={{ dialog: dialog, hash: txHash }}>
+							<style jsx global>{`
+								:root {
+									--font-inter: ${inter.style.fontFamily};
+								}
+							`}</style>
+							{isMounted && <Component {...pageProps} />}
+						</TransactionsContext.Provider>
 
-							<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
-							<Toaster position="top-right" reverseOrder={true} />
-						</RainbowKitProvider>
-					</WagmiConfig>
-				</Hydrate>
-			</QueryClientProvider>
-		</LazyMotion>
+						<TxSubmittedDialog dialog={dialog} transactionHash={txHash} />
+						<Toaster position="top-right" reverseOrder={true} />
+					</RainbowKitProvider>
+				</WagmiConfig>
+			</Hydrate>
+		</QueryClientProvider>
 	)
 }
 
