@@ -38,7 +38,6 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 								width={50}
 								alt={data.name}
 								className="aspect-square rounded-xl"
-								loading="lazy"
 							/>
 						)}
 					</div>
@@ -102,7 +101,6 @@ export function BorrowCollectionItemCard({ data, chainName }: IBorrowCollectionI
 						height={260}
 						width={260}
 						className="aspect-square rounded-t-xl object-cover"
-						loading="lazy"
 					/>
 				)}
 			</div>
