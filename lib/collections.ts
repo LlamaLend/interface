@@ -32,7 +32,7 @@ export function tokenListToCollection(tokenlist: ITokenList): ICollection {
 		chainCollections.push({
 			name: token.name,
 			address: token.address,
-			imgUrl: `${NFT_LIST_URL_PREFIX}/${token.chainId}/${token.address}.png`
+			imgUrl: `${NFT_LIST_URL_PREFIX}/${token.address.toLowerCase()}`
 		})
 		collections[token.chainId] = chainCollections
 	})
@@ -59,7 +59,8 @@ const collections: { [chainId: number]: string[] } = {
 		'0x5Af0D9827E0c53E4799BB226655A1de152A425a5', // Milady
 		'0xBd3531dA5CF5857e7CfAA92426877b022e612cf8', // Pudgy Penguins
 		'0x394E3d3044fC89fCDd966D3cb35Ac0B32B0Cda91', // RENGA
-		'0x60bb1e2AA1c9ACAfB4d34F71585D7e959f387769' // Art Gobblers
+		'0x60bb1e2AA1c9ACAfB4d34F71585D7e959f387769', // Art Gobblers
+		'0x42f1654B8eeB80C96471451B1106b63D0B1a9fe1' // Chubbiverse Frens
 	],
 	5: [
 		'0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b' // MultiFaucet NFT

@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { chainConfig } from '~/lib/constants'
 import { useGetAllPools } from '~/queries/useGetAllPools'
@@ -33,7 +32,13 @@ export function BorrowCollectionItemList({ data, chainName, chainId }: IBorrowCo
 						{data.imgUrl === '' ? (
 							<div className="aspect-square rounded-xl bg-[#22242A]"></div>
 						) : (
-							<Image src={data.imgUrl} fill alt={data.name} className="aspect-square rounded-xl" priority />
+							<img
+								src={data.imgUrl + '?h=50&w=50'}
+								height={50}
+								width={50}
+								alt={data.name}
+								className="aspect-square rounded-xl"
+							/>
 						)}
 					</div>
 				</div>
@@ -90,13 +95,12 @@ export function BorrowCollectionItemCard({ data, chainName }: IBorrowCollectionI
 				{data.imgUrl === '' ? (
 					<div className="aspect-square rounded-t-xl bg-[#22242A]"></div>
 				) : (
-					<Image
-						src={data.imgUrl}
-						fill
+					<img
+						src={data.imgUrl + '?h=260&w=260'}
 						alt={data.name}
+						height={260}
+						width={260}
 						className="aspect-square rounded-t-xl object-cover"
-						sizes="260px"
-						priority
 					/>
 				)}
 			</div>

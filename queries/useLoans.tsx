@@ -131,14 +131,15 @@ async function getLoans({
 			poolAddress ? loansByPoolQuery(poolAddress) : userLoansQuery(userAddress)
 		)
 
+		const validLoans = loans.filter((pool) => pool.owner !== '0x0000000000000000000000000000000000000000')
+
 		const loanImgUrls = await Promise.all(
-			loans.map(({ pool, nftId }) =>
+			validLoans.map(({ pool, nftId }) =>
 				isTestnet ? '' : getNftMetadata({ nftContractAddress: pool.nftContract, alchemyNftUrl, nftId })
 			)
 		)
 
-		return loans
-			.filter((pool) => pool.owner !== '0x0000000000000000000000000000000000000000')
+		return validLoans
 			.map((loan, index) => ({
 				id: loan.id,
 				loanId: loan.loanId,
