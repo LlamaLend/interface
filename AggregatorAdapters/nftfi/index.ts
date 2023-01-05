@@ -2,7 +2,7 @@ import { INFTFiQuote } from '~/types'
 
 // eslint-disable-next-line no-undef
 const requestHeaders: HeadersInit = new Headers()
-requestHeaders.set('x-api-key', process.env.NFTFI_API_KEY!)
+requestHeaders.set('x-api-key', process.env.NFTFI_API_KEY as string)
 
 export async function getDataNftFi(nft: string) {
 	const now = Math.floor(Date.now() / 1e3)

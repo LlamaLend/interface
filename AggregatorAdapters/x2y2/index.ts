@@ -2,7 +2,7 @@ import { IX2Y2Quote } from '~/types'
 
 // eslint-disable-next-line no-undef
 const requestHeaders: HeadersInit = new Headers()
-requestHeaders.set('x-api-key', process.env.X2Y2_API_KEY!)
+requestHeaders.set('x-api-key', process.env.X2Y2_API_KEY as string)
 
 export async function getDataX2y2(nft: string) {
 	try {

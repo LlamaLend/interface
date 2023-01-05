@@ -4,7 +4,7 @@ const collectionsurl = 'https://api-v2.arcade.xyz/api/v2/collections/'
 const loantermurl = 'https://api-v2.arcade.xyz/api/v2/loanterms?kind=collection&collectionId'
 // eslint-disable-next-line no-undef
 const requestHeaders: HeadersInit = new Headers()
-requestHeaders.set('x-api-key', process.env.ARCADE_API_KEY!)
+requestHeaders.set('x-api-key', process.env.ARCADE_API_KEY as string)
 
 export async function getDataArcade(nft: string) {
 	try {

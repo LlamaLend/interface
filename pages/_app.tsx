@@ -5,6 +5,7 @@ import * as React from 'react'
 import { Inter } from '@next/font/google'
 import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { DehydratedState } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { connectorsForWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
@@ -99,6 +100,8 @@ function MyApp({ Component, pageProps }: AppProps<{ dehydratedState: DehydratedS
 					</RainbowKitProvider>
 				</WagmiConfig>
 			</Hydrate>
+
+			<ReactQueryDevtools initialIsOpen={false} />
 		</QueryClientProvider>
 	)
 }
