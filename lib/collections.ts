@@ -32,7 +32,7 @@ export function tokenListToCollection(tokenlist: ITokenList): ICollection {
 		chainCollections.push({
 			name: token.name,
 			address: token.address,
-			imgUrl: `${NFT_LIST_URL_PREFIX}/${token.chainId}/${token.address}.png`
+			imgUrl: `${NFT_LIST_URL_PREFIX}/${token.address.toLowerCase()}`
 		})
 		collections[token.chainId] = chainCollections
 	})
