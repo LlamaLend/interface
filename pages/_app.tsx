@@ -25,9 +25,9 @@ const { chains, provider } = configureChains(
 		jsonRpcProvider({
 			rpc: (chain) => {
 				if (chain.id === 1) {
-					return { http: CHAINS_CONFIGURATION[1].ankrUrl }
+					return { http: CHAINS_CONFIGURATION[1].rpcUrl }
 				} else if (chain.id === 5) {
-					return { http: CHAINS_CONFIGURATION[5].ankrUrl }
+					return { http: CHAINS_CONFIGURATION[5].rpcUrl }
 				} else return { http: chain.rpcUrls.default }
 			}
 		})

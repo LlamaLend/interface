@@ -5,6 +5,7 @@ import { getAllPoolsNameAndDeposits } from './useGetAllPools'
 import verifiedCollections, { tokenListToCollection } from '~/lib/collections'
 import type { ICollection } from '~/types'
 import { getNftTokenList } from './useGetNftTokenList'
+import { NFT_LIST_URL_PREFIX } from '~/lib/constants'
 
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
 	const pools = await getAllPoolsNameAndDeposits({ chainId })
@@ -34,15 +35,15 @@ export async function getAllCollections({ chainId }: { chainId?: number | null }
 
 	const notVerified: Array<ICollection> = []
 
-	Array.from(collections).forEach(({ address, totalDeposited }) => {
+	Array.from(collections).forEach(({ address, totalDeposited, name: collectionName }) => {
 		const verifiedCollectionIndex = verifiedCollections[chainId || 1].findIndex(
 			(collectionAddress) => collectionAddress.toLowerCase() == address.toLowerCase()
 		)
 		const nftTokenListCollection =
 			nftTokenListCollections &&
 			nftTokenListCollections[chainId || 1].find((x) => x.address.toLowerCase() === address.toLowerCase())
-		const name = nftTokenListCollection?.name ?? ''
-		const imgUrl = nftTokenListCollection?.imgUrl ?? ''
+		const name = nftTokenListCollection?.name ?? collectionName
+		const imgUrl = nftTokenListCollection?.imgUrl ?? `${NFT_LIST_URL_PREFIX}/${address.toLowerCase()}`
 
 		if (verifiedCollectionIndex + 1) {
 			verified.push({
