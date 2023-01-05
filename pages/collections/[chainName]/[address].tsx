@@ -59,6 +59,6 @@ export async function getStaticProps({
 			chainName: chainDetails.name,
 			collectionAddress: address
 		},
-		revalidate: 30
+		revalidate: 120
 	}
 }
