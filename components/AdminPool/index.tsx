@@ -37,7 +37,9 @@ export default function AdminPool({
 
 	const { data: poolAddlInfo, isLoading } = useGetPoolData({ chainId, poolAddress: data.address })
 
-	const { maxPrice, maxDailyBorrows, oracle, minimumInterest, maximumInterest, liquidators } = data.adminPoolInfo
+	const { maxPrice, maxDailyBorrows, oracle } = data
+
+	const { minimumInterest, maximumInterest, liquidators } = data.adminPoolInfo
 
 	const [ltv, setLtv] = useState<string>((Number(data.ltv) / 1e16).toFixed(0))
 

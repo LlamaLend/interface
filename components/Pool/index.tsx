@@ -31,9 +31,9 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 	const totalDeposited = (Number(data.totalDeposited) / 1e18).toFixed(2)
 
 	const oneLoan = Number(data.oraclePrice) * (Number(data.ltv) / 1e18)
-	const maxPriceReached = Number(data.oraclePrice) >= data.adminPoolInfo.maxPrice
-	const rateLimitReached = Number(data.adminPoolInfo.dailyBorrows) + oneLoan > data.adminPoolInfo.maxDailyBorrows
-	const notEnoughETH = oneLoan > data.adminPoolInfo.maxInstantBorrow
+	const maxPriceReached = Number(data.oraclePrice) >= data.maxPrice
+	const rateLimitReached = Number(data.dailyBorrows) + oneLoan > data.maxDailyBorrows
+	const notEnoughETH = oneLoan > data.maxInstantBorrow
 
 	return (
 		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
@@ -71,7 +71,7 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 				</p>
 				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Pool Liquidity</p>
 			</div>
-			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
+			<div className="lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%] flex-shrink-0">
 				<a
 					target="_blank"
 					rel="noreferrer noopener"
@@ -141,7 +141,7 @@ export function PlaceholderBorrowPoolItem() {
 				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
 			</div>
-			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
+			<div className="lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%] flex-shrink-0">
 				<p className="placeholder-box-2 h-[1.5rem] w-16 font-semibold text-[#3070FB]"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>

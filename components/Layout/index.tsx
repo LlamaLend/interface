@@ -29,7 +29,7 @@ export default function Layout({ children, className, ...props }: ILayoutProps) 
 
 				<ConnectButton />
 
-				<span className="max-[445px]:ml-auto flex items-center justify-end gap-3">
+				<span className="flex items-center justify-end gap-3 max-[445px]:ml-auto">
 					<Notifications />
 					<CartLink />
 					<Menu />

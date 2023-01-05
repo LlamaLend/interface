@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAddress } from 'ethers/lib/utils'
 import BigNumber from 'bignumber.js'
-import { getAllpools } from './useGetAllPools'
+import { getAllPoolsNameAndDeposits } from './useGetAllPools'
 import verifiedCollections, { tokenListToCollection } from '~/lib/collections'
 import type { ICollection } from '~/types'
 import { getNftTokenList } from './useGetNftTokenList'
 
 export async function getAllCollections({ chainId }: { chainId?: number | null }) {
-	const pools = await getAllpools({ chainId, skipOracle: true })
+	const pools = await getAllPoolsNameAndDeposits({ chainId })
 
 	const collections: Array<{ address: string; name: string; totalDeposited: string }> = []
 
