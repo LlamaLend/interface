@@ -1,6 +1,7 @@
 import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
 import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
 import { NFTFIPools } from './NFTFi'
+import { X2Y2Pools } from './X2Y2'
 
 export function AggregatedAdapters({ selectedCollection }: { selectedCollection?: string }) {
 	const { data: adapters, isLoading: fetchingPools } = useGetAggregatedPools({ collectionAddress: selectedCollection })
@@ -12,7 +13,7 @@ export function AggregatedAdapters({ selectedCollection }: { selectedCollection?
 	}
 
 	return (
-		<div className="mt-[5%]">
+		<div className="mt-[5%] flex flex-col gap-4">
 			{adapters?.map((adapter) => (
 				<Adapter key={adapter[0]} name={adapter[0]} pools={adapter[1]} />
 			))}
@@ -27,6 +28,9 @@ const Adapter = ({
 	name: string
 	pools: Array<INFTFiQuote> | Array<IArcadeQuote> | Array<IBendDaoQuote> | Array<IJpegdQuote> | Array<IX2Y2Quote>
 }) => {
+	if (name === 'x2y2') {
+		return <X2Y2Pools pools={pools as Array<IX2Y2Quote>} />
+	}
 	if (name === 'nftfi') {
 		return <NFTFIPools pools={pools as Array<INFTFiQuote>} />
 	}
