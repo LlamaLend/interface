@@ -50,7 +50,7 @@ export function AggregatorCollectionsSelect({
 	return (
 		<div className="mx-auto mt-[5%] flex w-full max-w-lg flex-col gap-2 p-4">
 			<SelectLabel state={select}>Collections</SelectLabel>
-			<Select state={select} className="flex flex-nowrap items-center gap-2 rounded-md bg-[#484C50] px-4 py-2">
+			<Select state={select} className="flex flex-nowrap items-center gap-2 rounded-md bg-[#060606] px-4 py-2">
 				<img
 					src={`https://icons.llamao.fi/icons/nfts/${select.value}?h=20&w=20`}
 					alt=""
@@ -67,16 +67,16 @@ export function AggregatorCollectionsSelect({
 				href={`https://etherscan.io/address/${select.value}`}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="text-xs text-white text-opacity-50"
+				className="text-xs text-white text-opacity-50 underline"
 			>
 				{select.value}
 			</a>
 			<SelectPopover
 				state={select}
 				composite={false}
-				className="z-50 flex max-h-[min(var(--popover-available-height,300px),300px)] flex-col overflow-auto overscroll-contain rounded-md bg-[#484C50] pb-2"
+				className="z-50 flex max-h-[min(var(--popover-available-height,300px),300px)] flex-col overflow-auto overscroll-contain rounded-md bg-[#060606] pb-2"
 			>
-				<div className="sticky top-0 mb-2 w-full bg-[#484C50] px-4 pt-4 pb-2">
+				<div className="sticky top-0 mb-2 w-full bg-[#060606] px-4 pt-4 pb-2">
 					<Combobox state={combobox} placeholder="Search..." className="w-full rounded p-1 text-black" />
 				</div>
 
@@ -85,7 +85,7 @@ export function AggregatorCollectionsSelect({
 						<ComboboxItem
 							key={collection.address}
 							focusOnHover
-							className="flex cursor-pointer scroll-m-2 flex-nowrap items-center gap-2 px-4 py-2	data-[active-item]:bg-black data-[active-item]:bg-opacity-20"
+							className="flex cursor-pointer scroll-m-2 flex-nowrap items-center gap-2 px-4 py-2	data-[active-item]:bg-gray-600 data-[active-item]:bg-opacity-20"
 						>
 							{(props) => (
 								<SelectItem {...props} value={collection.address}>
