@@ -2,6 +2,7 @@ import Head from 'next/head'
 import type { NextPage } from 'next'
 import { ethers } from 'ethers'
 import { Select, SelectArrow, SelectItem, SelectLabel, SelectPopover, useSelectState } from 'ariakit'
+import { Combobox, ComboboxItem, ComboboxList, useComboboxState } from 'ariakit/combobox'
 import Layout from '~/components/Layout'
 import { getArcadeCollections } from '~/AggregatorAdapters/arcade'
 import { getBendDaoCollections } from '~/AggregatorAdapters/benddao'
@@ -11,6 +12,8 @@ import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
 import { useRouter } from 'next/router'
+import { useMemo } from 'react'
+import { useDebounce } from '~/hooks'
 
 interface IPageProps {
 	collections: Array<{ address: string; name: string }>
@@ -23,7 +26,7 @@ async function getCollectionName(address: string) {
 
 	const name = await nftContract.name()
 
-	return { address, name }
+	return { address: address.toLowerCase(), name }
 }
 
 export async function getStaticProps() {
@@ -76,21 +79,42 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 
 	const { collection } = router.query
 
-	const selectedCollection = typeof collection === 'string' ? collection : undefined
+	const selectedCollection = typeof collection === 'string' ? collection.toLowerCase() : undefined
+
+	const combobox = useComboboxState({ gutter: 4, sameWidth: true })
+	// value and setValue shouldn't be passed to the select state because the
+	// select value and the combobox value are different things.
+	const { value, setValue, ...selectProps } = combobox
 
 	const select = useSelectState({
+		...selectProps,
 		value: selectedCollection,
 		setValue: (newCol) =>
 			router.push({ pathname: router.pathname, query: { ...router.query, collection: newCol } }, undefined, {
 				shallow: true
-			}),
-		sameWidth: true,
-		gutter: 4
+			})
 	})
 
+	// Resets combobox value when popover is collapsed
+	if (!select.mounted && combobox.value) {
+		combobox.setValue('')
+	}
+
 	const selectedCollectionName = selectedCollection
-		? collections.find((col) => col.address.toLowerCase() === selectedCollection.toLowerCase())?.name ?? null
+		? collections.find((col) => col.address === selectedCollection)?.name ?? null
 		: null
+
+	const comboboxValue = useDebounce(combobox.value.toLowerCase().trim(), 300)
+
+	const filteredCollections = useMemo(() => {
+		if (comboboxValue) {
+			return collections.filter(
+				(col) => col.address.includes(comboboxValue) || col.name.toLowerCase().includes(comboboxValue)
+			)
+		}
+
+		return collections
+	}, [comboboxValue, collections])
 
 	return (
 		<>
@@ -124,17 +148,28 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 					</a>
 					<SelectPopover
 						state={select}
-						className="z-50 flex max-h-[min(var(--popover-available-height,300px),300px)] flex-col overflow-auto overscroll-contain rounded-md bg-[#484C50] py-2"
+						composite={false}
+						className="z-50 flex max-h-[min(var(--popover-available-height,300px),300px)] flex-col overflow-auto overscroll-contain rounded-md bg-[#484C50] pb-2"
 					>
-						{collections.map((collection) => (
-							<SelectItem
-								key={collection.address}
-								value={collection.address}
-								className="flex cursor-pointer scroll-m-2 flex-nowrap items-center gap-2 px-4 py-2	data-[active-item]:bg-black data-[active-item]:bg-opacity-20"
-							>
-								{renderValue(collection)}
-							</SelectItem>
-						))}
+						<div className="sticky top-0 mb-2 w-full bg-[#484C50] px-4 pt-4 pb-2">
+							<Combobox state={combobox} placeholder="Search..." className="w-full rounded p-1 text-black" />
+						</div>
+
+						<ComboboxList state={combobox}>
+							{filteredCollections.map((collection) => (
+								<ComboboxItem
+									key={collection.address}
+									focusOnHover
+									className="flex cursor-pointer scroll-m-2 flex-nowrap items-center gap-2 px-4 py-2	data-[active-item]:bg-black data-[active-item]:bg-opacity-20"
+								>
+									{(props) => (
+										<SelectItem {...props} value={collection.address}>
+											{renderValue(collection)}
+										</SelectItem>
+									)}
+								</ComboboxItem>
+							))}
+						</ComboboxList>
 					</SelectPopover>
 				</div>
 			</Layout>
