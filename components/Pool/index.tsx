@@ -71,7 +71,7 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 				</p>
 				<p className="whitespace-nowrap text-sm font-normal text-[#D4D4D8]">Pool Liquidity</p>
 			</div>
-			<div className="lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%] flex-shrink-0">
+			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
 				<a
 					target="_blank"
 					rel="noreferrer noopener"
@@ -141,7 +141,7 @@ export function PlaceholderBorrowPoolItem() {
 				<p className="placeholder-box-2 h-[1.5rem] w-20 font-semibold"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Borrowable Now</p>
 			</div>
-			<div className="lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%] flex-shrink-0">
+			<div className="flex-shrink-0 lg:max-[1300px]:min-w-[45%] max-[948px]:min-w-[45%]">
 				<p className="placeholder-box-2 h-[1.5rem] w-16 font-semibold text-[#3070FB]"></p>
 				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>
