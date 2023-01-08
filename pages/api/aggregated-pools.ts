@@ -26,6 +26,8 @@ export default async function getAggregatedPools(req: NextRequest) {
 			getDataX2y2(collectionAddress)
 		])
 
+		console.log({ arcade, bendDao, jpegd })
+
 		return new Response(
 			JSON.stringify({
 				pools: {
