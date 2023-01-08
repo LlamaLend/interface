@@ -1,24 +1,27 @@
 import { useQuery } from '@tanstack/react-query'
+import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
 
 export async function getAggregatedPools({ collectionAddress }: { collectionAddress?: string }) {
 	try {
 		if (!collectionAddress) throw new Error('Missing Collection Address')
 
-		const { pools } = await fetch(`/api/aggregated-pools?collectionAddress=${collectionAddress}`).then((res) =>
-			res.json()
-		)
+		const {
+			pools
+		}: {
+			pools: {
+				arcade: Array<IArcadeQuote>
+				bendDao: Array<IBendDaoQuote>
+				jpegd: Array<IJpegdQuote>
+				nftfi: Array<INFTFiQuote>
+				x2y2: Array<IX2Y2Quote>
+			}
+		} = await fetch(`/api/aggregated-pools?collectionAddress=${collectionAddress}`).then((res) => res.json())
 
-		return Object.entries(pools || {})
+		return Object.entries(pools || {}).filter((pool) => pool[1].length > 0)
 	} catch (error) {
 		console.error(error)
 
-		return Object.entries({
-			arcade: [],
-			bendDao: [],
-			jpegd: [],
-			nftfi: [],
-			x2y2: []
-		})
+		return null
 	}
 }
 
