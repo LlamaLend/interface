@@ -71,7 +71,7 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 				<title>Aggregator - LlamaLend</title>
 			</Head>
 
-			<Layout>
+			<Layout className="pb-20">
 				<AggregatorCollectionsSelect selectedCollection={selectedCollection} collections={collections} />
 				<AggregatedAdapters selectedCollection={selectedCollection} />
 			</Layout>

@@ -68,11 +68,14 @@ const pusd = '0x466a756E9A7401B5e2444a3fCB3c2C12FBEa0a54'
 export async function getDataJpegd(nft: string) {
 	try {
 		nft = nft.toLowerCase()
+
 		if (!nftToPeth[nft] || !nftToPusd[nft] || !nftToValueProvider[nft]) return []
+
 		const provider = CHAINS_CONFIGURATION[1].chainProvider
 		const valueProvider = new ethers.Contract(nftToValueProvider[nft], nftValueProvider, provider)
 		const pethVault = new ethers.Contract(nftToPeth[nft], nftVault, provider)
 		const pusdVault = new ethers.Contract(nftToPusd[nft], nftVault, provider)
+
 		const [floor, pethCredit, pusdCredit, pethLiquidation, pusdLiquidation] = await Promise.all([
 			valueProvider.getFloorETH(),
 			pethVault.getCreditLimit(zeroAddress, '0'),
@@ -80,6 +83,7 @@ export async function getDataJpegd(nft: string) {
 			pethVault.getLiquidationLimit(zeroAddress, '0'),
 			pusdVault.getLiquidationLimit(zeroAddress, '0')
 		])
+
 		const results: IJpegdQuote[] = [
 			{
 				vaultName: 'pETH Vault',
@@ -98,6 +102,7 @@ export async function getDataJpegd(nft: string) {
 				loanUrl: 'https://jpegd.io/vaults'
 			}
 		]
+
 		return results
 	} catch (error) {
 		console.error(`Failed to get JPEG'd data: ${error}`)
