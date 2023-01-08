@@ -10,9 +10,8 @@ import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
 import { useRouter } from 'next/router'
-
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
-import { AggregatedPools } from '~/components/Aggregator/Pools'
+import { AggregatedAdapters } from '~/components/Aggregator/Adapters'
 
 interface IPageProps {
 	collections: Array<{ address: string; name: string }>
@@ -74,7 +73,7 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 
 			<Layout>
 				<AggregatorCollectionsSelect selectedCollection={selectedCollection} collections={collections} />
-				<AggregatedPools selectedCollection={selectedCollection} />
+				<AggregatedAdapters selectedCollection={selectedCollection} />
 			</Layout>
 		</>
 	)
