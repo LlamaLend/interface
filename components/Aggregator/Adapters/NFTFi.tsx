@@ -208,7 +208,9 @@ const Pool = ({ pool }: { pool: INFTFiQuote }) => {
 					})} ${data.symbol}`}
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">{pool.interest}%</td>
+			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+				{((1 - Number(pool.principal) / Number(pool.repayment)) * 100).toFixed(2)}%
+			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				<Tooltip content={new Date(Number(pool.expiry) * 1000).toLocaleString()}>

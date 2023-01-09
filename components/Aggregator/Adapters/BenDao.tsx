@@ -8,7 +8,7 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 		<div>
 			<div className="relative flex h-[2.625rem] items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
 				<img src="/assets/bendao.png" alt="" className="h-5 rounded-full" />
-				<h1 className="font-light">BenDAO</h1>
+				<h1 className="font-light">BendDAO</h1>
 
 				<a
 					href={pools[0].loanUrl}
@@ -83,9 +83,11 @@ const Pool = ({ pool }: { pool: IBendDaoQuote }) => {
 						maximumFractionDigits: 2
 					})} ${data.symbol}`}
 			</td>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">{pool.ltv}</td>
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
-				{pool.liquidationThreshold}
+				{`${(Number(pool.ltv) / 1e2).toFixed(2)}%`}
+			</td>
+			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+				{`${(Number(pool.liquidationThreshold) / 1e2).toFixed(2)}%`}
 			</td>
 		</tr>
 	)

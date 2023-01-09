@@ -38,7 +38,7 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 								Floor
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Credit
+								Min. Credit
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Liquidation Limit

@@ -118,7 +118,7 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							</th>
 
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								APR
+								Interest
 							</th>
 
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
@@ -161,7 +161,9 @@ const Pool = ({ pool }: { pool: IX2Y2Quote }) => {
 					})} ${data.symbol}`}
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">{pool.apr}%</td>
+			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+				{`${((1 - Number(pool.amount) / Number(pool.repayment)) * 100).toFixed(2)}%`}
+			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				<Tooltip content={new Date(Number(pool.expires) * 1000).toLocaleString()}>

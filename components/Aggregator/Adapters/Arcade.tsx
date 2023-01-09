@@ -49,6 +49,9 @@ export const ArcadePools = ({ pools }: { pools: Array<IArcadeQuote> }) => {
 								Duration
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								PayOff
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Interest
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
@@ -84,7 +87,17 @@ const Pool = ({ pool }: { pool: IArcadeQuote }) => {
 				{dayjs(Date.now() + pool.loanDuration * 1000).toNow(true)}
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">{pool.interestRate}%</td>
+			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+				{data &&
+					`${(
+						(Number(pool.principal) * (Number(pool.interestRate) / 1e22) + Number(pool.principal)) /
+						10 ** data.decimals
+					).toFixed(2)} ${data.symbol}`}
+			</td>
+
+			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+				{(Number(pool.interestRate) / 1e20).toFixed(2)}%
+			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				<Tooltip content={new Date(Number(pool.offerDeadline) * 1000).toLocaleString()}>
