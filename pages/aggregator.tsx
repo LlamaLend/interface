@@ -84,6 +84,7 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 			<Layout className="pb-20">
 				{router.isReady && (
 					<AggregatorCollectionsSelect
+						key={`rerenderkey ${collectionAddress}`}
 						collectionAddress={collectionAddress}
 						collectionName={collectionName}
 						collections={collections}
