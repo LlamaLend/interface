@@ -11,7 +11,7 @@ dayjs.extend(relativeTime)
 export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 	return (
 		<div>
-			<div className="relative flex items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
+			<div className="relative flex h-[2.625rem] items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
 				<svg
 					height="20px"
 					viewBox="0 0 310 246"

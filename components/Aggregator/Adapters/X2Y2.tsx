@@ -11,7 +11,7 @@ dayjs.extend(relativeTime)
 export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 	return (
 		<div>
-			<div className="relative flex items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
+			<div className="relative flex h-[2.625rem] items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
 				<svg viewBox="0 0 134 40" height="20px" focusable="false" className="chakra-icon css-1oovn9z">
 					<path
 						d="M52 30L56.0652 20.2266L52 10.17H57.085L60.2011 18.5127H60.6261L63.7989 10.17H68.8839L64.7762 20.2266L68.8839 30H63.7989L60.6261 21.8839H60.2153L57.085 30H52Z"
