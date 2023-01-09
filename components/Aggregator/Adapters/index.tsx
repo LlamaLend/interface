@@ -1,5 +1,6 @@
 import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
 import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
+import { ArcadePools } from './Arcade'
 import { BenDaoPools } from './BenDao'
 import { JPEGDPools } from './JPEGD'
 import { NFTFIPools } from './NFTFi'
@@ -44,6 +45,10 @@ const Adapter = ({
 
 	if (name === 'bendDao') {
 		return <BenDaoPools pools={pools as Array<IBendDaoQuote>} />
+	}
+
+	if (name === 'arcade') {
+		return <ArcadePools pools={pools as Array<IArcadeQuote>} />
 	}
 
 	return <></>

@@ -24,10 +24,10 @@ export default async function getAggregatedPools(req: NextApiRequest, res: NextA
 		res.status(200).json({
 			pools: {
 				x2y2: x2y2.status === 'fulfilled' ? x2y2.value : [],
-				jpegd: jpegd.status === 'fulfilled' ? jpegd.value : [],
 				nftfi: nftfi.status === 'fulfilled' ? nftfi.value : [],
 				arcade: arcade.status === 'fulfilled' ? arcade.value : [],
-				bendDao: bendDao.status === 'fulfilled' ? bendDao.value : []
+				bendDao: bendDao.status === 'fulfilled' ? bendDao.value : [],
+				jpegd: jpegd.status === 'fulfilled' ? jpegd.value : []
 			}
 		})
 	} catch (error: any) {

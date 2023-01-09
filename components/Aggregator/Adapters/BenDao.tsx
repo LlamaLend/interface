@@ -7,7 +7,7 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 	return (
 		<div>
 			<div className="relative flex h-[2.625rem] items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
-				<img src="/assets/bendao.png" alt="" className="h-5" />
+				<img src="/assets/bendao.png" alt="" className="h-5 rounded-full" />
 				<h1 className="font-light">BenDAO</h1>
 
 				<a

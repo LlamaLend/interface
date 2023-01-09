@@ -31,12 +31,9 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 				</a>
 			</div>
 			<div className="overflow-x-auto">
-				<table className="w-full min-w-[35rem] table-fixed border-collapse border border-[#252525]">
+				<table className="w-full min-w-[26.25rem] table-fixed border-collapse border border-[#252525]">
 					<thead>
 						<tr>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Token
-							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Floor
 							</th>
@@ -64,13 +61,6 @@ const Pool = ({ pool }: { pool: IJpegdQuote }) => {
 
 	return (
 		<tr>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light underline">
-				{data && (
-					<a href={`https://etherscan.io/address/${data.address}`} target="_blank" rel="noreferrer noopener">
-						{`${data.symbol}`}
-					</a>
-				)}
-			</td>
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				{data &&
 					`${Number(new BigNumber(pool.floorInEth).div(10 ** 18).toString()).toLocaleString(undefined, {
