@@ -82,11 +82,13 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 			</Head>
 
 			<Layout className="pb-20">
-				<AggregatorCollectionsSelect
-					collectionAddress={collectionAddress}
-					collectionName={collectionName}
-					collections={collections}
-				/>
+				{router.isReady && (
+					<AggregatorCollectionsSelect
+						collectionAddress={collectionAddress}
+						collectionName={collectionName}
+						collections={collections}
+					/>
+				)}
 				<AggregatedAdapters collectionAddress={collectionAddress} />
 			</Layout>
 		</>
