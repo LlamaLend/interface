@@ -72,6 +72,8 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 			}))
 	}))
 
+	const totalAmout = new BigNumber(cartItems.reduce((acc, curr) => (acc += curr.toPay.total), 0)).div(1e18).toFixed(4)
+
 	const payableAmout = getLoansPayableAmount(cartItems.reduce((acc, curr) => (acc += curr.toPay.total), 0))
 
 	//query to repay loans
@@ -159,7 +161,7 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 											className="object-contain"
 											alt="ethereum"
 										/>
-										<span>{toPay.totalPayable}</span>
+										<span>{(toPay.total / 1e18).toFixed(4)}</span>
 									</span>
 								</li>
 							))}
@@ -169,7 +171,42 @@ export function RepayItems({ chainId, userAddress }: IRepayItemProps) {
 					<hr className="border-[rgba(255,255,255,0.08)]" />
 
 					<h2 className="flex items-center">
-						<span className="font-base text-[#989898]">Total to Repay</span>
+						<span className="font-base text-[#989898]">Total</span>
+						<span className="ml-auto flex gap-1.5">
+							<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
+							{/* Show placeholder when fetching quotation */}
+							{fetchingCartItems || fetchingLoans ? (
+								<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
+							) : (
+								<span>
+									{totalAmout} {chainSymbol}
+								</span>
+							)}
+						</span>
+					</h2>
+
+					<h2 className="flex items-center">
+						<span className="font-base text-[#989898]">Buffer (5%)</span>
+						<span className="ml-auto flex gap-1.5">
+							<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
+							{/* Show placeholder when fetching quotation */}
+							{fetchingCartItems || fetchingLoans ? (
+								<span className="placeholder-box h-4 w-[4ch]" style={{ width: '4ch', height: '16px' }}></span>
+							) : (
+								<span>
+									{new BigNumber(totalAmout).times(0.05).toFixed(4)} {chainSymbol}
+								</span>
+							)}
+						</span>
+					</h2>
+					<small className="-mt-3 font-extralight">
+						We add a small buffer to account for the interest accrued from the time when transaction is sent to when it
+						is included on-chain (eg: if tx stays for 1 hour in the mempool it will need to pay interest for 1 extra
+						hour). All excess ETH is returned automatically in the repayment tx.
+					</small>
+
+					<h2 className="flex items-center">
+						<span className="font-base text-[#989898]">Total Payable</span>
 						<span className="ml-auto flex gap-1.5">
 							<Image src="/assets/ethereum.png" height={16} width={16} className="object-contain" alt="ethereum" />
 							{/* Show placeholder when fetching quotation */}

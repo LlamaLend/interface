@@ -14,7 +14,7 @@ export default function Tooltip({ children, content }: ITooltip) {
 			<TooltipAnchor state={tooltip} as={Button} className="flex w-full items-center">
 				{children}
 			</TooltipAnchor>
-			<AriaTooltip state={tooltip} className="max-w-[300px] rounded-xl bg-[#202020] p-2 text-sm text-white shadow">
+			<AriaTooltip state={tooltip} className="z-50 max-w-[300px] rounded-xl bg-[#202020] p-2 text-sm text-white shadow">
 				{content}
 			</AriaTooltip>
 		</>
