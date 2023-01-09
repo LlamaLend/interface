@@ -20,19 +20,19 @@ export const NFT_LIST_URL_PREFIX = 'https://icons.llamao.fi/icons/nfts'
 
 export const CHAINS_CONFIGURATION: IChainConfig = {
 	1: {
-		ankrUrl: 'https://eth-rpc.gateway.pokt.network',
+		rpcUrl: 'https://eth.llamarpc.com',
 		alchemyNftUrl: 'https://eth-mainnet.g.alchemy.com/nft/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_',
 		factoryAddress: FACTORY_MAINNET,
 		factoryABI: FACTORY_ABI,
 		poolABI: POOL_ABI,
 		quoteApi: `${ORACLE_SERVER_API}/1`,
 		oracleAddress: ORACLE_MAINNET,
-		chainProvider: new providers.JsonRpcProvider('https://eth-rpc.gateway.pokt.network'),
+		chainProvider: new providers.JsonRpcProvider('https://eth.llamarpc.com'),
 		isTestnet: false,
 		subgraphUrl: 'https://api.thegraph.com/subgraphs/name/0xngmi/llamalend'
 	},
 	5: {
-		ankrUrl: 'https://rpc.ankr.com/eth_goerli',
+		rpcUrl: 'https://rpc.ankr.com/eth_goerli',
 		alchemyNftUrl: 'https://eth-goerli.g.alchemy.com/nft/v2/5uLJQgmJyFsgKvbnnnZHuPLGtgzdSSF_',
 		factoryAddress: FACTORY_GOERLI,
 		factoryABI: FACTORY_ABI,
@@ -47,7 +47,7 @@ export const CHAINS_CONFIGURATION: IChainConfig = {
 
 export interface IChainConfig {
 	[key: number]: {
-		ankrUrl: string
+		rpcUrl: string
 		alchemyNftUrl: string
 		factoryAddress: string
 		factoryABI: typeof FACTORY_ABI

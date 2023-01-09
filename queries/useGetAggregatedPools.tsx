@@ -1,62 +1,32 @@
 import { useQuery } from '@tanstack/react-query'
-import { getDataArcade } from '~/AggregatorAdapters/arcade'
-import { getDataBendDao } from '~/AggregatorAdapters/benddao'
-import { getDataJpegd } from '~/AggregatorAdapters/jpegd'
-import { getDataNftFi } from '~/AggregatorAdapters/nftfi'
-import { getDataX2y2 } from '~/AggregatorAdapters/x2y2'
+import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
 
-export async function getAggregatedPools({
-	chainId,
-	collectionAddress
-}: {
-	chainId?: number | null
-	collectionAddress?: string
-}) {
+export async function getAggregatedPools({ collectionAddress }: { collectionAddress?: string }) {
 	try {
 		if (!collectionAddress) throw new Error('Missing Collection Address')
 
-		if (chainId !== 1) throw new Error('Not on ETH')
+		const {
+			pools
+		}: {
+			pools: {
+				arcade: Array<IArcadeQuote>
+				bendDao: Array<IBendDaoQuote>
+				jpegd: Array<IJpegdQuote>
+				nftfi: Array<INFTFiQuote>
+				x2y2: Array<IX2Y2Quote>
+			}
+		} = await fetch(`/api/aggregated-pools?collectionAddress=${collectionAddress}`).then((res) => res.json())
 
-		const [arcade, bendDao, jpegd, nftfi, x2y2] = await Promise.allSettled([
-			getDataArcade(collectionAddress),
-			getDataBendDao(collectionAddress),
-			getDataJpegd(collectionAddress),
-			getDataNftFi(collectionAddress),
-			getDataX2y2(collectionAddress)
-		])
-
-		return {
-			arcade: arcade.status === 'fulfilled' ? arcade.value : [],
-			bendDao: bendDao.status === 'fulfilled' ? bendDao.value : [],
-			jpegd: jpegd.status === 'fulfilled' ? jpegd.value : [],
-			nftfi: nftfi.status === 'fulfilled' ? nftfi.value : [],
-			x2y2: x2y2.status === 'fulfilled' ? x2y2.value : []
-		}
+		return Object.entries(pools || {}).filter((pool) => pool[1].length > 0)
 	} catch (error) {
 		console.error(error)
 
-		return {
-			arcade: [],
-			bendDao: [],
-			jpegd: [],
-			nftfi: [],
-			x2y2: []
-		}
+		return null
 	}
 }
 
-export function useGetAggregatedPools({
-	chainId,
-	collectionAddress
-}: {
-	chainId?: number | null
-	collectionAddress?: string
-}) {
-	return useQuery(
-		['aggregatedPools', chainId, collectionAddress],
-		() => getAggregatedPools({ chainId, collectionAddress }),
-		{
-			refetchInterval: 60_000
-		}
-	)
+export function useGetAggregatedPools({ collectionAddress }: { collectionAddress?: string }) {
+	return useQuery(['aggregatedPools', collectionAddress], () => getAggregatedPools({ collectionAddress }), {
+		refetchInterval: 60_000
+	})
 }

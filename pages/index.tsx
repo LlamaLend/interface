@@ -6,11 +6,11 @@ import { getAllCollections } from '~/queries/useGetAllCollections'
 export async function getStaticProps() {
 	const queryClient = new QueryClient()
 
-	await queryClient.prefetchQuery(['allCollections', 1, true], () => getAllCollections({ chainId: 1 }))
+	await queryClient.prefetchQuery(['allCollections', 1], () => getAllCollections({ chainId: 1 }))
 
 	return {
 		props: { dehydratedState: dehydrate(queryClient) },
-		revalidate: 600
+		revalidate: 120
 	}
 }
 

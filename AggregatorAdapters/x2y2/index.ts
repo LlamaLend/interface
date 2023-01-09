@@ -2,7 +2,7 @@ import { IX2Y2Quote } from '~/types'
 
 // eslint-disable-next-line no-undef
 const requestHeaders: HeadersInit = new Headers()
-requestHeaders.set('x-api-key', process.env.X2Y2_API_KEY!)
+requestHeaders.set('x-api-key', process.env.X2Y2_API_KEY as string)
 
 export async function getDataX2y2(nft: string) {
 	try {
@@ -30,6 +30,22 @@ export async function getDataX2y2(nft: string) {
 		return result
 	} catch (error) {
 		console.error(`Failed to get X2Y2 data: ${error}`)
+		return []
+	}
+}
+
+export async function getX2y2Collections() {
+	try {
+		const res: { data: { collections: Array<{ nftAddress: string; disableCollection: 0 | 1 }> } } = await fetch(
+			'https://loan-api.x2y2.org/v1/sys/loanParam',
+			{
+				headers: requestHeaders
+			}
+		).then((res) => res.json())
+
+		return res.data.collections.filter((res) => res.disableCollection === 0).map((col) => col.nftAddress)
+	} catch (error) {
+		console.error(`Failed to get X2Y2 collections: ${error}`)
 		return []
 	}
 }

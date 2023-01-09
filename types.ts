@@ -72,14 +72,13 @@ export interface IBorrowPool {
 	currentAnnualInterest: string
 	oracle: string
 	oraclePrice?: string
+	maxPrice: number
+	maxInstantBorrow: number
+	dailyBorrows: number
+	maxDailyBorrows: number
 	adminPoolInfo: {
 		key: string
-		maxPrice: number
-		maxInstantBorrow: number
-		dailyBorrows: number
-		maxDailyBorrows: number
 		maxLoanLength: number
-		oracle: string
 		minimumInterest: string
 		maximumInterest: string
 		liquidators: Array<string>

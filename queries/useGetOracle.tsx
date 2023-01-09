@@ -7,6 +7,7 @@ interface IFetchOracleProps {
 	api: string
 	nftContractAddress?: string | null
 	isTestnet?: boolean
+	skipRetries?: boolean
 }
 
 const TEN_MINUTES = 10 * 60 * 1000
@@ -49,7 +50,12 @@ const isOracleValid = (res: IOracleResponse, nftContractAddress: string) => {
 	return true
 }
 
-async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleProps): Promise<IOracleResponse | null> {
+async function fetchOracle({
+	api,
+	nftContractAddress,
+	isTestnet,
+	skipRetries
+}: IFetchOracleProps): Promise<IOracleResponse | null> {
 	if (!nftContractAddress) {
 		return null
 	}
@@ -72,7 +78,7 @@ async function fetchOracle({ api, nftContractAddress, isTestnet }: IFetchOracleP
 
 		const isValid = isOracleValid(res, nftContractAddress)
 
-		if (!isValid) {
+		if (!skipRetries && !isValid) {
 			const retryone = await fetch(`${api}/${getAddress(nftContractAddress)}`).then((res) => res.json())
 
 			const isValidRetry = isOracleValid(retryone, nftContractAddress)
