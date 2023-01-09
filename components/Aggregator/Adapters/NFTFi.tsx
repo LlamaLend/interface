@@ -11,7 +11,7 @@ dayjs.extend(relativeTime)
 export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 	return (
 		<div>
-			<div className="relative flex h-[2.625rem] items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
+			<div className="relative flex min-h-[2.625rem] items-center justify-center gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] p-2">
 				<svg
 					height="20px"
 					viewBox="0 0 310 246"
@@ -133,13 +133,13 @@ export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 						</g>
 					</g>
 				</svg>
-				<h1 className="font-light">NFTfi</h1>
+				<h1>NFTfi</h1>
 
 				<a
 					href={pools[0].url}
 					target="_blank"
 					rel="noreferrer noopener"
-					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl bg-[#243b55] p-2 text-xs font-light"
+					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl border border-[#252525] p-2 text-xs font-light"
 				>
 					<Tooltip content="View Collection">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
@@ -152,25 +152,16 @@ export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 					</Tooltip>
 				</a>
 			</div>
-			<div className="overflow-x-auto">
-				<table className="w-full min-w-[43.75rem] table-fixed border-collapse border border-[#252525]">
-					<thead>
+
+			<div className="overflow-x-auto rounded-b-xl">
+				<table className="w-full min-w-[43.75rem] table-fixed border-collapse rounded-xl bg-[#010101]">
+					<thead className="h-[2.625rem] bg-[#111111]">
 						<tr>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Principal
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Duration
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								PayOff
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Interest
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Expiry
-							</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Principal</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Duration</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">PayOff</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Interest</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Expiry</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -188,20 +179,20 @@ const Pool = ({ pool }: { pool: INFTFiQuote }) => {
 	const { data } = useToken({ address: pool.token, chainId: 1 })
 
 	return (
-		<tr>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+		<tr className="h-[2.625rem]">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{data &&
 					`${Number(new BigNumber(pool.principal).div(10 ** data.decimals).toString()).toLocaleString(undefined, {
 						maximumFractionDigits: 2
 					})} ${data.symbol}`}
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{/* @ts-ignore */}
 				{dayjs(Date.now() + pool.duration * 1000).toNow(true)}
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{data &&
 					`${Number(new BigNumber(pool.repayment).div(10 ** data.decimals).toString()).toLocaleString(undefined, {
 						maximumFractionDigits: 2
@@ -212,7 +203,7 @@ const Pool = ({ pool }: { pool: INFTFiQuote }) => {
 				{((1 - Number(pool.principal) / Number(pool.repayment)) * 100).toFixed(2)}%
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				<Tooltip content={new Date(Number(pool.expiry) * 1000).toLocaleString()}>
 					<span className="mx-auto">{new Date(Number(pool.expiry) * 1000).toLocaleDateString()}</span>
 				</Tooltip>

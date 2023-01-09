@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 	return (
 		<div>
-			<div className="relative flex h-[2.625rem] items-center justify-center gap-2 border border-b-0 border-[#252525] py-2 px-4">
+			<div className="relative flex min-h-[2.625rem] items-center justify-center gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] p-2">
 				<img src="/assets/bendao.png" alt="" className="h-5 rounded-full" />
 				<h1 className="font-light">BendDAO</h1>
 
@@ -14,7 +14,7 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 					href={pools[0].loanUrl}
 					target="_blank"
 					rel="noreferrer noopener"
-					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl bg-[#243b55] p-2 text-xs font-light"
+					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl border border-[#252525] p-2 text-xs font-light"
 				>
 					<Tooltip content="View Vaults">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
@@ -27,25 +27,14 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 					</Tooltip>
 				</a>
 			</div>
-			<div className="overflow-x-auto">
-				<table className="w-full min-w-[43.75rem] table-fixed border-collapse border border-[#252525]">
-					<thead>
+			<div className="overflow-x-auto rounded-b-xl">
+				<table className="w-full min-w-[43.75rem] table-fixed border-collapse rounded-xl bg-[#010101]">
+					<thead className="h-[2.625rem] bg-[#111111]">
 						<tr>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Token
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Floor
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Available to Borrow
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								LTV
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Liquidation Threshold
-							</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Floor</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Available to Borrow</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">LTV</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Liquidation Threshold</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -63,21 +52,14 @@ const Pool = ({ pool }: { pool: IBendDaoQuote }) => {
 	const { data } = useToken({ address: pool.borrowableToken, chainId: 1 })
 
 	return (
-		<tr>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light underline">
-				{data && (
-					<a href={`https://etherscan.io/address/${data.address}`} target="_blank" rel="noreferrer noopener">
-						{`${data.symbol}`}
-					</a>
-				)}
-			</td>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+		<tr className="h-[2.625rem]">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{data &&
 					`${Number(new BigNumber(pool.floorInEth).div(10 ** 18).toString()).toLocaleString(undefined, {
 						maximumFractionDigits: 2
 					})} ETH`}
 			</td>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{data &&
 					`${Number(new BigNumber(pool.availableBorrow).div(10 ** data.decimals).toString()).toLocaleString(undefined, {
 						maximumFractionDigits: 2

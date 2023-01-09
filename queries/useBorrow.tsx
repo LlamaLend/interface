@@ -93,6 +93,9 @@ export function useBorrow({
 				})
 			}
 
+			// hide cart
+			router.push({ pathname: router.pathname, query: { ...router.query, cart: false } }, undefined, { shallow: true })
+
 			txContext.hash!.current = data.hash
 			txContext.dialog?.toggle()
 

@@ -1,3 +1,4 @@
+import BeatLoader from '~/components/BeatLoader'
 import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
 import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
 import { ArcadePools } from './Arcade'
@@ -11,9 +12,17 @@ export function AggregatedAdapters({
 	collectionName
 }: {
 	collectionAddress?: string
-	collectionName?: string
+	collectionName?: string | null
 }) {
 	const { data: adapters, isLoading: fetchingPools } = useGetAggregatedPools({ collectionAddress: collectionAddress })
+
+	if (fetchingPools) {
+		return (
+			<div className="mt-[10%] p-4">
+				<BeatLoader />
+			</div>
+		)
+	}
 
 	if (!fetchingPools && collectionAddress && (!adapters || adapters?.length === 0)) {
 		return (

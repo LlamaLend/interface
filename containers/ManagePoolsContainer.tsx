@@ -2,6 +2,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 import AdminPool from '~/components/AdminPool'
+import BeatLoader from '~/components/BeatLoader'
 import Layout from '~/components/Layout'
 import { useGetAllPools } from '~/queries/useGetAllPools'
 
@@ -16,7 +17,7 @@ export default function ManagePoolsContainer({ chainId, chainName, userAddress }
 
 	const { openConnectModal } = useConnectModal()
 
-	const { data, isError } = useGetAllPools({ chainId, ownerAddress: userAddress, skipOracle: true })
+	const { data, isLoading, isError } = useGetAllPools({ chainId, ownerAddress: userAddress, skipOracle: true })
 
 	const disableActions = !isConnected || address?.toLowerCase() !== userAddress?.toLowerCase()
 
@@ -28,6 +29,10 @@ export default function ManagePoolsContainer({ chainId, chainName, userAddress }
 				<p className="fallback-text">
 					<button onClick={openConnectModal}>Connect</button> your wallet to view pools.
 				</p>
+			) : isLoading ? (
+				<div className="mt-[15%] p-4">
+					<BeatLoader />
+				</div>
 			) : isError ? (
 				<p className="fallback-text">Something went wrong, couldn't get loans.</p>
 			) : data?.length === 0 ? (

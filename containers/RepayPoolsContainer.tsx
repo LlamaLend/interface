@@ -36,7 +36,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 	// query to save items to cart
 	const { mutate: addToCart } = useSaveItemToCart({ chainId })
 
-	const payableAmout = data && getLoansPayableAmount(data.reduce((acc, curr) => (acc += curr.toPay.total), 0))
+	const payableAmout = data && data.reduce((acc, curr) => (acc += curr.toPay.total), 0)
 
 	return (
 		<>
@@ -93,7 +93,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
 										Late Fees
 									</th>
-									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
+									{/* <th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
 										<Tooltip content="We add a small buffer to account for the interest accrued from the time when transaction is sent to when it is included on-chain (eg: if tx stays for 1 hour in the mempool it will need to pay interest for 1 extra hour). All excess ETH is returned automatically in the repayment tx.">
 											<span className="flex w-full items-center justify-center gap-1">
 												<span>Buffer</span>
@@ -111,7 +111,7 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 												</svg>
 											</span>
 										</Tooltip>
-									</th>
+									</th> */}
 									<th className="whitespace-nowrap border border-[#252525] px-2 py-1 text-center font-normal text-[#989898]">
 										Total
 									</th>
@@ -211,11 +211,11 @@ export default function LoanPoolsContainer({ chainId, chainName, userAddress }: 
 												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													{(loan.toPay.lateFees / 1e18).toFixed(4) + ' ' + chainSymbol}
 												</td>
-												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
+												{/* <td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													{loan.toPay.buffer + ' ' + chainSymbol}
-												</td>
+												</td> */}
 												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
-													{loan.toPay.totalPayable + ' ' + chainSymbol}
+													{(loan.toPay.total / 1e18).toFixed(4) + ' ' + chainSymbol}
 												</td>
 												<td className="whitespace-nowrap border border-[#252525] px-4 py-2">
 													<Tooltip content={new Date(loan.deadline).toUTCString()}>

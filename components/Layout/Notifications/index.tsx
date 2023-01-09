@@ -45,7 +45,7 @@ export default function Notifications() {
 
 	return (
 		<>
-			<PopoverDisclosure state={popover} className="rounded-lg bg-white px-2 py-2 text-black">
+			<PopoverDisclosure state={popover} className="rounded-xl bg-white px-2 py-2 text-black">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
