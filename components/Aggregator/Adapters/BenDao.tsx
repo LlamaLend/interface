@@ -14,7 +14,7 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 					href={pools[0].loanUrl}
 					target="_blank"
 					rel="noreferrer noopener"
-					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl bg-[#243b55] p-2 text-xs font-light"
+					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl border border-[#252525] p-2 text-xs font-light"
 				>
 					<Tooltip content="View Vaults">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">

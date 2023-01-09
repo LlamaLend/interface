@@ -89,7 +89,7 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 						collections={collections}
 					/>
 				)}
-				<AggregatedAdapters collectionAddress={collectionAddress} />
+				<AggregatedAdapters collectionAddress={collectionAddress} collectionName={collectionName} />
 			</Layout>
 		</>
 	)
