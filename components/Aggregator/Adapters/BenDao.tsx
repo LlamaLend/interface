@@ -28,14 +28,24 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 				</a>
 			</div>
 			<div className="overflow-x-auto">
-				<table className="w-full min-w-[35rem] table-fixed border-collapse border border-[#252525]">
+				<table className="w-full min-w-[43.75rem] table-fixed border-collapse border border-[#252525]">
 					<thead>
 						<tr>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Token</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Floor</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Available to borrow</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">LTV</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Liquidation Threshold</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Token
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Floor
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Available to Borrow
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								LTV
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Liquidation Threshold
+							</th>
 						</tr>
 					</thead>
 					<tbody>

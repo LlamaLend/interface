@@ -29,7 +29,7 @@ async function getCollectionName(address: string) {
 
 export async function getStaticProps() {
 	const res = await Promise.allSettled([
-		// getArcadeCollections(),
+		getArcadeCollections(),
 		getBendDaoCollections(),
 		getJpegdCollections(),
 		getNftFiCollections(),

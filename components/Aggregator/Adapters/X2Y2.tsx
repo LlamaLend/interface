@@ -105,12 +105,24 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 				<table className="w-full min-w-[52.5rem] table-fixed border-collapse border border-[#252525]">
 					<thead>
 						<tr>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Token</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Principal</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Interest</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Repayment</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Duration</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Expiry</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Token
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Principal
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Interest
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Repayment
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Duration
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Expiry
+							</th>
 						</tr>
 					</thead>
 					<tbody>

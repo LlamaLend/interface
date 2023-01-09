@@ -34,10 +34,18 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 				<table className="w-full min-w-[35rem] table-fixed border-collapse border border-[#252525]">
 					<thead>
 						<tr>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Token</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Floor</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Credit</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light">Liquidation Limit</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Token
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Floor
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Credit
+							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								Liquidation Limit
+							</th>
 						</tr>
 					</thead>
 					<tbody>
