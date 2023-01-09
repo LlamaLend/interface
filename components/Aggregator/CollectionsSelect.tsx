@@ -6,10 +6,12 @@ import { useRouter } from 'next/router'
 
 export function AggregatorCollectionsSelect({
 	collections,
-	selectedCollection
+	collectionAddress,
+	collectionName
 }: {
 	collections: Array<{ name: string; address: string }>
-	selectedCollection?: string
+	collectionAddress?: string
+	collectionName?: string | null
 }) {
 	const router = useRouter()
 
@@ -20,6 +22,7 @@ export function AggregatorCollectionsSelect({
 
 	const select = useSelectState({
 		...selectProps,
+		value: collectionAddress,
 		setValue: (newCol) =>
 			router.push({ pathname: router.pathname, query: { collection: newCol } }, undefined, {
 				shallow: true
@@ -30,10 +33,6 @@ export function AggregatorCollectionsSelect({
 	if (!select.mounted && combobox.value) {
 		combobox.setValue('')
 	}
-
-	const selectedCollectionName = useMemo(() => {
-		return selectedCollection ? collections.find((col) => col.address === selectedCollection)?.name ?? null : null
-	}, [selectedCollection, collections])
 
 	const comboboxValue = useDebounce(combobox.value.toLowerCase().trim(), 300)
 
@@ -59,7 +58,7 @@ export function AggregatorCollectionsSelect({
 				/>
 
 				<span className="mr-auto overflow-hidden text-ellipsis whitespace-nowrap">
-					{selectedCollectionName || select.value}
+					{collectionName || select.value}
 				</span>
 				<SelectArrow />
 			</Select>

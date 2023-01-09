@@ -6,12 +6,20 @@ import { JPEGDPools } from './JPEGD'
 import { NFTFIPools } from './NFTFi'
 import { X2Y2Pools } from './X2Y2'
 
-export function AggregatedAdapters({ selectedCollection }: { selectedCollection?: string }) {
-	const { data: adapters, isLoading: fetchingPools } = useGetAggregatedPools({ collectionAddress: selectedCollection })
+export function AggregatedAdapters({
+	collectionAddress,
+	collectionName
+}: {
+	collectionAddress?: string
+	collectionName?: string
+}) {
+	const { data: adapters, isLoading: fetchingPools } = useGetAggregatedPools({ collectionAddress: collectionAddress })
 
-	if (!fetchingPools && selectedCollection && (!adapters || adapters?.length === 0)) {
+	if (!fetchingPools && collectionAddress && (!adapters || adapters?.length === 0)) {
 		return (
-			<p className="mt-[10%] text-center text-white text-opacity-60">Couldn't find lending pool of this collection</p>
+			<p className="mt-[10%] text-center text-white text-opacity-60">
+				Couldn't find any protocols that lend against {collectionName || collectionAddress}
+			</p>
 		)
 	}
 

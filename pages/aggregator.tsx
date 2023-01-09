@@ -1,6 +1,8 @@
-import Head from 'next/head'
 import type { NextPage } from 'next'
 import { ethers } from 'ethers'
+import { useMemo } from 'react'
+import { useRouter } from 'next/router'
+import Head from 'next/head'
 import Layout from '~/components/Layout'
 import { getArcadeCollections } from '~/AggregatorAdapters/arcade'
 import { getBendDaoCollections } from '~/AggregatorAdapters/benddao'
@@ -9,7 +11,6 @@ import { getNftFiCollections } from '~/AggregatorAdapters/nftfi'
 import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
-import { useRouter } from 'next/router'
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
 import { AggregatedAdapters } from '~/components/Aggregator/Adapters'
 
@@ -63,7 +64,16 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 
 	const { collection } = router.query
 
-	const selectedCollection = typeof collection === 'string' ? collection.toLowerCase() : undefined
+	const { collectionAddress, collectionName } = useMemo(() => {
+		const selectedCollection = typeof collection === 'string' ? collection.toLowerCase() : undefined
+
+		return {
+			collectionAddress: selectedCollection,
+			collectionName: selectedCollection
+				? collections.find((col) => col.address === selectedCollection)?.name ?? null
+				: null
+		}
+	}, [collection, collections])
 
 	return (
 		<>
@@ -72,8 +82,12 @@ const Aggregator: NextPage<IPageProps> = ({ collections }) => {
 			</Head>
 
 			<Layout className="pb-20">
-				<AggregatorCollectionsSelect selectedCollection={selectedCollection} collections={collections} />
-				<AggregatedAdapters selectedCollection={selectedCollection} />
+				<AggregatorCollectionsSelect
+					collectionAddress={collectionAddress}
+					collectionName={collectionName}
+					collections={collections}
+				/>
+				<AggregatedAdapters collectionAddress={collectionAddress} />
 			</Layout>
 		</>
 	)

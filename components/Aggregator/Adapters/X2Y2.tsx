@@ -42,8 +42,8 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 						fill="url(#paint1_linear_13610_53694)"
 					></path>
 					<path
-						fill-rule="evenodd"
-						clip-rule="evenodd"
+						fillRule="evenodd"
+						clipRule="evenodd"
 						d="M29.5999 20C29.5999 25.3019 25.3018 29.6 19.9999 29.6C14.698 29.6 10.3999 25.3019 10.3999 20C10.3999 14.6981 14.698 10.4 19.9999 10.4C25.3018 10.4 29.5999 14.6981 29.5999 20ZM26.3999 20C26.3999 23.5346 23.5345 26.4 19.9999 26.4C16.4653 26.4 13.5999 23.5346 13.5999 20C13.5999 16.4654 16.4653 13.6 19.9999 13.6C23.5345 13.6 26.3999 16.4654 26.3999 20Z"
 						fill="url(#paint2_linear_13610_53694)"
 					></path>
@@ -56,8 +56,8 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							y2="19.4483"
 							gradientUnits="userSpaceOnUse"
 						>
-							<stop stop-color="#00E0FF"></stop>
-							<stop offset="1" stop-color="#562EC8"></stop>
+							<stop stopColor="#00E0FF"></stop>
+							<stop offset="1" stopColor="#562EC8"></stop>
 						</linearGradient>
 						<linearGradient
 							id="paint1_linear_13610_53694"
@@ -67,8 +67,8 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							y2="19.4483"
 							gradientUnits="userSpaceOnUse"
 						>
-							<stop stop-color="#00E0FF"></stop>
-							<stop offset="1" stop-color="#562EC8"></stop>
+							<stop stopColor="#00E0FF"></stop>
+							<stop offset="1" stopColor="#562EC8"></stop>
 						</linearGradient>
 						<linearGradient
 							id="paint2_linear_13610_53694"
@@ -78,8 +78,8 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							y2="19.4483"
 							gradientUnits="userSpaceOnUse"
 						>
-							<stop stop-color="#00E0FF"></stop>
-							<stop offset="1" stop-color="#562EC8"></stop>
+							<stop stopColor="#00E0FF"></stop>
+							<stop offset="1" stopColor="#562EC8"></stop>
 						</linearGradient>
 					</defs>
 				</svg>
