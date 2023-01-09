@@ -77,7 +77,11 @@ export function AggregatorCollectionsSelect({
 				className="z-50 flex max-h-[min(var(--popover-available-height,300px),300px)] flex-col overflow-auto overscroll-contain rounded-md bg-[#060606] pb-2"
 			>
 				<div className="sticky top-0 mb-2 w-full bg-[#060606] px-4 pt-4 pb-2">
-					<Combobox state={combobox} placeholder="Search..." className="w-full rounded p-1 text-black" />
+					<Combobox
+						state={combobox}
+						placeholder="Search..."
+						className="w-full rounded bg-neutral-900 p-1 px-2 text-white"
+					/>
 				</div>
 
 				<ComboboxList state={combobox}>
