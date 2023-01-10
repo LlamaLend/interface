@@ -3,7 +3,7 @@ import type { NextPage } from 'next'
 import { allChains } from 'wagmi'
 import BorrowContainer from '~/containers/BorrowContainer'
 import collections from '~/lib/collections'
-import { getAllpools } from '~/queries/useGetAllPools'
+import { getAllPools } from '~/queries/useGetAllPools'
 
 interface IPageProps {
 	chainId?: number
@@ -46,7 +46,7 @@ export async function getStaticProps({
 	const queryClient = new QueryClient()
 
 	await queryClient.prefetchQuery(['allPools', chainDetails.id, address, null, false], () =>
-		getAllpools({
+		getAllPools({
 			chainId: chainDetails.id,
 			collectionAddress: address
 		})
