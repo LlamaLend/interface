@@ -1,9 +1,10 @@
 import BeatLoader from '~/components/BeatLoader'
 import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
-import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
+import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, ILlamaLendQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
 import { ArcadePools } from './Arcade'
 import { BenDaoPools } from './BenDao'
 import { JPEGDPools } from './JPEGD'
+import { LlamalendPools } from './LlamaLend'
 import { NFTFIPools } from './NFTFi'
 import { X2Y2Pools } from './X2Y2'
 
@@ -46,8 +47,18 @@ const Adapter = ({
 	pools
 }: {
 	name: string
-	pools: Array<INFTFiQuote> | Array<IArcadeQuote> | Array<IBendDaoQuote> | Array<IJpegdQuote> | Array<IX2Y2Quote>
+	pools:
+		| Array<INFTFiQuote>
+		| Array<IArcadeQuote>
+		| Array<IBendDaoQuote>
+		| Array<IJpegdQuote>
+		| Array<IX2Y2Quote>
+		| Array<ILlamaLendQuote>
 }) => {
+	if (name === 'llamalend') {
+		return <LlamalendPools pools={pools as Array<ILlamaLendQuote>} />
+	}
+
 	if (name === 'x2y2') {
 		return <X2Y2Pools pools={pools as Array<IX2Y2Quote>} />
 	}

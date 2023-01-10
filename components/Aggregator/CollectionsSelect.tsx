@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useDebounce } from '~/hooks'
 import { Select, SelectArrow, SelectItem, SelectLabel, SelectPopover, useSelectState } from 'ariakit'
-import { Combobox, ComboboxItem, ComboboxList, useComboboxState } from 'ariakit/combobox'
+import { Combobox, useComboboxState } from 'ariakit/combobox'
 import { useRouter } from 'next/router'
 
 export function AggregatorCollectionsSelect({
@@ -83,27 +83,21 @@ export function AggregatorCollectionsSelect({
 					/>
 				</div>
 
-				<ComboboxList state={combobox}>
-					{filteredCollections.map((collection) => (
-						<ComboboxItem
-							key={collection.address}
-							focusOnHover
-							className="flex cursor-pointer scroll-m-2 flex-nowrap items-center gap-2 px-4 py-2	data-[active-item]:bg-gray-600 data-[active-item]:bg-opacity-20"
-						>
-							{(props) => (
-								<SelectItem {...props} value={collection.address}>
-									<img
-										src={`https://icons.llamao.fi/icons/nfts/${collection.address}?h=20&w=20`}
-										alt=""
-										aria-hidden
-										className="h-5 w-5 rounded-full"
-									/>
-									<span className="overflow-hidden text-ellipsis whitespace-nowrap">{collection.name}</span>
-								</SelectItem>
-							)}
-						</ComboboxItem>
-					))}
-				</ComboboxList>
+				{filteredCollections.map((collection) => (
+					<SelectItem
+						key={collection.address}
+						value={collection.address}
+						className="flex cursor-pointer scroll-m-2 flex-nowrap items-center gap-2 px-4 py-2	data-[active-item]:bg-gray-600 data-[active-item]:bg-opacity-20"
+					>
+						<img
+							src={`https://icons.llamao.fi/icons/nfts/${collection.address}?h=20&w=20`}
+							alt=""
+							aria-hidden
+							className="h-5 w-5 rounded-full"
+						/>
+						<span className="overflow-hidden text-ellipsis whitespace-nowrap">{collection.name}</span>
+					</SelectItem>
+				))}
 			</SelectPopover>
 		</div>
 	)

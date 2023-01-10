@@ -236,7 +236,7 @@ const getAllPoolsByOwner = (ownerAddress: string) => gql`
 	}
 `
 
-export async function getAllpools({ chainId, collectionAddress, ownerAddress, skipOracle }: IGetAllPoolsArgs) {
+export async function getAllPools({ chainId, collectionAddress, ownerAddress, skipOracle }: IGetAllPoolsArgs) {
 	try {
 		// return empty array when no chainId, as there is no chainId returned on /borrow/[chainName] when chainName is not supported/invalid
 		if (!chainId) {
@@ -383,7 +383,7 @@ export function useGetAllPools({
 	return useQuery<Array<IBorrowPool>, ITransactionError>(
 		['allPools', chainId, collectionAddress, ownerAddress || null, skipOracle || false],
 		() =>
-			getAllpools({
+			getAllPools({
 				chainId,
 				collectionAddress,
 				ownerAddress,

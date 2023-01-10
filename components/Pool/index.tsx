@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import type { IBorrowPool } from '~/types'
-import { formatCurrentAnnualInterest, formatDailyInterest } from '~/utils'
+import { checkIfPoolDisabled, formatCurrentAnnualInterest, formatDailyInterest } from '~/utils'
 import pools from '~/lib/pools'
 import { chainConfig } from '~/lib/constants'
 import Tooltip from '../Tooltip'
@@ -30,10 +30,7 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 	const poolBalance = (Number(data.poolBalance) / 1e18).toFixed(2)
 	const totalDeposited = (Number(data.totalDeposited) / 1e18).toFixed(2)
 
-	const oneLoan = Number(data.oraclePrice) * (Number(data.ltv) / 1e18)
-	const maxPriceReached = Number(data.oraclePrice) >= data.maxPrice
-	const rateLimitReached = Number(data.dailyBorrows) + oneLoan > data.maxDailyBorrows
-	const notEnoughETH = oneLoan > data.maxInstantBorrow
+	const isPoolDisabled = checkIfPoolDisabled(data)
 
 	return (
 		<div className="flex flex-wrap justify-between gap-6 rounded-xl bg-[#22242A] p-5 md:gap-8 2xl:gap-12">
@@ -83,17 +80,9 @@ export function BorrowPoolItem({ data, setSelectedPool, chainId }: IBorrowPoolIt
 
 				<p className="text-sm font-normal text-[#D4D4D8]">Pool Info</p>
 			</div>
-			{maxPriceReached || rateLimitReached || notEnoughETH ? (
+			{isPoolDisabled ? (
 				<button className="ml-auto rounded-md bg-[#484C50] px-4 py-[0.625rem] font-semibold max-sm:w-full" disabled>
-					{`Pool Disabled ${
-						maxPriceReached
-							? '(Max Price Reached)'
-							: notEnoughETH
-							? '(Not Enough Liquidity)'
-							: rateLimitReached
-							? '(Rate Limit Reached)'
-							: ''
-					}`}
+					{isPoolDisabled}
 				</button>
 			) : (
 				<button

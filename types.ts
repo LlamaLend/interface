@@ -196,3 +196,10 @@ export interface IX2Y2Quote {
 	duration: string
 	url: string
 }
+
+export interface ILlamaLendQuote {
+	pricePerNft: string
+	maxLoanLength: number
+	currentAnnualInterest: string
+	url: string
+}

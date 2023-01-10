@@ -2,26 +2,25 @@ import BigNumber from 'bignumber.js'
 import * as dayjs from 'dayjs'
 import * as relativeTime from 'dayjs/plugin/relativeTime'
 import { SECONDS_IN_A_DAY, SECONDS_IN_A_YEAR } from '~/lib/constants'
+import { IBorrowPool } from '~/types'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
 
-// returns item quote price in 'ether'
-export function getQuotePrice({ oraclePrice, ltv }: { oraclePrice: string; ltv: string }) {
-	return new BigNumber(oraclePrice).times(ltv).div(1e18).div(1e18).toFixed(4)
-}
-
 // returns currentAnnualInterest
 export function formatCurrentAnnualInterest(currentAnnualInterest: string) {
-	return new BigNumber(currentAnnualInterest.toString()).div(1e16).toFixed(2)
+	return Number(new BigNumber(currentAnnualInterest.toString()).div(1e16)).toLocaleString(undefined, {
+		maximumFractionDigits: 2,
+		minimumFractionDigits: 2
+	})
 }
 
 export function formatDailyInterest(currentAnnualInterest: string) {
-	return new BigNumber(
-		new BigNumber(new BigNumber(currentAnnualInterest.toString()).div(SECONDS_IN_A_YEAR)).times(SECONDS_IN_A_DAY)
-	)
-		.div(1e16)
-		.toFixed(2)
+	return Number(
+		new BigNumber(
+			new BigNumber(new BigNumber(currentAnnualInterest.toString()).div(SECONDS_IN_A_YEAR)).times(SECONDS_IN_A_DAY)
+		).div(1e16)
+	).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })
 }
 
 // returns totalToBorrow arg that is passed in a contracts method
@@ -152,3 +151,22 @@ export function getLoansPayableAmount(totalToRepay: number) {
 }
 
 export const gasLimitOverride = new BigNumber(0.0005).times(1e9).toFixed(0, 1)
+
+export const checkIfPoolDisabled = (data: IBorrowPool) => {
+	const oneLoan = Number(data.oraclePrice) * (Number(data.ltv) / 1e18)
+	const maxPriceReached = Number(data.oraclePrice) >= data.maxPrice
+	const rateLimitReached = Number(data.dailyBorrows) + oneLoan > data.maxDailyBorrows
+	const notEnoughETH = oneLoan > data.maxInstantBorrow
+
+	if (maxPriceReached || rateLimitReached || notEnoughETH) {
+		return `Pool Disabled ${
+			maxPriceReached
+				? '(Max Price Reached)'
+				: notEnoughETH
+				? '(Not Enough Liquidity)'
+				: rateLimitReached
+				? '(Rate Limit Reached)'
+				: ''
+		}`
+	} else return false
+}

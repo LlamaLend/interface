@@ -1,23 +1,40 @@
 import { useQuery } from '@tanstack/react-query'
-import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
+import type { IArcadeQuote, IBendDaoQuote, IBorrowPool, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
+import { checkIfPoolDisabled } from '~/utils'
+import { getAllPools } from './useGetAllPools'
+
+interface IAggregatedProtocols {
+	pools: {
+		arcade: Array<IArcadeQuote>
+		bendDao: Array<IBendDaoQuote>
+		jpegd: Array<IJpegdQuote>
+		nftfi: Array<INFTFiQuote>
+		x2y2: Array<IX2Y2Quote>
+	}
+}
 
 export async function getAggregatedPools({ collectionAddress }: { collectionAddress?: string }) {
 	try {
 		if (!collectionAddress) throw new Error('Missing Collection Address')
 
-		const {
-			pools
-		}: {
-			pools: {
-				arcade: Array<IArcadeQuote>
-				bendDao: Array<IBendDaoQuote>
-				jpegd: Array<IJpegdQuote>
-				nftfi: Array<INFTFiQuote>
-				x2y2: Array<IX2Y2Quote>
-			}
-		} = await fetch(`/api/aggregated-pools?collectionAddress=${collectionAddress}`).then((res) => res.json())
+		const [{ pools }, llamalendPools]: [IAggregatedProtocols, Array<IBorrowPool>] = await Promise.all([
+			fetch(`/api/aggregated-pools?collectionAddress=${collectionAddress}`).then((res) => res.json()),
+			getAllPools({ chainId: 1, collectionAddress })
+		])
 
-		return Object.entries(pools || {}).filter((pool) => pool[1].length > 0)
+		const aggrProtocols = {
+			llamalend: llamalendPools
+				.filter((pool) => (checkIfPoolDisabled(pool) ? false : true))
+				.map((pool) => ({
+					pricePerNft: pool.pricePerNft,
+					maxLoanLength: pool.maxLoanLength,
+					currentAnnualInterest: pool.currentAnnualInterest,
+					url: `https://llamalend.com/collections/Ethereum/${collectionAddress}`
+				})),
+			...(pools || {})
+		}
+
+		return Object.entries(aggrProtocols || {}).filter((pool) => pool[1].length > 0)
 	} catch (error) {
 		console.error(error)
 
