@@ -43,6 +43,9 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Liquidation Limit
 							</th>
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+								APR
+							</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -81,6 +84,9 @@ const Pool = ({ pool }: { pool: IJpegdQuote }) => {
 							maximumFractionDigits: 2
 						}
 					)} ${data.symbol}`}
+			</td>
+			<td className="border border-[#252525] p-2 text-center text-sm">
+				{pool.vaultName === 'pETH Vault' ? `5%` : `2%`}
 			</td>
 		</tr>
 	)
