@@ -41,9 +41,9 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Min. Credit
 							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+							{/* <th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Liquidation Limit
-							</th>
+							</th> */}
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								APR
 							</th>
@@ -80,7 +80,7 @@ const Pool = ({ pool, pUsdPerPeth }: { pool: IJpegdQuote; pUsdPerPeth: number })
 						maximumFractionDigits: 2
 					})} ${data.symbol}`}
 			</td>
-			<td className="border border-[#252525] p-2 text-center text-sm">
+			{/* <td className="border border-[#252525] p-2 text-center text-sm">
 				{data &&
 					`${Number(new BigNumber(pool.liquidationLimit).div(10 ** data.decimals).toString()).toLocaleString(
 						undefined,
@@ -88,7 +88,7 @@ const Pool = ({ pool, pUsdPerPeth }: { pool: IJpegdQuote; pUsdPerPeth: number })
 							maximumFractionDigits: 2
 						}
 					)} ${data.symbol}`}
-			</td>
+			</td> */}
 			<td className="border border-[#252525] p-2 text-center text-sm">
 				{pool.vaultName === 'pETH Vault' ? `5%` : `2%`}
 			</td>
