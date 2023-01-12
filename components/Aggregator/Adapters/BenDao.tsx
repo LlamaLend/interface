@@ -35,7 +35,7 @@ export const BenDaoPools = ({ pools }: { pools: Array<IBendDaoQuote> }) => {
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Available to Borrow</th>
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">LTV</th>
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">APR</th>
-							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Liquidation Threshold</th>
+							{/* <th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Liquidation Threshold</th> */}
 						</tr>
 					</thead>
 					<tbody>
@@ -72,9 +72,9 @@ const Pool = ({ pool }: { pool: IBendDaoQuote }) => {
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				{`${(Number(pool.currentVariableBorrowRate) / 1e25).toFixed(2)}%`}
 			</td>
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+			{/* <td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				{`${(Number(pool.liquidationThreshold) / 1e2).toFixed(2)}%`}
-			</td>
+			</td> */}
 		</tr>
 	)
 }
