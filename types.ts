@@ -161,6 +161,7 @@ export interface IArcadeQuote {
 export interface IBendDaoQuote {
 	floorInEth: string
 	borrowableToken: string
+	currentVariableBorrowRate: string
 	availableBorrow: string
 	ltv: string
 	liquidationThreshold: string

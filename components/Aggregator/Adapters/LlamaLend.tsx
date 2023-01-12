@@ -3,7 +3,7 @@ import * as relativeTime from 'dayjs/plugin/relativeTime'
 import Tooltip from '~/components/Tooltip'
 import type { ILlamaLendQuote } from '~/types'
 import Image from 'next/image'
-import { formatCurrentAnnualInterest, formatDailyInterest } from '~/utils'
+import { formatCurrentAnnualInterest } from '~/utils'
 
 // @ts-ignore
 dayjs.extend(relativeTime)

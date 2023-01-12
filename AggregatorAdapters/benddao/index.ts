@@ -23,11 +23,13 @@ export async function getDataBendDao(nft: string) {
 		if (!nfts.includes(nft.toLowerCase())) return []
 		const lendPoolContract = new ethers.Contract(lendPool, lendPoolAbi, CHAINS_CONFIGURATION[1].chainProvider)
 		const collateralData = await lendPoolContract.getNftCollateralData(nft, weth)
+		const [, , , , currentVariableBorrowRate, , , , ,] = await lendPoolContract.getReserveData(weth)
 
 		const result: IBendDaoQuote[] = [
 			{
 				floorInEth: collateralData.totalCollateralInReserve.toString(),
 				borrowableToken: weth,
+				currentVariableBorrowRate: currentVariableBorrowRate.toString(),
 				availableBorrow: collateralData.availableBorrowsInReserve.toString(),
 				ltv: collateralData.ltv.toString(),
 				liquidationThreshold: collateralData.liquidationThreshold.toString(),
