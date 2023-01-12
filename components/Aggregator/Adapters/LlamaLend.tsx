@@ -3,7 +3,7 @@ import * as relativeTime from 'dayjs/plugin/relativeTime'
 import Tooltip from '~/components/Tooltip'
 import type { ILlamaLendQuote } from '~/types'
 import Image from 'next/image'
-import { formatDailyInterest } from '~/utils'
+import { formatCurrentAnnualInterest, formatDailyInterest } from '~/utils'
 
 // @ts-ignore
 dayjs.extend(relativeTime)
@@ -41,7 +41,7 @@ export const LlamalendPools = ({ pools }: { pools: Array<ILlamaLendQuote> }) => 
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Max Duration</th>
 
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Daily Interest
+								APR
 							</th>
 						</tr>
 					</thead>
@@ -67,7 +67,7 @@ const Pool = ({ pool }: { pool: ILlamaLendQuote }) => {
 			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
-				{`${formatDailyInterest(pool.currentAnnualInterest)}%`}
+				{`${formatCurrentAnnualInterest(pool.currentAnnualInterest)}%`}
 			</td>
 		</tr>
 	)

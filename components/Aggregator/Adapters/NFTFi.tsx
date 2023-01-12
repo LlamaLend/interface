@@ -160,7 +160,7 @@ export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Principal</th>
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Duration</th>
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">PayOff</th>
-							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Interest</th>
+							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">APR</th>
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Expiry</th>
 						</tr>
 					</thead>
@@ -200,7 +200,12 @@ const Pool = ({ pool }: { pool: INFTFiQuote }) => {
 			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
-				{((1 - Number(pool.principal) / Number(pool.repayment)) * 100).toFixed(2)}%
+				{(
+					((Number(pool.repayment) / Number(pool.principal) - 1) / (Number(pool.duration) / 86400)) *
+					365 *
+					100
+				).toFixed(2)}
+				%
 			</td>
 
 			<td className="border border-[#252525] p-2 text-center text-sm">

@@ -52,7 +52,7 @@ export const ArcadePools = ({ pools }: { pools: Array<IArcadeQuote> }) => {
 								PayOff
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Interest
+								APR
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Expiry
@@ -96,7 +96,7 @@ const Pool = ({ pool }: { pool: IArcadeQuote }) => {
 			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
-				{(Number(pool.interestRate) / 1e20).toFixed(2)}%
+				{((Number(pool.interestRate) * (86400 / Number(pool.loanDuration)) * 365) / 1e20).toFixed(2)}%
 			</td>
 
 			<td className="border border-[#252525] p-2 text-center text-sm">

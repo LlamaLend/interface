@@ -112,7 +112,7 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">PayOff</th>
 
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Interest
+								APR
 							</th>
 
 							<th className="border border-[#252525] p-2 text-sm font-normal text-[#989898]">Expiry</th>
@@ -154,7 +154,7 @@ const Pool = ({ pool }: { pool: IX2Y2Quote }) => {
 			</td>
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
-				{`${((1 - Number(pool.amount) / Number(pool.repayment)) * 100).toFixed(2)}%`}
+				{(Number(pool.apr) / 1e2).toFixed(2)}%
 			</td>
 
 			<td className="border border-[#252525] p-2 text-center text-sm">
