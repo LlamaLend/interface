@@ -13,6 +13,7 @@ import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
 import { AggregatedAdapters } from '~/components/Aggregator/Adapters'
+import { getAllCollections } from '~/queries/useGetAllCollections'
 
 interface IPageProps {
 	collections: Array<{ address: string; name: string }>
@@ -37,6 +38,8 @@ export async function getStaticProps() {
 		getX2y2Collections()
 	])
 
+	const llamaCollections = await getAllCollections({ chainId: 1 })
+
 	const collectionAddresses = new Set<string>()
 
 	res.forEach((col) => {
@@ -46,6 +49,8 @@ export async function getStaticProps() {
 			})
 		}
 	})
+
+	llamaCollections.forEach((col) => collectionAddresses.add(col.address))
 
 	const collections = await Promise.allSettled(
 		Array.from(collectionAddresses).map((address) => getCollectionName(address))
