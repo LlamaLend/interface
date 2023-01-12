@@ -4,6 +4,7 @@ import type { IJpegdQuote } from '~/types'
 import BigNumber from 'bignumber.js'
 
 export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
+	const pUsdPerPeth = Number(pools[1].credit) / Number(pools[0].credit)
 	return (
 		<div>
 			<div className="relative flex min-h-[2.625rem] items-center justify-center gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] p-2">
@@ -50,7 +51,7 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 					</thead>
 					<tbody>
 						{pools.map((pool, index) => (
-							<Pool key={Object.values(pool).join('') + index} pool={pool} />
+							<Pool key={Object.values(pool).join('') + index} pool={pool} pUsdPerPeth={pUsdPerPeth} />
 						))}
 					</tbody>
 				</table>
@@ -59,16 +60,19 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 	)
 }
 
-const Pool = ({ pool }: { pool: IJpegdQuote }) => {
+const Pool = ({ pool, pUsdPerPeth }: { pool: IJpegdQuote; pUsdPerPeth: number }) => {
 	const { data } = useToken({ address: pool.pToken, chainId: 1 })
 
 	return (
 		<tr className="h-[2.625rem]">
 			<td className="border border-[#252525] p-2 text-center text-sm">
-				{data &&
+				{/* {data &&
 					`${Number(new BigNumber(pool.floorInEth).div(10 ** 18).toString()).toLocaleString(undefined, {
 						maximumFractionDigits: 2
-					})} ETH`}
+					})} ETH`} */}
+				{data && pool.vaultName === 'pETH Vault'
+					? `${(Number(pool.floorInEth) / 1e18).toFixed(2)} pETH`
+					: `${((Number(pool.floorInEth) / 1e18) * pUsdPerPeth).toFixed(2)} pUSd`}
 			</td>
 			<td className="border border-[#252525] p-2 text-center text-sm">
 				{data &&
