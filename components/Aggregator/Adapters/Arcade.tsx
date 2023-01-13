@@ -12,7 +12,7 @@ export const ArcadePools = ({ pools }: { pools: Array<IArcadeQuote> }) => {
 	return (
 		<div>
 			<div className="relative flex min-h-[2.625rem] items-center justify-center gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] p-2">
-				<svg xmlns="http://www.w3.org/2000/svg" width="181" height="20px" viewBox="0 0 181 44" fill="none">
+				<svg xmlns="http://www.w3.org/2000/svg" width="180" height="20px" viewBox="0 0 181 44" fill="none">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -20,7 +20,6 @@ export const ArcadePools = ({ pools }: { pools: Array<IArcadeQuote> }) => {
 						fill="#E1E8EA"
 					/>
 				</svg>
-
 				<a
 					href={pools[0].loanUrl}
 					target="_blank"
