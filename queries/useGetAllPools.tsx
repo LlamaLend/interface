@@ -116,16 +116,19 @@ async function getPoolNameAndDeposits({
 
 		const quote = await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress, skipRetries: true })
 
-		const [collectionName, poolBalance, totalBorrowed, { maxInstantBorrow }] = await Promise.all([
+		const res = await Promise.allSettled([
 			nftContract.name(),
 			provider.getBalance(poolAddress),
 			poolContract.totalBorrowed(),
-			poolContract.getDailyBorrows(),
-			poolContract.currentAnnualInterest(getTotalReceivedArg({ oraclePrice: quote?.price, noOfItems: 1, ltv }))
+			poolContract.getDailyBorrows()
 		])
 
+		const [collectionName, poolBalance, totalBorrowed, dailyBorrows] = res.map((data) =>
+			data.status === 'fulfilled' ? data.value : null
+		)
+
 		const priceAndCurrentBorrowables = getMaxNftsToBorrow({
-			maxInstantBorrow: maxInstantBorrow.toString(),
+			maxInstantBorrow: dailyBorrows && dailyBorrows.maxInstantBorrow.toString(),
 			oraclePrice: quote?.price,
 			ltv
 		})
@@ -343,7 +346,7 @@ export async function getAllPoolsNameAndDeposits({ chainId }: IGetAllPoolsArgs) 
 			`
 		)
 
-		const poolAddlInfo = await Promise.all(
+		const poolAddlInfo = await Promise.allSettled(
 			pools.map((pool) =>
 				getPoolNameAndDeposits({
 					poolAddress: pool.address,
@@ -356,12 +359,14 @@ export async function getAllPoolsNameAndDeposits({ chainId }: IGetAllPoolsArgs) 
 			)
 		)
 
+		const addlInfo = poolAddlInfo.map((pool) => (pool.status === 'fulfilled' ? pool.value : null))
+
 		return pools
 			.map((pool, index) => ({
 				nftContract: getAddress(pool.nftContract),
-				totalDeposited: poolAddlInfo?.[index]?.totalDeposited ?? '0',
-				maxNftsToBorrow: poolAddlInfo?.[index]?.maxNftsToBorrow ?? '0',
-				collectionName: poolAddlInfo?.[index]?.collectionName ?? ''
+				totalDeposited: addlInfo?.[index]?.totalDeposited ?? '0',
+				maxNftsToBorrow: addlInfo?.[index]?.maxNftsToBorrow ?? '0',
+				collectionName: addlInfo?.[index]?.collectionName ?? ''
 			}))
 			.sort((a, b) => Number(b.maxNftsToBorrow) - Number(a.maxNftsToBorrow))
 	} catch (error: any) {
