@@ -58,7 +58,7 @@ export default function AdminPool({
 	const debouncedMaxInterest = useDebounce(!Number.isNaN(Number(maxInterest)) ? Number(maxInterest) : 0, 200)
 
 	const isInvalidInterests =
-		minInterest === '' || maxInterest === '' ? true : debouncedMaxInterest < debouncedMinInterest
+		minInterest === '' || maxInterest === '' ? true : debouncedMaxInterest <= debouncedMinInterest
 
 	const [amountToDeposit, setAmountToDeposit] = useState<string>('')
 	const [amountToWithdraw, setAmountToWithdraw] = useState<string>('')
