@@ -52,15 +52,7 @@ async function getPoolAddlInfo({
 
 		const quote = skipOracle ? null : await fetchOracle({ api: quoteApi, isTestnet, nftContractAddress })
 
-		const [
-			collectionName,
-			poolBalance,
-			totalBorrowed,
-			{ maxInstantBorrow, dailyBorrows, maxDailyBorrowsLimit },
-			currentAnnualInterest,
-			maxPrice,
-			oracle
-		] = await Promise.all([
+		const res = await Promise.allSettled([
 			nftContract.name(),
 			provider.getBalance(poolAddress),
 			poolContract.totalBorrowed(),
@@ -70,8 +62,12 @@ async function getPoolAddlInfo({
 			poolContract.oracle()
 		])
 
+		const [collectionName, poolBalance, totalBorrowed, dailyBorrows, currentAnnualInterest, maxPrice, oracle] = res.map(
+			(data) => (data.status === 'fulfilled' ? data.value : null)
+		)
+
 		const priceAndCurrentBorrowables = getMaxNftsToBorrow({
-			maxInstantBorrow: maxInstantBorrow.toString(),
+			maxInstantBorrow: dailyBorrows && dailyBorrows.maxInstantBorrow.toString(),
 			oraclePrice: quote?.price,
 			ltv
 		})
@@ -84,9 +80,9 @@ async function getPoolAddlInfo({
 			pricePerNft: priceAndCurrentBorrowables.pricePerNft,
 			maxPrice: Number(maxPrice),
 			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow,
-			maxInstantBorrow: Number(maxInstantBorrow),
+			maxInstantBorrow: dailyBorrows && Number(dailyBorrows.maxInstantBorrow),
 			dailyBorrows: Number(dailyBorrows),
-			maxDailyBorrows: Number(maxDailyBorrowsLimit),
+			maxDailyBorrows: dailyBorrows && Number(dailyBorrows.maxDailyBorrowsLimit),
 			currentAnnualInterest,
 			oracle,
 			oraclePrice: quote?.price
