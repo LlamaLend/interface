@@ -134,6 +134,7 @@ export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 							</g>
 						</g>
 					</svg>
+					<h1>NFTFi</h1>
 					<Tooltip content="Fixed Interest">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path

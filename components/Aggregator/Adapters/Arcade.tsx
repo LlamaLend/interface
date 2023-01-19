@@ -21,6 +21,7 @@ export const ArcadePools = ({ pools }: { pools: Array<IArcadeQuote> }) => {
 							fill="#E1E8EA"
 						/>
 					</svg>
+					<h1>Arcade.xyz</h1>
 					<Tooltip content="Fixed Interest">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path

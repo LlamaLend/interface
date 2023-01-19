@@ -13,6 +13,7 @@ export const JPEGDPools = ({ pools }: { pools: Array<IJpegdQuote> }) => {
 						alt=""
 						className="relative -top-[2px] h-5"
 					/>
+					<h1>JPEG'd</h1>
 					<Tooltip content="Price based liquidations">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004zM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 01-.921.42z" />

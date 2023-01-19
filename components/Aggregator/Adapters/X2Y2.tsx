@@ -84,6 +84,7 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							</linearGradient>
 						</defs>
 					</svg>
+					<h1>X2Y2</h1>
 					<Tooltip content="Fixed Interest">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path
