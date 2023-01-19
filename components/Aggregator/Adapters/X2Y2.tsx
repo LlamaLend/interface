@@ -11,8 +11,8 @@ dayjs.extend(relativeTime)
 export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 	return (
 		<div>
-			<div className="relative flex min-h-[2.625rem] items-center justify-center gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] p-2">
-				<div className="flex gap-1">
+			<div className="relative flex min-h-[2.625rem] items-center justify-between gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] py-2 px-4">
+				<div className="flex items-center gap-1">
 					<svg viewBox="0 0 130 30" height="20px" focusable="false" className="chakra-icon css-1oovn9z">
 						<path
 							d="M52 30L56.0652 20.2266L52 10.17H57.085L60.2011 18.5127H60.6261L63.7989 10.17H68.8839L64.7762 20.2266L68.8839 30H63.7989L60.6261 21.8839H60.2153L57.085 30H52Z"
@@ -98,7 +98,7 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 					href={pools[0].url}
 					target="_blank"
 					rel="noreferrer noopener"
-					className="absolute right-0 top-1 bottom-1 my-auto mx-6 flex flex-nowrap items-center justify-center gap-1 rounded-xl border border-[#252525] p-2 text-xs"
+					className="absolute right-0 top-1 bottom-1 my-auto mx-4 flex flex-nowrap items-center justify-center gap-1 rounded-xl border border-[#252525] p-2 text-xs"
 				>
 					<Tooltip content="View Collection">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">

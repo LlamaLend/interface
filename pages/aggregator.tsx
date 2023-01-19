@@ -50,7 +50,7 @@ export async function getStaticProps() {
 		}
 	})
 
-	llamaCollections.forEach((col) => collectionAddresses.add(col.address))
+	llamaCollections.forEach((col) => collectionAddresses.add(col.address.toLowerCase()))
 
 	const collections = await Promise.allSettled(
 		Array.from(collectionAddresses).map((address) => getCollectionName(address))
