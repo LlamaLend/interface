@@ -15,7 +15,7 @@ export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 				<div className="flex gap-1">
 					<svg
 						height="20px"
-						viewBox="0 0 310 140"
+						viewBox="0 0 320 130"
 						xmlns="http://www.w3.org/2000/svg"
 						xmlnsXlink="http://www.w3.org/1999/xlink"
 					>
@@ -134,7 +134,6 @@ export const NFTFIPools = ({ pools }: { pools: Array<INFTFiQuote> }) => {
 							</g>
 						</g>
 					</svg>
-					<h1>NFTfi</h1>
 					<Tooltip content="Fixed Interest">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path

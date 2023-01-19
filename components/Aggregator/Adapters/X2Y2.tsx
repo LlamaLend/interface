@@ -13,7 +13,7 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 		<div>
 			<div className="relative flex min-h-[2.625rem] items-center justify-center gap-2 rounded-t-xl border border-b-0 border-[#252525] bg-[#111111] p-2">
 				<div className="flex gap-1">
-					<svg viewBox="0 0 130 25" height="20px" focusable="false" className="chakra-icon css-1oovn9z">
+					<svg viewBox="0 0 130 30" height="20px" focusable="false" className="chakra-icon css-1oovn9z">
 						<path
 							d="M52 30L56.0652 20.2266L52 10.17H57.085L60.2011 18.5127H60.6261L63.7989 10.17H68.8839L64.7762 20.2266L68.8839 30H63.7989L60.6261 21.8839H60.2153L57.085 30H52Z"
 							fill="currentColor"
@@ -84,7 +84,6 @@ export const X2Y2Pools = ({ pools }: { pools: Array<IX2Y2Quote> }) => {
 							</linearGradient>
 						</defs>
 					</svg>
-					<p>X2Y2</p>
 					<Tooltip content="Fixed Interest">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path
