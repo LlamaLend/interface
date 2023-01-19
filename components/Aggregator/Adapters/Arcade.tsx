@@ -42,14 +42,14 @@ export const ArcadePools = ({ pools }: { pools: Array<IArcadeQuote> }) => {
 					<thead className="h-[2.625rem] bg-[#111111]">
 						<tr>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Principal
+								Borrowable
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Duration
 							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+							{/* <th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								PayOff
-							</th>
+							</th> */}
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								APR
 							</th>
@@ -86,13 +86,13 @@ const Pool = ({ pool }: { pool: IArcadeQuote }) => {
 				{dayjs(Date.now() + pool.loanDuration * 1000).toNow(true)}
 			</td>
 
-			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
+			{/* <td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				{data &&
 					`${(
 						(Number(pool.principal) * (Number(pool.interestRate) / 1e22) + Number(pool.principal)) /
 						10 ** data.decimals
 					).toFixed(2)} ${data.symbol}`}
-			</td>
+			</td> */}
 
 			<td className="h-[2.625rem] border border-[#252525] p-2 text-center text-sm font-light">
 				{((Number(pool.interestRate) * (86400 / Number(pool.loanDuration)) * 365) / 1e20).toFixed(2)}%
