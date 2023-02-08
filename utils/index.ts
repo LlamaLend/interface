@@ -158,15 +158,17 @@ export const checkIfPoolDisabled = (data: IBorrowPool) => {
 	const rateLimitReached = Number(data.dailyBorrows) + oneLoan > data.maxDailyBorrows
 	const notEnoughETH = oneLoan > data.maxInstantBorrow
 
-	if (maxPriceReached || rateLimitReached || notEnoughETH) {
-		return `Pool Disabled ${
-			maxPriceReached
-				? '(Max Price Reached)'
-				: notEnoughETH
-				? '(Not Enough Liquidity)'
-				: rateLimitReached
-				? '(Rate Limit Reached)'
-				: ''
-		}`
-	} else return false
+	if (Number(data.poolBalance) === 0 || notEnoughETH) {
+		return `Pool Disabled (Not Enough Liquidity)`
+	}
+
+	if (maxPriceReached) {
+		return `Pool Disabled (Max Price Reached)`
+	}
+
+	if (rateLimitReached) {
+		return `Pool Disabled (Daily Limit Reached)`
+	}
+
+	return false
 }

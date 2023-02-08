@@ -81,7 +81,7 @@ async function getPoolAddlInfo({
 			maxPrice: Number(maxPrice),
 			maxNftsToBorrow: priceAndCurrentBorrowables.maxNftsToBorrow,
 			maxInstantBorrow: dailyBorrows && Number(dailyBorrows.maxInstantBorrow),
-			dailyBorrows: Number(dailyBorrows),
+			dailyBorrows: dailyBorrows && Number(dailyBorrows.dailyBorrows),
 			maxDailyBorrows: dailyBorrows && Number(dailyBorrows.maxDailyBorrowsLimit),
 			currentAnnualInterest,
 			oracle,

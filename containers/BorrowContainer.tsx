@@ -81,8 +81,8 @@ const BorrowContainer = ({ chainId, chainName, collectionAddress }: IPoolsContai
 		const maxInterest = sortedPoolsByInterest[sortedPoolsByInterest.length - 1]?.currentAnnualInterest
 
 		poolsInterestRange = [
-			minInterest ? Number(formatDailyInterest(minInterest.toString())) : 0,
-			maxInterest ? Number(formatDailyInterest(maxInterest.toString())) : 1
+			minInterest ? Number(formatDailyInterest(minInterest)) : 0,
+			maxInterest ? Number(formatDailyInterest(maxInterest)) : 1
 		]
 
 		const sortedPoolsByLoanAmount = data.sort(
