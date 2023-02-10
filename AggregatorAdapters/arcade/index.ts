@@ -1,6 +1,6 @@
 import { IArcadeQuote } from '~/types'
 
-const loantermurl = 'https://api-v2.arcade.xyz/api/v2/loanterms?kind=collection&collectionId'
+const loantermurl = 'https://api-v2.arcade.xyz/api/v2/loanterms?kind=collection&count=999&collectionId'
 // eslint-disable-next-line no-undef
 const requestHeaders: HeadersInit = new Headers()
 requestHeaders.set('x-api-key', process.env.ARCADE_API_KEY as string)
