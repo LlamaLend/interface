@@ -46,12 +46,9 @@ interface ILendRes {
 
 export async function getArcadeCollections() {
 	try {
-		const res = await fetch(
-			`http://api-v2.arcade.xyz/api/v2/lend`,
-			{
-				headers: requestHeaders
-			}
-		)
+		const res = await fetch(`http://api-v2.arcade.xyz/api/v2/lend`, {
+			headers: requestHeaders
+		})
 			.then((res) => res.json())
 			.then((res: Array<{ loanTerms: Array<ILendRes> }>) =>
 				res.reduce((acc, curr) => {
