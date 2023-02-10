@@ -1,12 +1,21 @@
 import BeatLoader from '~/components/BeatLoader'
 import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
-import type { IArcadeQuote, IBendDaoQuote, IJpegdQuote, ILlamaLendQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
+import type {
+	IArcadeQuote,
+	IBendDaoQuote,
+	ICyanQuote,
+	IJpegdQuote,
+	ILlamaLendQuote,
+	INFTFiQuote,
+	IX2Y2Quote
+} from '~/types'
 import { ArcadePools } from './Arcade'
 import { BenDaoPools } from './BenDao'
 import { JPEGDPools } from './JPEGD'
 import { LlamalendPools } from './LlamaLend'
 import { NFTFIPools } from './NFTFi'
 import { X2Y2Pools } from './X2Y2'
+import { CyanPools } from './Cyan'
 
 export function AggregatedAdapters({
 	collectionAddress,
@@ -54,6 +63,7 @@ const Adapter = ({
 		| Array<IJpegdQuote>
 		| Array<IX2Y2Quote>
 		| Array<ILlamaLendQuote>
+		| Array<ICyanQuote>
 }) => {
 	if (name === 'llamalend') {
 		return <LlamalendPools pools={pools as Array<ILlamaLendQuote>} />
@@ -79,7 +89,11 @@ const Adapter = ({
 		return <ArcadePools pools={pools as Array<IArcadeQuote>} />
 	}
 
+	if (name === 'cyan') {
+		return <CyanPools pools={pools as Array<ICyanQuote>} />
+	}
+
 	return <></>
 }
 
-// 'nftfi' | 'x2y2' | 'arcade' | 'bendDao' | 'jpegd'
+// 'nftfi' | 'x2y2' | 'arcade' | 'bendDao' | 'jpegd' | 'cyan'

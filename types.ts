@@ -204,3 +204,13 @@ export interface ILlamaLendQuote {
 	currentAnnualInterest: string
 	url: string
 }
+
+export interface ICyanQuote {
+	currency: string
+	amount: string
+	interestRate: number
+	interestRateApr: number
+	totalNumOfPayments: number
+	term: number
+	url: string
+}

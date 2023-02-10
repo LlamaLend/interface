@@ -1,5 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import type { IArcadeQuote, IBendDaoQuote, IBorrowPool, IJpegdQuote, INFTFiQuote, IX2Y2Quote } from '~/types'
+import type {
+	IArcadeQuote,
+	IBendDaoQuote,
+	IBorrowPool,
+	ICyanQuote,
+	IJpegdQuote,
+	INFTFiQuote,
+	IX2Y2Quote
+} from '~/types'
 import { checkIfPoolDisabled } from '~/utils'
 import { getAllPools } from './useGetAllPools'
 
@@ -10,6 +18,7 @@ interface IAggregatedProtocols {
 		jpegd: Array<IJpegdQuote>
 		nftfi: Array<INFTFiQuote>
 		x2y2: Array<IX2Y2Quote>
+		cyan: Array<ICyanQuote>
 	}
 }
 
