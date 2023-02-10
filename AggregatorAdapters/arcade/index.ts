@@ -7,12 +7,6 @@ requestHeaders.set('x-api-key', process.env.ARCADE_API_KEY as string)
 
 export async function getDataArcade(nft: string) {
 	try {
-		const collections = await getArcadeCollections().then((res) =>
-			res.filter((res: any) => res.toLowerCase() === nft.toLowerCase())
-		)
-
-		if (collections.length === 0) return []
-
 		const now = Math.floor(Date.now() / 1e3)
 
 		const loanterms = await fetch(`${loantermurl}=${nft.toLowerCase()}`, {
@@ -53,8 +47,7 @@ interface ILendRes {
 export async function getArcadeCollections() {
 	try {
 		const res = await fetch(
-			`http://api-v2.arcade.xyz/api/v2/lend
-		`,
+			`http://api-v2.arcade.xyz/api/v2/lend`,
 			{
 				headers: requestHeaders
 			}
