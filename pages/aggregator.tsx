@@ -9,6 +9,7 @@ import { getBendDaoCollections } from '~/AggregatorAdapters/benddao'
 import { getJpegdCollections } from '~/AggregatorAdapters/jpegd'
 import { getNftFiCollections } from '~/AggregatorAdapters/nftfi'
 import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
+import { getParaSpaceCollections } from '~/AggregatorAdapters/paraspace'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
@@ -35,7 +36,8 @@ export async function getStaticProps() {
 		getBendDaoCollections(),
 		getJpegdCollections(),
 		getNftFiCollections(),
-		getX2y2Collections()
+		getX2y2Collections(),
+		getParaSpaceCollections()
 	])
 
 	const llamaCollections = await getAllCollections({ chainId: 1 })
