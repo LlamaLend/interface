@@ -9,6 +9,7 @@ import { getBendDaoCollections } from '~/AggregatorAdapters/benddao'
 import { getJpegdCollections } from '~/AggregatorAdapters/jpegd'
 import { getNftFiCollections } from '~/AggregatorAdapters/nftfi'
 import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
+import { getCyanCollections } from '~/AggregatorAdapters/cyan'
 import { getParaSpaceCollections } from '~/AggregatorAdapters/paraspace'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
@@ -37,6 +38,7 @@ export async function getStaticProps() {
 		getJpegdCollections(),
 		getNftFiCollections(),
 		getX2y2Collections(),
+		getCyanCollections(),
 		getParaSpaceCollections()
 	])
 
