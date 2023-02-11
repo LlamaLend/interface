@@ -18,7 +18,9 @@ export const getParaSpaceCollections = async () => {
 export async function getDataParaspace(nft: string) {
 	try {
 		const [reservesData] = await uiPool.getReservesData(PoolAddressProvider)
-		const nftData = reservesData.find((r: any) => r.underlyingAsset.toLowerCase() === nft.toLowerCase())
+		const nftData = reservesData.find(
+			(r: any) => r.underlyingAsset.toLowerCase() === nft.toLowerCase() && r.usageAsCollateralEnabled
+		)
 		if (!nftData) return []
 		const erc20Data = reservesData.filter((r: any) => r.assetType.toString() === '0' && r.borrowingEnabled)
 		const nftAvailableBorrowInETH = BigNumber.from(nftData.priceInMarketReferenceCurrency)
