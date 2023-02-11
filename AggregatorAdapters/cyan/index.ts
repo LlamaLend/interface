@@ -35,7 +35,7 @@ export async function getCyanCollections() {
 		const res = await fetch('https://api.usecyan.com/collections?chainId=1', {
 			headers: requestHeaders
 		}).then((res) => res.json())
-		return res.map((col) => col.address)
+		return res.map((col: any) => col.address)
 	} catch (error) {
 		console.error(`Failed to get Cyan collections: ${error}`)
 		return []
