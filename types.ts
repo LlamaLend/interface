@@ -204,3 +204,13 @@ export interface ILlamaLendQuote {
 	currentAnnualInterest: string
 	url: string
 }
+
+export type IParaSpaceQuote = {
+	floorInEth: string
+	borrowableToken: string
+	availableBorrow: string
+	borrowableTokenVariableBorrowRate: string
+	ltv: string
+	liquidationThreshold: string
+	loanUrl: string
+}

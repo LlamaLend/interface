@@ -4,6 +4,7 @@ import { getDataBendDao } from '~/AggregatorAdapters/benddao'
 import { getDataJpegd } from '~/AggregatorAdapters/jpegd'
 import { getDataNftFi } from '~/AggregatorAdapters/nftfi'
 import { getDataX2y2 } from '~/AggregatorAdapters/x2y2'
+import { getDataParaspace } from '~/AggregatorAdapters/paraspace'
 
 export default async function getAggregatedPools(req: NextApiRequest, res: NextApiResponse) {
 	const { collectionAddress } = req.query
@@ -13,12 +14,13 @@ export default async function getAggregatedPools(req: NextApiRequest, res: NextA
 
 		if (typeof collectionAddress !== 'string') throw new Error('Invalid Collection Address')
 
-		const [x2y2, jpegd, nftfi, arcade, bendDao] = await Promise.allSettled([
+		const [x2y2, jpegd, nftfi, arcade, bendDao, paraspace] = await Promise.allSettled([
 			getDataX2y2(collectionAddress),
 			getDataJpegd(collectionAddress),
 			getDataNftFi(collectionAddress),
 			getDataArcade(collectionAddress),
-			getDataBendDao(collectionAddress)
+			getDataBendDao(collectionAddress),
+			getDataParaspace(collectionAddress)
 		])
 
 		res.status(200).json({
@@ -27,7 +29,8 @@ export default async function getAggregatedPools(req: NextApiRequest, res: NextA
 				nftfi: nftfi.status === 'fulfilled' ? nftfi.value : [],
 				arcade: arcade.status === 'fulfilled' ? arcade.value : [],
 				bendDao: bendDao.status === 'fulfilled' ? bendDao.value : [],
-				jpegd: jpegd.status === 'fulfilled' ? jpegd.value : []
+				jpegd: jpegd.status === 'fulfilled' ? jpegd.value : [],
+				paraspace: paraspace.status === 'fulfilled' ? paraspace.value : []
 			}
 		})
 	} catch (error: any) {
