@@ -3,11 +3,12 @@ import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
 import type {
 	IArcadeQuote,
 	IBendDaoQuote,
+	ICyanQuote,
 	IJpegdQuote,
 	ILlamaLendQuote,
 	INFTFiQuote,
-	IParaSpaceQuote,
-	IX2Y2Quote
+	IX2Y2Quote,
+	IParaSpaceQuote
 } from '~/types'
 import { ArcadePools } from './Arcade'
 import { BenDaoPools } from './BenDao'
@@ -16,6 +17,7 @@ import { LlamalendPools } from './LlamaLend'
 import { NFTFIPools } from './NFTFi'
 import { X2Y2Pools } from './X2Y2'
 import { ParaSpacePools } from './Paraspace'
+import { CyanPools } from './Cyan'
 
 export function AggregatedAdapters({
 	collectionAddress,
@@ -64,6 +66,7 @@ const Adapter = ({
 		| Array<IX2Y2Quote>
 		| Array<ILlamaLendQuote>
 		| Array<IParaSpaceQuote>
+		| Array<ICyanQuote>
 }) => {
 	if (name === 'llamalend') {
 		return <LlamalendPools pools={pools as Array<ILlamaLendQuote>} />
@@ -92,8 +95,11 @@ const Adapter = ({
 	if (name === 'paraspace') {
 		return <ParaSpacePools pools={pools as Array<IParaSpaceQuote>} />
 	}
+	if (name === 'cyan') {
+		return <CyanPools pools={pools as Array<ICyanQuote>} />
+	}
 
 	return <></>
 }
 
-// 'nftfi' | 'x2y2' | 'arcade' | 'bendDao' | 'jpegd'
+// 'nftfi' | 'x2y2' | 'arcade' | 'bendDao' | 'jpegd' | 'cyan'

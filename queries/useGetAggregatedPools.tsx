@@ -3,10 +3,11 @@ import type {
 	IArcadeQuote,
 	IBendDaoQuote,
 	IBorrowPool,
+	ICyanQuote,
 	IJpegdQuote,
 	INFTFiQuote,
-	IParaSpaceQuote,
-	IX2Y2Quote
+	IX2Y2Quote,
+	IParaSpaceQuote
 } from '~/types'
 import { checkIfPoolDisabled } from '~/utils'
 import { getAllPools } from './useGetAllPools'
@@ -19,6 +20,7 @@ interface IAggregatedProtocols {
 		nftfi: Array<INFTFiQuote>
 		x2y2: Array<IX2Y2Quote>
 		paraspace: Array<IParaSpaceQuote>
+		cyan: Array<ICyanQuote>
 	}
 }
 
