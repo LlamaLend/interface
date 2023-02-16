@@ -24,7 +24,7 @@ export const ZhartaPools = ({ pools }: { pools: Array<IZhartaQuote> }) => {
 							/>
 						</svg>
 					</Tooltip>
-          <Tooltip content="Pay for time borrowed">
+					<Tooltip content="Pay for time borrowed">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
 							<path
 								fillRule="evenodd"
@@ -58,13 +58,13 @@ export const ZhartaPools = ({ pools }: { pools: Array<IZhartaQuote> }) => {
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Min Borrowable Per NFT
 							</th>
-              <th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Max Borrowable Per NFT
 							</th>
-              <th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Duration
 							</th>
-              <th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
+							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								LTV
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
@@ -88,24 +88,20 @@ const Pool = ({ pool }: { pool: IZhartaQuote }) => {
 		<tr className="h-[2.625rem]">
 			<td className="border border-[#252525] p-2 text-center text-sm">
 				{`${Number(new BigNumber(pool.minBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
-						maximumFractionDigits: 2
-					})} ETH`}
+					maximumFractionDigits: 2
+				})} ETH`}
 			</td>
-      <td className="border border-[#252525] p-2 text-center text-sm">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{`${Number(new BigNumber(pool.maxBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
-						maximumFractionDigits: 2
-					})} ETH`}
+					maximumFractionDigits: 2
+				})} ETH`}
 			</td>
-      <td className="border border-[#252525] p-2 text-center text-sm">
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{/* @ts-ignore */}
-				{dayjs()
-					.add(pool.duration, 'seconds')
-					.toNow(true)}
+				{dayjs().add(pool.duration, 'seconds').toNow(true)}
 			</td>
-      <td className="border border-[#252525] p-2 text-center text-sm">
-				{`${Number(pool.ltv)}%`}
-			</td>
-      <td className="border border-[#252525] p-2 text-center text-sm">
+			<td className="border border-[#252525] p-2 text-center text-sm">{`${Number(pool.ltv)}%`}</td>
+			<td className="border border-[#252525] p-2 text-center text-sm">
 				{`${(Number(pool.interestRateApr) * 100).toFixed(0)}%`}
 			</td>
 		</tr>

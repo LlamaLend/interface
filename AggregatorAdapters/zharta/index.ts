@@ -28,45 +28,47 @@ requestHeaders.set('content-type', 'application/json')
 
 export async function getDataZharta(collectionAddress: string) {
 	try {
-    const collection = collections.get(collectionAddress.toLowerCase())
+		const collection = collections.get(collectionAddress.toLowerCase())
 
-    if (collection !== undefined) {
-      const fpToken = collection[0]
-      const rareToken = collection[1]
-      const ltv = collection[2]
+		if (collection !== undefined) {
+			const fpToken = collection[0]
+			const rareToken = collection[1]
+			const ltv = collection[2]
 
-      const resBorrowAmounts = await fetch(`https://api.zharta.io/loans/v2/conditions`, {
-        method: 'POST',
-        body: JSON.stringify({collaterals: [
-          {
-            contract_address: collectionAddress,
-            token_id: fpToken
-          },
-          {
-            contract_address: collectionAddress,
-            token_id: rareToken
-          }
-        ]}),
-        headers: requestHeaders
-      }).then((resBorrowAmounts) => resBorrowAmounts.json())
+			const resBorrowAmounts = await fetch(`https://api.zharta.io/loans/v2/conditions`, {
+				method: 'POST',
+				body: JSON.stringify({
+					collaterals: [
+						{
+							contract_address: collectionAddress,
+							token_id: fpToken
+						},
+						{
+							contract_address: collectionAddress,
+							token_id: rareToken
+						}
+					]
+				}),
+				headers: requestHeaders
+			}).then((resBorrowAmounts) => resBorrowAmounts.json())
 
-      const result: IZhartaQuote[] = [
-        {
-          currency: "ETH",
-          minBorrowableAmount: resBorrowAmounts.collaterals[0].max_value,
-          maxBorrowableAmount: resBorrowAmounts.collaterals[1].max_value,
-          interestRate: resBorrowAmounts.interest_rate,
-          interestRateApr: resBorrowAmounts.interest_rate / 30 * 365,
-          ltv: ltv,
-          duration: 30 * 86400,
-          url: 'https://app.zharta.io/borrow'
-        }
-      ]
+			const result: IZhartaQuote[] = [
+				{
+					currency: 'ETH',
+					minBorrowableAmount: resBorrowAmounts.collaterals[0].max_value,
+					maxBorrowableAmount: resBorrowAmounts.collaterals[1].max_value,
+					interestRate: resBorrowAmounts.interest_rate,
+					interestRateApr: (resBorrowAmounts.interest_rate / 30) * 365,
+					ltv: ltv,
+					duration: 30 * 86400,
+					url: 'https://app.zharta.io/borrow'
+				}
+			]
 
-      return result
-    } else {
-      return []
-    }
+			return result
+		} else {
+			return []
+		}
 	} catch (error) {
 		console.error(`Failed to get Zharta data: ${error}`)
 		return []
@@ -74,15 +76,15 @@ export async function getDataZharta(collectionAddress: string) {
 }
 
 export async function getZhartaCollections() {
-  try {
-    const result: string[] = []
-    collections.forEach((_, key) => {
-      result.push(key)
-    })
+	try {
+		const result: string[] = []
+		collections.forEach((_, key) => {
+			result.push(key)
+		})
 
-    return result
-  } catch (error) {
-    console.error(`Failed to get Zharta collections: ${error}`)
-    return []
-  }
+		return result
+	} catch (error) {
+		console.error(`Failed to get Zharta collections: ${error}`)
+		return []
+	}
 }
