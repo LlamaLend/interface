@@ -52,6 +52,8 @@ export async function getDataZharta(collectionAddress: string) {
 				headers: requestHeaders
 			}).then((resBorrowAmounts) => resBorrowAmounts.json())
 
+			if (Number(resBorrowAmounts.collaterals[1].max_value) === 0) return []
+
 			const result: IZhartaQuote[] = [
 				{
 					currency: 'ETH',
@@ -64,7 +66,6 @@ export async function getDataZharta(collectionAddress: string) {
 					url: 'https://app.zharta.io/borrow'
 				}
 			]
-
 			return result
 		} else {
 			return []
