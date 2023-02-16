@@ -224,3 +224,14 @@ export interface ICyanQuote {
 	term: number
 	url: string
 }
+
+export interface IZhartaQuote {
+	currency: string
+	minBorrowableAmount: string
+	maxBorrowableAmount: string
+	interestRate: number
+	interestRateApr: number
+	ltv: number
+	duration: number
+	url: string
+}
