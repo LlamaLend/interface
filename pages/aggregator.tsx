@@ -11,6 +11,7 @@ import { getNftFiCollections } from '~/AggregatorAdapters/nftfi'
 import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
 import { getCyanCollections } from '~/AggregatorAdapters/cyan'
 import { getParaSpaceCollections } from '~/AggregatorAdapters/paraspace'
+import { getZhartaCollections } from '~/AggregatorAdapters/zharta'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
@@ -39,7 +40,8 @@ export async function getStaticProps() {
 		getNftFiCollections(),
 		getX2y2Collections(),
 		getCyanCollections(),
-		getParaSpaceCollections()
+		getParaSpaceCollections(),
+		getZhartaCollections()
 	])
 
 	const llamaCollections = await getAllCollections({ chainId: 1 })

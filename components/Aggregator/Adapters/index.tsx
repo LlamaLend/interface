@@ -8,7 +8,8 @@ import type {
 	ILlamaLendQuote,
 	INFTFiQuote,
 	IX2Y2Quote,
-	IParaSpaceQuote
+	IParaSpaceQuote,
+	IZhartaQuote
 } from '~/types'
 import { ArcadePools } from './Arcade'
 import { BenDaoPools } from './BenDao'
@@ -18,6 +19,7 @@ import { NFTFIPools } from './NFTFi'
 import { X2Y2Pools } from './X2Y2'
 import { ParaSpacePools } from './Paraspace'
 import { CyanPools } from './Cyan'
+import { ZhartaPools } from './Zharta'
 
 export function AggregatedAdapters({
 	collectionAddress,
@@ -67,6 +69,7 @@ const Adapter = ({
 		| Array<ILlamaLendQuote>
 		| Array<IParaSpaceQuote>
 		| Array<ICyanQuote>
+		| Array<IZhartaQuote>
 }) => {
 	if (name === 'llamalend') {
 		return <LlamalendPools pools={pools as Array<ILlamaLendQuote>} />
@@ -95,8 +98,13 @@ const Adapter = ({
 	if (name === 'paraspace') {
 		return <ParaSpacePools pools={pools as Array<IParaSpaceQuote>} />
 	}
+
 	if (name === 'cyan') {
 		return <CyanPools pools={pools as Array<ICyanQuote>} />
+	}
+
+	if (name === 'zharta') {
+		return <ZhartaPools pools={pools as Array<IZhartaQuote>} />
 	}
 
 	return <></>
