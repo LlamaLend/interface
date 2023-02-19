@@ -56,16 +56,10 @@ export const ZhartaPools = ({ pools }: { pools: Array<IZhartaQuote> }) => {
 					<thead className="h-[2.625rem] bg-[#111111]">
 						<tr>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Min Borrowable Per NFT
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								Max Borrowable Per NFT
+								Borrowable Per NFT
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								Duration
-							</th>
-							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
-								LTV
 							</th>
 							<th className="h-[2.625rem] border border-[#252525] p-2 text-sm font-light text-white text-opacity-50">
 								APR
@@ -87,11 +81,6 @@ const Pool = ({ pool }: { pool: IZhartaQuote }) => {
 	return (
 		<tr className="h-[2.625rem]">
 			<td className="border border-[#252525] p-2 text-center text-sm">
-				{`${Number(new BigNumber(pool.minBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
-					maximumFractionDigits: 2
-				})} ETH`}
-			</td>
-			<td className="border border-[#252525] p-2 text-center text-sm">
 				{`${Number(new BigNumber(pool.maxBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
 					maximumFractionDigits: 2
 				})} ETH`}
@@ -100,7 +89,6 @@ const Pool = ({ pool }: { pool: IZhartaQuote }) => {
 				{/* @ts-ignore */}
 				{dayjs().add(pool.duration, 'seconds').toNow(true)}
 			</td>
-			<td className="border border-[#252525] p-2 text-center text-sm">{`${Number(pool.ltv)}%`}</td>
 			<td className="border border-[#252525] p-2 text-center text-sm">
 				{`${(Number(pool.interestRateApr) * 100).toFixed(0)}%`}
 			</td>
