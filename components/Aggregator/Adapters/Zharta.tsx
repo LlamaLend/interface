@@ -81,7 +81,9 @@ const Pool = ({ pool }: { pool: IZhartaQuote }) => {
 	return (
 		<tr className="h-[2.625rem]">
 			<td className="border border-[#252525] p-2 text-center text-sm">
-				{`${Number(new BigNumber(pool.maxBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
+				{`Between ${Number(new BigNumber(pool.minBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
+					maximumFractionDigits: 2
+				})} and ${Number(new BigNumber(pool.maxBorrowableAmount).div(10 ** 18).toString()).toLocaleString(undefined, {
 					maximumFractionDigits: 2
 				})} ETH`}
 			</td>
