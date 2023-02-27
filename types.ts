@@ -235,15 +235,3 @@ export interface IZhartaQuote {
 	duration: number
 	url: string
 }
-
-export interface IGoblinSaxQuote {
-	token: string
-	price: string
-	url: string
-	ltv: string
-	apr: string
-	fee: string
-	loanPrincipal: string
-	loanRepayment: string
-	duration: string
-}
