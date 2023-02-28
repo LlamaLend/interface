@@ -1,4 +1,3 @@
-import { bool } from 'aws-sdk/clients/signer'
 import { IGoblinSaxQuote } from './types'
 
 // eslint-disable-next-line no-undef
