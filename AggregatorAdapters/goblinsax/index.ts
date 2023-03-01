@@ -18,7 +18,6 @@ export async function getDataGoblinSax(nft: string) {
 		const offers = res.body.offers
 		Object.keys(offers).forEach((duration: string) => {
 			offers[duration].forEach((offer: any) => {
-				console.log(offer)
 				result.push({
 					token: 'WETH',
 					price: res.body.price,
