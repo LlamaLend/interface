@@ -8,7 +8,8 @@ import type {
 	INFTFiQuote,
 	IX2Y2Quote,
 	IParaSpaceQuote,
-	IZhartaQuote
+	IZhartaQuote,
+	IGoblinSaxQuote
 } from '~/types'
 import { checkIfPoolDisabled } from '~/utils'
 import { getAllPools } from './useGetAllPools'
@@ -23,6 +24,7 @@ interface IAggregatedProtocols {
 		paraspace: Array<IParaSpaceQuote>
 		cyan: Array<ICyanQuote>
 		zharta: Array<IZhartaQuote>
+		goblinSax: Array<IGoblinSaxQuote>
 	}
 }
 

@@ -17,6 +17,7 @@ import { chainConfig } from '~/lib/constants'
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
 import { AggregatedAdapters } from '~/components/Aggregator/Adapters'
 import { getAllCollections } from '~/queries/useGetAllCollections'
+import { getGoblinSaxCollections } from '~/AggregatorAdapters/goblinsax'
 
 interface IPageProps {
 	collections: Array<{ address: string; name: string }>
@@ -41,7 +42,8 @@ export async function getStaticProps() {
 		getX2y2Collections(),
 		getCyanCollections(),
 		getParaSpaceCollections(),
-		getZhartaCollections()
+		getZhartaCollections(),
+		getGoblinSaxCollections()
 	])
 
 	const llamaCollections = await getAllCollections({ chainId: 1 })
