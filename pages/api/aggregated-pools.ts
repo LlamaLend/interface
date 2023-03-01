@@ -7,6 +7,7 @@ import { getDataX2y2 } from '~/AggregatorAdapters/x2y2'
 import { getDataParaspace } from '~/AggregatorAdapters/paraspace'
 import { getDataCyan } from '~/AggregatorAdapters/cyan'
 import { getDataZharta } from '~/AggregatorAdapters/zharta'
+import { getDataGoblinSax } from '~/AggregatorAdapters/goblinsax'
 
 export default async function getAggregatedPools(req: NextApiRequest, res: NextApiResponse) {
 	const { collectionAddress } = req.query
@@ -16,7 +17,7 @@ export default async function getAggregatedPools(req: NextApiRequest, res: NextA
 
 		if (typeof collectionAddress !== 'string') throw new Error('Invalid Collection Address')
 
-		const [x2y2, jpegd, nftfi, arcade, bendDao, paraspace, cyan, zharta] = await Promise.allSettled([
+		const [x2y2, jpegd, nftfi, arcade, bendDao, paraspace, cyan, zharta, goblinSax] = await Promise.allSettled([
 			getDataX2y2(collectionAddress),
 			getDataJpegd(collectionAddress),
 			getDataNftFi(collectionAddress),
@@ -24,7 +25,8 @@ export default async function getAggregatedPools(req: NextApiRequest, res: NextA
 			getDataBendDao(collectionAddress),
 			getDataParaspace(collectionAddress),
 			getDataCyan(collectionAddress),
-			getDataZharta(collectionAddress)
+			getDataZharta(collectionAddress),
+			getDataGoblinSax(collectionAddress)
 		])
 
 		res.status(200).json({
@@ -36,7 +38,8 @@ export default async function getAggregatedPools(req: NextApiRequest, res: NextA
 				jpegd: jpegd.status === 'fulfilled' ? jpegd.value : [],
 				paraspace: paraspace.status === 'fulfilled' ? paraspace.value : [],
 				cyan: cyan.status === 'fulfilled' ? cyan.value : [],
-				zharta: zharta.status === 'fulfilled' ? zharta.value : []
+				zharta: zharta.status === 'fulfilled' ? zharta.value : [],
+				goblinSax: goblinSax.status === 'fulfilled' ? goblinSax.value : []
 			}
 		})
 	} catch (error: any) {
