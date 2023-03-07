@@ -3,11 +3,14 @@ import { useGetAggregatedPools } from '~/queries/useGetAggregatedPools'
 import type {
 	IArcadeQuote,
 	IBendDaoQuote,
+	ICyanQuote,
 	IJpegdQuote,
 	ILlamaLendQuote,
 	INFTFiQuote,
+	IX2Y2Quote,
 	IParaSpaceQuote,
-	IX2Y2Quote
+	IZhartaQuote,
+	IGoblinSaxQuote
 } from '~/types'
 import { ArcadePools } from './Arcade'
 import { BenDaoPools } from './BenDao'
@@ -16,6 +19,9 @@ import { LlamalendPools } from './LlamaLend'
 import { NFTFIPools } from './NFTFi'
 import { X2Y2Pools } from './X2Y2'
 import { ParaSpacePools } from './Paraspace'
+import { CyanPools } from './Cyan'
+import { ZhartaPools } from './Zharta'
+import { GoblinSaxPools } from './GoblinSax'
 
 export function AggregatedAdapters({
 	collectionAddress,
@@ -64,6 +70,9 @@ const Adapter = ({
 		| Array<IX2Y2Quote>
 		| Array<ILlamaLendQuote>
 		| Array<IParaSpaceQuote>
+		| Array<ICyanQuote>
+		| Array<IZhartaQuote>
+		| Array<IGoblinSaxQuote>
 }) => {
 	if (name === 'llamalend') {
 		return <LlamalendPools pools={pools as Array<ILlamaLendQuote>} />
@@ -93,7 +102,19 @@ const Adapter = ({
 		return <ParaSpacePools pools={pools as Array<IParaSpaceQuote>} />
 	}
 
+	if (name === 'cyan') {
+		return <CyanPools pools={pools as Array<ICyanQuote>} />
+	}
+
+	if (name === 'zharta') {
+		return <ZhartaPools pools={pools as Array<IZhartaQuote>} />
+	}
+
+	if (name === 'goblinSax') {
+		return <GoblinSaxPools pools={pools as Array<IGoblinSaxQuote>} />
+	}
+
 	return <></>
 }
 
-// 'nftfi' | 'x2y2' | 'arcade' | 'bendDao' | 'jpegd'
+// 'nftfi' | 'x2y2' | 'arcade' | 'bendDao' | 'jpegd' | 'cyan' | 'goblinSax'

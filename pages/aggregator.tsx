@@ -9,12 +9,15 @@ import { getBendDaoCollections } from '~/AggregatorAdapters/benddao'
 import { getJpegdCollections } from '~/AggregatorAdapters/jpegd'
 import { getNftFiCollections } from '~/AggregatorAdapters/nftfi'
 import { getX2y2Collections } from '~/AggregatorAdapters/x2y2'
+import { getCyanCollections } from '~/AggregatorAdapters/cyan'
 import { getParaSpaceCollections } from '~/AggregatorAdapters/paraspace'
+import { getZhartaCollections } from '~/AggregatorAdapters/zharta'
 import { ERC721_ABI } from '~/lib/erc721.abi'
 import { chainConfig } from '~/lib/constants'
 import { AggregatorCollectionsSelect } from '~/components/Aggregator/CollectionsSelect'
 import { AggregatedAdapters } from '~/components/Aggregator/Adapters'
 import { getAllCollections } from '~/queries/useGetAllCollections'
+import { getGoblinSaxCollections } from '~/AggregatorAdapters/goblinsax'
 
 interface IPageProps {
 	collections: Array<{ address: string; name: string }>
@@ -37,7 +40,10 @@ export async function getStaticProps() {
 		getJpegdCollections(),
 		getNftFiCollections(),
 		getX2y2Collections(),
-		getParaSpaceCollections()
+		getCyanCollections(),
+		getParaSpaceCollections(),
+		getZhartaCollections(),
+		getGoblinSaxCollections()
 	])
 
 	const llamaCollections = await getAllCollections({ chainId: 1 })

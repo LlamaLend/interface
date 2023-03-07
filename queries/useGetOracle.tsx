@@ -10,7 +10,7 @@ interface IFetchOracleProps {
 	skipRetries?: boolean
 }
 
-const TEN_MINUTES = 10 * 60 * 1000
+const THREE_MINUTES = 3 * 60 * 1000
 
 const isOracleValid = (res: IOracleResponse, nftContractAddress: string) => {
 	if (!res?.price) {
@@ -30,7 +30,7 @@ const isOracleValid = (res: IOracleResponse, nftContractAddress: string) => {
 		return false
 	}
 
-	if (res.deadline * 1000 - Date.now() < TEN_MINUTES) {
+	if (res.deadline * 1000 - Date.now() < THREE_MINUTES) {
 		if (typeof window !== 'undefined') {
 			fetch('/api/discord', {
 				method: 'POST',

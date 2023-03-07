@@ -214,3 +214,36 @@ export type IParaSpaceQuote = {
 	liquidationThreshold: string
 	loanUrl: string
 }
+
+export interface ICyanQuote {
+	currency: string
+	amount: string
+	interestRate: number
+	interestRateApr: number
+	totalNumOfPayments: number
+	term: number
+	url: string
+}
+
+export interface IZhartaQuote {
+	currency: string
+	minBorrowableAmount: string
+	maxBorrowableAmount: string
+	interestRate: number
+	interestRateApr: number
+	ltv: number
+	duration: number
+	url: string
+}
+
+export interface IGoblinSaxQuote {
+	token: string
+	price: string
+	url: string
+	ltv: string
+	apr: string
+	fee: string
+	loanPrincipal: string
+	loanRepayment: string
+	duration: string
+}
