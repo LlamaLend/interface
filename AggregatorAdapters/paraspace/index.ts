@@ -3,7 +3,7 @@ import { CHAINS_CONFIGURATION } from '~/lib/constants'
 import { IParaSpaceQuote } from '~/types'
 import { UiPooDataProviderABI } from './abi'
 
-const UiPoolDataProvider = '0xe8fcBd03a29912b63EE154AB4601e1D64b31586c'
+const UiPoolDataProvider = '0xcFcca0A2531069f16634beeD1C74d28ac1F7d271'
 const PoolAddressProvider = '0x6cD30e716ADbE47dADf7319f6F2FB83d507c857d'
 
 const uiPool = new ethers.Contract(UiPoolDataProvider, UiPooDataProviderABI, CHAINS_CONFIGURATION[1].chainProvider)
