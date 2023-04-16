@@ -67,14 +67,16 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 				<div>
 					<h1 className="text-xs font-light text-gray-400">Total Lent</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed ? (Number(totalBorrowed) / 1e18).toFixed(4) : 0} {chainSymbol}
+						{Number(totalBorrowed) ? (Number(totalBorrowed) / 1e18).toFixed(4) : 0} {chainSymbol}
 					</p>
 				</div>
 
 				<div>
 					<h1 className="text-xs font-light text-gray-400">% Borrowed</h1>
 					<p className="min-h-[1.5rem] break-all">
-						{totalBorrowed && totalDeposited ? ((Number(totalBorrowed) / Number(totalDeposited)) * 100).toFixed(2) : 0}{' '}
+						{Number(totalBorrowed) && Number(totalDeposited)
+							? ((Number(totalBorrowed) / Number(totalDeposited)) * 100).toFixed(2)
+							: 0}{' '}
 						%
 					</p>
 				</div>
