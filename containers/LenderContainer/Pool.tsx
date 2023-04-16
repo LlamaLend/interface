@@ -25,9 +25,10 @@ export default function LenderPool({ chainId, pool }: ILenderPool) {
 
 	const { poolBalance, totalBorrowed, totalDeposited } = pool
 
-	const aprOnLentEth = totalBorrowed && weightedSum ? ((weightedSum / Number(totalBorrowed)) * 100).toFixed(2) : 0
+	const aprOnLentEth =
+		Number(totalBorrowed) && weightedSum ? ((weightedSum / Number(totalBorrowed)) * 100).toFixed(2) : 0
 	const aprOnAllEthDeposited =
-		totalBorrowed && weightedSum ? ((weightedSum / Number(totalDeposited)) * 100).toFixed(2) : 0
+		Number(totalDeposited) && weightedSum ? ((weightedSum / Number(totalDeposited)) * 100).toFixed(2) : 0
 
 	return (
 		<div className="my-4 flex w-full flex-col gap-6 rounded-xl bg-[#191919] p-4 shadow">
