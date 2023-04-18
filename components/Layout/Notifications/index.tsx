@@ -67,24 +67,9 @@ export default function Notifications() {
 				modal={!isLarge}
 				className="top-2 z-50 flex flex-col overflow-auto overscroll-contain rounded-lg border border-[#292929] bg-white p-4 text-sm text-black shadow-xl sm:max-w-[360px]"
 			>
-				<p>
-					Get notified when your loan is about to expire by DMing @LlamaBankmanFried in our{' '}
-					<a
-						href="https://discord.com/channels/1021249771073175552/1038181488069447832"
-						target="_blank"
-						rel="noreferrer noopener"
-						className="underline"
-					>
-						discord
-					</a>{' '}
-					with the message <span className="rounded bg-gray-100 py-1 px-2">/register your_address</span>
-				</p>
-
-				<p className="my-4 text-center text-xs text-gray-500">or</p>
-
 				<form onSubmit={registerEmail}>
 					<label className="label text-sm">
-						<span>Get notified by email</span>
+						<span>Get notified by email when your loan is about to expire</span>
 						<input name="email" className="input-field bg-gray-100 text-black" type="email" required />
 					</label>
 					<small className="mt-4 text-gray-500">Connect wallet with the address you want to get notified for</small>
