@@ -39,7 +39,7 @@ export interface INftApiResponse {
 }
 
 export interface INftItem {
-	tokenId: number
+	tokenId: string
 	imgUrl: string
 }
 

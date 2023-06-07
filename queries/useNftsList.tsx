@@ -28,7 +28,7 @@ export async function getOwnedNfts({
 		).then((res) => res.json())
 
 		return data?.ownedNfts?.map((item) => ({
-			tokenId: Number(item.id.tokenId),
+			tokenId: item.id.tokenId,
 			imgUrl: formatImageUrl(item.media[0].gateway) || ''
 		}))
 	} catch (error: any) {
