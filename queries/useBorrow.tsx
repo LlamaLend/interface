@@ -11,7 +11,7 @@ import { chainConfig, EMAIL_SERVER_API, LOCAL_STORAGE_KEY } from '~/lib/constant
 interface IUseBorrowProps {
 	poolAddress: string
 	collectionAddress: string
-	cartTokenIds: Array<number>
+	cartTokenIds: Array<string>
 	maxInterest?: string
 	totalReceived: string
 	enabled: boolean
