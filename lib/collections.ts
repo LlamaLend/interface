@@ -1,5 +1,3 @@
-import { NFT_LIST_URL_PREFIX } from './constants'
-
 export interface IToken {
 	name: string
 	address: string
@@ -32,7 +30,7 @@ export function tokenListToCollection(tokenlist: ITokenList): ICollection {
 		chainCollections.push({
 			name: token.name,
 			address: token.address,
-			imgUrl: `${NFT_LIST_URL_PREFIX}/${token.address.toLowerCase()}`
+			imgUrl: token.logoURI
 		})
 		collections[token.chainId] = chainCollections
 	})
