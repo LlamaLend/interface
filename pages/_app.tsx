@@ -9,7 +9,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { connectorsForWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { injectedWallet, rainbowWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets'
+import { injectedWallet, rainbowWallet, metaMaskWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets'
 import { SafeConnector } from '@gnosis.pm/safe-apps-wagmi'
 import { useDialogState } from 'ariakit'
 import { Toaster } from 'react-hot-toast'
@@ -50,7 +50,8 @@ const connectors = connectorsForWallets([
 			},
 			injectedWallet({ chains }),
 			metaMaskWallet({ chains }),
-			rainbowWallet({ chains })
+			rainbowWallet({ chains }),
+			walletConnectWallet({ chains })
 		]
 	}
 ])
