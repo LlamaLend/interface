@@ -10,9 +10,9 @@ const FACTORY_GOERLI = '0x664885D29933c48728E85F5728808DffC40cb577'
 const ORACLE_MAINNET = '0x4096b3f0e89c06e98d1095da7aefdd4b38eeb1e0'
 const ORACLE_GOERLI = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
 
-const ORACLE_SERVER_API = 'https://oracle.llamalend.com/quote'
+const ORACLE_SERVER_API = 'https://oracle.llamalendnft.com/quote'
 
-export const EMAIL_SERVER_API = 'https://nft.llamalend.com/email'
+export const EMAIL_SERVER_API = 'https://nft.llamalendnft.com/email'
 
 export const NFT_LIST = 'https://raw.githubusercontent.com/LlamaLend/nft-list/main/build/default.nftlist.json' // TODO: Update repo to self-hosted
 export const NFT_LIST_VERSION = '1.0.0'

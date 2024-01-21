@@ -44,7 +44,7 @@ export async function getAggregatedPools({ collectionAddress }: { collectionAddr
 					pricePerNft: pool.pricePerNft,
 					maxLoanLength: pool.maxLoanLength,
 					currentAnnualInterest: pool.currentAnnualInterest,
-					url: `https://llamalend.com/collections/Ethereum/${collectionAddress}`
+					url: `https://llamalendnft.com/collections/Ethereum/${collectionAddress}`
 				})),
 			...(pools || {})
 		}

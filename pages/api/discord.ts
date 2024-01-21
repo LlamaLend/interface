@@ -49,7 +49,5 @@ export default async function alert(req: NextApiRequest, res: NextApiResponse) {
 		}
 
 		res.status(200).json({ success: true })
-	} catch (e) {
-
-	}
+	} catch (e) {}
 }
